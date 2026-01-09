@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>15-Hour Work Week Audit - Where's Your Time Really Going?</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            color: #1F2937;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            height: 8px;
+            border-radius: 10px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #F59E0B 0%, #FBBF24 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .step.active {
+            opacity: 1;
+            font-weight: 600;
+        }
+
+        .step.completed {
+            opacity: 0.8;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            color: #5B21B6;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .section-description {
+            color: #6B7280;
+            margin-bottom: 30px;
+            font-size: 1.05rem;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1F2937;
+            font-size: 1rem;
+        }
+
+        .help-text {
+            font-size: 0.875rem;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        input[type="number"],
+        input[type="email"],
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #5B21B6;
+            box-shadow: 0 0 0 3px rgba(91, 33, 182, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .slider-group {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #F9FAFB;
+            border-radius: 8px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .slider-label {
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .slider-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #5B21B6;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #E5E7EB;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #5B21B6;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: #7C3AED;
+            transform: scale(1.2);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #5B21B6;
+            cursor: pointer;
+            border: none;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .checkbox-option {
+            position: relative;
+        }
+
+        .checkbox-option input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .checkbox-option label {
+            display: block;
+            padding: 15px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .checkbox-option input[type="checkbox"]:checked + label {
+            border-color: #5B21B6;
+            background: #F3E8FF;
+            color: #5B21B6;
+        }
+
+        .total-hours {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #5B21B6 0%, #7C3AED 100%);
+            color: white;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .total-hours-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .total-hours-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .total-hours-note {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #5B21B6 0%, #7C3AED 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(91, 33, 182, 0.4);
+        }
+
+        .btn-secondary {
+            background: #F59E0B;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #D97706;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-back {
+            background: #E5E7EB;
+            color: #1F2937;
+        }
+
+        .btn-back:hover {
+            background: #D1D5DB;
+        }
+
+        .results-dashboard {
+            display: none;
+        }
+
+        .results-dashboard.active {
+            display: block;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #E5E7EB;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6B7280;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #5B21B6;
+        }
+
+        .stat-value.warning {
+            color: #DC2626;
+        }
+
+        .stat-value.success {
+            color: #059669;
+        }
+
+        .chart-container {
+            margin: 30px 0;
+            padding: 30px;
+            background: #F9FAFB;
+            border-radius: 12px;
+        }
+
+        .priority-matrix {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .priority-item {
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .priority-high {
+            background: #FEF2F2;
+            border-color: #DC2626;
+        }
+
+        .priority-medium {
+            background: #FEF3C7;
+            border-color: #F59E0B;
+        }
+
+        .priority-low {
+            background: #ECFDF5;
+            border-color: #059669;
+        }
+
+        .priority-item h4 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .priority-high h4 {
+            color: #DC2626;
+        }
+
+        .priority-medium h4 {
+            color: #D97706;
+        }
+
+        .priority-low h4 {
+            color: #059669;
+        }
+
+        .roadmap {
+            margin: 30px 0;
+        }
+
+        .roadmap-phase {
+            margin-bottom: 25px;
+            padding: 25px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #E5E7EB;
+        }
+
+        .roadmap-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .roadmap-badge {
+            background: #5B21B6;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 15px;
+        }
+
+        .roadmap-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1F2937;
+        }
+
+        .roadmap-actions {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .roadmap-actions li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .roadmap-actions li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #059669;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-header h2 {
+            color: #5B21B6;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .card {
+                padding: 25px;
+            }
+
+            .btn-group {
+                grid-template-columns: 1fr;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .priority-matrix {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⏰ 15-Hour Work Week Audit</h1>
+            <p>Discover where your time is going—and how to get it back</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+
+        <div class="step-indicator">
+            <div class="step active" data-step="1">1. Basics</div>
+            <div class="step" data-step="2">2. Time Breakdown</div>
+            <div class="step" data-step="3">3. Pain Points</div>
+            <div class="step" data-step="4">4. Priorities</div>
+            <div class="step" data-step="5">5. Results</div>
+        </div>
+
+        <!-- STEP 1: Business Basics -->
+        <div class="card">
+            <div class="form-section active" id="step-1">
+                <h2>Let's Start With The Basics</h2>
+                <p class="section-description">Tell us about your business so we can calculate your opportunity costs accurately.</p>
+
+                <div class="form-group">
+                    <label for="annual-revenue">Annual Business Revenue</label>
+                    <input type="number" id="annual-revenue" placeholder="e.g., 150000" min="0" step="1000" required>
+                    <div class="help-text">Your approximate annual revenue</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="hours-per-week">Hours You Work Per Week</label>
+                    <input type="number" id="hours-per-week" placeholder="e.g., 40" min="1" max="168" required>
+                    <div class="help-text">Total hours you spend on your business weekly</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="business-stage">Business Stage</label>
+                    <select id="business-stage" required>
+                        <option value="">Select your stage...</option>
+                        <option value="startup">Startup (0-2 years, under $50K)</option>
+                        <option value="growth">Growth (2-5 years, $50K-$150K)</option>
+                        <option value="established">Established ($150K-$500K)</option>
+                        <option value="scaling">Scaling ($500K+)</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" onclick="goToStep(2)">Continue to Time Breakdown →</button>
+            </div>
+
+            <!-- STEP 2: Time Breakdown -->
+            <div class="form-section" id="step-2">
+                <h2>Where Does Your Time Actually Go?</h2>
+                <p class="section-description">Use the sliders to estimate hours per week spent on each area.</p>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">💼 Client Delivery / Service Work</span>
+                        <span class="slider-value" id="value-delivery">0 hrs</span>
+                    </div>
+                    <input type="range" id="slider-delivery" min="0" max="60" value="0" oninput="updateSlider('delivery')">
+                    <div class="help-text">Actual work you deliver to clients</div>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">📊 Administrative Tasks</span>
+                        <span class="slider-value" id="value-admin">0 hrs</span>
+                    </div>
+                    <input type="range" id="slider-admin" min="0" max="40" value="0" oninput="updateSlider('admin')">
+                    <div class="help-text">Email, scheduling, bookkeeping, invoicing</div>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">📱 Social Media & Marketing</span>
+                        <span class="slider-value" id="value-marketing">0 hrs</span>
+                    </div>
+                    <input type="range" id="slider-marketing" min="0" max="30" value="0" oninput="updateSlider('marketing')">
+                    <div class="help-text">Content creation, posting, engagement</div>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">💬 Client Communication</span>
+                        <span class="slider-value" id="value-communication">0 hrs</span>
+                    </div>
+                    <input type="range" id="slider-communication" min="0" max="30" value="0" oninput="updateSlider('communication')">
+                    <div class="help-text">Emails, calls, Voxer, customer service</div>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">🎯 Sales & Business Development</span>
+                        <span class="slider-value" id="value-sales">0 hrs</span>
+                    </div>
+                    <input type="range" id="slider-sales" min="0" max="30" value="0" oninput="updateSlider('sales')">
+                    <div class="help-text">Discovery calls, proposals, follow-ups</div>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">🧠 Strategy & Planning</span>
+                        <span class="slider-value" id="value-strategy">0 hrs</span>
+                    </div>
+                    <input type="range" id="slider-strategy" min="0" max="20" value="0" oninput="updateSlider('strategy')">
+                    <div class="help-text">Business strategy, planning, visioning</div>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">📚 Learning & Development</span>
+                        <span class="slider-value" id="value-learning">0 hrs</span>
+                    </div>
+                    <input type="range" id="slider-learning" min="0" max="20" value="0" oninput="updateSlider('learning')">
+                    <div class="help-text">Courses, training, skill development</div>
+                </div>
+
+                <div class="total-hours">
+                    <div class="total-hours-label">Total Hours Allocated</div>
+                    <div class="total-hours-value" id="total-hours">0</div>
+                    <div class="total-hours-note" id="hours-note">Allocate your weekly hours above</div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-back" onclick="goToStep(1)">← Back</button>
+                    <button class="btn btn-primary" onclick="goToStep(3)">Continue to Pain Points →</button>
+                </div>
+            </div>
+
+            <!-- STEP 3: Pain Points -->
+            <div class="form-section" id="step-3">
+                <h2>What's Causing You The Most Stress?</h2>
+                <p class="section-description">Select all that apply—be honest!</p>
+
+                <div class="checkbox-group">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="pain-overwhelm" value="overwhelm">
+                        <label for="pain-overwhelm">😰 Constant overwhelm</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="pain-admin" value="admin">
+                        <label for="pain-admin">📋 Drowning in admin work</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="pain-time" value="time">
+                        <label for="pain-time">⏰ Never enough time</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="pain-scaling" value="scaling">
+                        <label for="pain-scaling">📈 Can't scale past current revenue</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="pain-systems" value="systems">
+                        <label for="pain-systems">🔧 No systems or processes</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="pain-team" value="team">
+                        <label for="pain-team">👥 Can't delegate effectively</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="pain-marketing" value="marketing">
+                        <label for="pain-marketing">📱 Marketing feels like a full-time job</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="pain-family" value="family">
+                        <label for="pain-family">👨‍👩‍👧 Missing family time</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="pain-burnout" value="burnout">
+                        <label for="pain-burnout">🔥 On the edge of burnout</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="pain-tech" value="tech">
+                        <label for="pain-tech">💻 Too many tools, nothing talks to each other</label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 30px;">
+                    <label for="biggest-challenge">What's Your #1 Biggest Challenge Right Now?</label>
+                    <textarea id="biggest-challenge" placeholder="Be specific... what's keeping you up at night?"></textarea>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-back" onclick="goToStep(2)">← Back</button>
+                    <button class="btn btn-primary" onclick="goToStep(4)">Continue to Priorities →</button>
+                </div>
+            </div>
+
+            <!-- STEP 4: Automation Priorities -->
+            <div class="form-section" id="step-4">
+                <h2>What Would Have The Biggest Impact?</h2>
+                <p class="section-description">If you could wave a magic wand and automate one area, what would it be?</p>
+
+                <div class="checkbox-group">
+                    <div class="checkbox-option">
+                        <input type="radio" name="priority" id="priority-admin" value="admin">
+                        <label for="priority-admin">📋 Administrative Tasks</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="radio" name="priority" id="priority-marketing" value="marketing">
+                        <label for="priority-marketing">📱 Social Media & Content</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="radio" name="priority" id="priority-sales" value="sales">
+                        <label for="priority-sales">🎯 Sales & Lead Gen</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="radio" name="priority" id="priority-client" value="client">
+                        <label for="priority-client">💬 Client Communication</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="radio" name="priority" id="priority-delivery" value="delivery">
+                        <label for="priority-delivery">💼 Service Delivery</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="radio" name="priority" id="priority-everything" value="everything">
+                        <label for="priority-everything">🚀 Everything (Complete Overhaul)</label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 30px;">
+                    <label for="ideal-hours">If You Could Work Just X Hours Per Week, What Would That Number Be?</label>
+                    <input type="number" id="ideal-hours" placeholder="e.g., 15" min="1" max="40">
+                    <div class="help-text">Your dream work week (realistically)</div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-back" onclick="goToStep(3)">← Back</button>
+                    <button class="btn btn-primary" onclick="calculateResults()">See My Audit Results 🎯</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS DASHBOARD -->
+        <div class="card results-dashboard" id="results-section">
+            <h2 style="text-align: center; margin-bottom: 10px;">Your 15-Hour Work Week Audit</h2>
+            <p style="text-align: center; color: #6B7280; margin-bottom: 30px;">Here's where your time is going—and how to get it back</p>
+
+            <div class="results-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Your Hourly Rate</div>
+                    <div class="stat-value" id="result-hourly-rate">$0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Hours Working Weekly</div>
+                    <div class="stat-value warning" id="result-hours-working">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Hours on Low-Value Work</div>
+                    <div class="stat-value warning" id="result-low-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Annual Opportunity Cost</div>
+                    <div class="stat-value warning" id="result-opportunity-cost">$0</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3 style="margin-bottom: 20px; color: #5B21B6;">Your Time Breakdown</h3>
+                <canvas id="timeChart"></canvas>
+            </div>
+
+            <div class="priority-matrix">
+                <div class="priority-item priority-high" id="high-priority">
+                    <h4>🔴 Urgent: Automate First</h4>
+                    <p id="high-priority-text">Loading...</p>
+                </div>
+                <div class="priority-item priority-medium" id="medium-priority">
+                    <h4>🟡 Important: Optimize Next</h4>
+                    <p id="medium-priority-text">Loading...</p>
+                </div>
+                <div class="priority-item priority-low" id="low-priority">
+                    <h4>🟢 Strategic: Keep Doing</h4>
+                    <p id="low-priority-text">Loading...</p>
+                </div>
+            </div>
+
+            <div class="roadmap">
+                <h3 style="margin-bottom: 20px; color: #5B21B6;">Your 90-Day Reclaim Roadmap</h3>
+                
+                <div class="roadmap-phase">
+                    <div class="roadmap-header">
+                        <span class="roadmap-badge">Days 1-30</span>
+                        <span class="roadmap-title">Quick Wins</span>
+                    </div>
+                    <ul class="roadmap-actions" id="roadmap-phase1">
+                        <!-- Populated by JS -->
+                    </ul>
+                </div>
+
+                <div class="roadmap-phase">
+                    <div class="roadmap-header">
+                        <span class="roadmap-badge">Days 31-60</span>
+                        <span class="roadmap-title">System Building</span>
+                    </div>
+                    <ul class="roadmap-actions" id="roadmap-phase2">
+                        <!-- Populated by JS -->
+                    </ul>
+                </div>
+
+                <div class="roadmap-phase">
+                    <div class="roadmap-header">
+                        <span class="roadmap-badge">Days 61-90</span>
+                        <span class="roadmap-title">Optimization & Scale</span>
+                    </div>
+                    <ul class="roadmap-actions" id="roadmap-phase3">
+                        <!-- Populated by JS -->
+                    </ul>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary" id="download-btn" onclick="downloadPDFAgain()">📥 Download PDF Report Again</button>
+        </div>
+    </div>
+
+    <!-- Email Modal -->
+    <div class="modal" id="email-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Get Your Complete Audit</h2>
+                <p>Enter your email to download your personalized 15-Hour Work Week analysis</p>
+            </div>
+            <form id="email-form" onsubmit="handleEmailSubmit(event)">
+                <div class="form-group">
+                    <label for="user-email">Email Address</label>
+                    <input type="email" id="user-email" placeholder="your@email.com" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Download My Full Audit Report</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Store all audit data
+        let auditData = {
+            basics: {},
+            timeBreakdown: {},
+            painPoints: [],
+            priorities: {},
+            calculations: {},
+            userEmail: '' // Store email for re-downloading PDF
+        };
+
+        // Navigation functions
+        function goToStep(stepNumber) {
+            // Validate current step before proceeding
+            if (!validateCurrentStep(stepNumber - 1)) {
+                return;
+            }
+
+            // Hide all sections
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show target section
+            document.getElementById(`step-${stepNumber}`).classList.add('active');
+
+            // Update step indicators
+            document.querySelectorAll('.step').forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index + 1 < stepNumber) {
+                    step.classList.add('completed');
+                } else if (index + 1 === stepNumber) {
+                    step.classList.add('active');
+                }
+            });
+
+            // Update progress bar
+            const progress = (stepNumber / 5) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Save data from previous step
+            if (stepNumber === 2) {
+                saveBasicsData();
+            } else if (stepNumber === 3) {
+                saveTimeBreakdownData();
+            } else if (stepNumber === 4) {
+                savePainPointsData();
+            }
+        }
+
+        function validateCurrentStep(stepNumber) {
+            if (stepNumber === 1) {
+                const revenue = document.getElementById('annual-revenue').value;
+                const hours = document.getElementById('hours-per-week').value;
+                const stage = document.getElementById('business-stage').value;
+                
+                if (!revenue || !hours || !stage) {
+                    alert('Please fill in all fields before continuing.');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Save data functions
+        function saveBasicsData() {
+            auditData.basics = {
+                revenue: parseFloat(document.getElementById('annual-revenue').value),
+                hoursPerWeek: parseFloat(document.getElementById('hours-per-week').value),
+                stage: document.getElementById('business-stage').value
+            };
+        }
+
+        function saveTimeBreakdownData() {
+            auditData.timeBreakdown = {
+                delivery: parseFloat(document.getElementById('slider-delivery').value),
+                admin: parseFloat(document.getElementById('slider-admin').value),
+                marketing: parseFloat(document.getElementById('slider-marketing').value),
+                communication: parseFloat(document.getElementById('slider-communication').value),
+                sales: parseFloat(document.getElementById('slider-sales').value),
+                strategy: parseFloat(document.getElementById('slider-strategy').value),
+                learning: parseFloat(document.getElementById('slider-learning').value)
+            };
+        }
+
+        function savePainPointsData() {
+            const painPoints = [];
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+                painPoints.push(checkbox.value);
+            });
+            auditData.painPoints = painPoints;
+            auditData.biggestChallenge = document.getElementById('biggest-challenge').value;
+        }
+
+        function savePrioritiesData() {
+            const priority = document.querySelector('input[name="priority"]:checked');
+            auditData.priorities = {
+                topPriority: priority ? priority.value : 'everything',
+                idealHours: parseFloat(document.getElementById('ideal-hours').value) || 15
+            };
+        }
+
+        // Slider update function
+        function updateSlider(category) {
+            const value = document.getElementById(`slider-${category}`).value;
+            document.getElementById(`value-${category}`).textContent = value + ' hrs';
+            updateTotalHours();
+        }
+
+        function updateTotalHours() {
+            const categories = ['delivery', 'admin', 'marketing', 'communication', 'sales', 'strategy', 'learning'];
+            let total = 0;
+            
+            categories.forEach(cat => {
+                total += parseFloat(document.getElementById(`slider-${cat}`).value);
+            });
+            
+            document.getElementById('total-hours').textContent = total;
+            
+            const targetHours = parseFloat(document.getElementById('hours-per-week').value) || 40;
+            const note = document.getElementById('hours-note');
+            
+            if (total < targetHours - 5) {
+                note.textContent = `You have ${targetHours - total} hours unaccounted for`;
+                note.style.color = '#F59E0B';
+            } else if (total > targetHours + 5) {
+                note.textContent = `You're over by ${total - targetHours} hours—something's gotta give!`;
+                note.style.color = '#DC2626';
+            } else {
+                note.textContent = '✓ This looks accurate';
+                note.style.color = '#059669';
+            }
+        }
+
+        // Calculate results
+        function calculateResults() {
+            console.log('Calculate Results called');
+            
+            // Validate priority selection
+            if (!document.querySelector('input[name="priority"]:checked')) {
+                alert('Please select your top automation priority.');
+                return;
+            }
+
+            console.log('Priority validation passed');
+
+            // Ensure all data is saved
+            saveBasicsData();
+            saveTimeBreakdownData();
+            savePainPointsData();
+            savePrioritiesData();
+
+            console.log('All data saved:', auditData);
+
+            // Validate we have the required data
+            if (!auditData.basics.revenue || !auditData.basics.hoursPerWeek) {
+                alert('Error: Missing business basics data. Please go back and complete Step 1.');
+                return;
+            }
+
+            console.log('Data validation passed');
+
+            // Calculate opportunity costs
+            const hourlyRate = auditData.basics.revenue / (auditData.basics.hoursPerWeek * 52);
+            
+            // Low-value work = admin + communication + portion of marketing
+            const lowValueHours = auditData.timeBreakdown.admin + 
+                                  auditData.timeBreakdown.communication + 
+                                  (auditData.timeBreakdown.marketing * 0.7);
+            
+            const weeklyOpportunityCost = hourlyRate * lowValueHours;
+            const annualOpportunityCost = weeklyOpportunityCost * 52;
+
+            auditData.calculations = {
+                hourlyRate,
+                lowValueHours,
+                weeklyOpportunityCost,
+                annualOpportunityCost
+            };
+
+            console.log('Calculations complete:', auditData.calculations);
+
+            // Show email modal BEFORE displaying results
+            showEmailModalBeforeResults();
+        }
+
+        // New function to handle email capture before showing results
+        function showEmailModalBeforeResults() {
+            // Change modal text to reflect this is before results
+            document.querySelector('#email-modal .modal-header h2').textContent = 'See Your Results';
+            document.querySelector('#email-modal .modal-header p').textContent = 'Enter your email to see your personalized audit results';
+            
+            // Show the modal
+            document.getElementById('email-modal').classList.add('active');
+        }
+
+        // Function to actually display results (called after email is submitted)
+        function showResults() {
+            console.log('Showing results...');
+
+            // Display results
+            displayResults();
+
+            console.log('Display results called');
+
+            // Hide form sections, show results
+            document.querySelector('.card').style.display = 'none';
+            document.getElementById('results-section').classList.add('active');
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+                step.classList.add('completed');
+            });
+            document.getElementById('progress-fill').style.width = '100%';
+
+            console.log('UI updated, scrolling to top');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function displayResults() {
+            const calc = auditData.calculations;
+            
+            // Validate calculations exist
+            if (!calc || !calc.hourlyRate) {
+                console.error('Calculation data missing:', auditData);
+                alert('Error calculating results. Please try again.');
+                return;
+            }
+            
+            try {
+                // Display key metrics
+                console.log('Displaying key metrics...');
+                document.getElementById('result-hourly-rate').textContent = '$' + Math.round(calc.hourlyRate);
+                document.getElementById('result-hours-working').textContent = Math.round(auditData.basics.hoursPerWeek) + ' hrs';
+                document.getElementById('result-low-value').textContent = Math.round(calc.lowValueHours) + ' hrs';
+                document.getElementById('result-opportunity-cost').textContent = '$' + Math.round(calc.annualOpportunityCost).toLocaleString();
+                console.log('Key metrics displayed');
+
+                // Create time breakdown chart
+                console.log('Creating chart...');
+                createTimeChart();
+                console.log('Chart created');
+
+                // Generate priority recommendations
+                console.log('Generating recommendations...');
+                generatePriorityRecommendations();
+                console.log('Recommendations generated');
+
+                // Generate roadmap
+                console.log('Generating roadmap...');
+                generateRoadmap();
+                console.log('Roadmap generated');
+            } catch (error) {
+                console.error('Error in displayResults:', error);
+                alert('Error displaying results: ' + error.message);
+            }
+        }
+
+        function createTimeChart() {
+            try {
+                console.log('createTimeChart called');
+                
+                // Check if Chart.js is loaded
+                if (typeof Chart === 'undefined') {
+                    console.error('Chart.js not loaded');
+                    alert('Chart library not loaded. Please refresh the page.');
+                    return;
+                }
+                
+                const canvas = document.getElementById('timeChart');
+                if (!canvas) {
+                    console.error('Canvas element not found');
+                    return;
+                }
+                
+                const ctx = canvas.getContext('2d');
+                const data = auditData.timeBreakdown;
+                
+                console.log('Chart data:', data);
+                
+                if (window.timeChart) {
+                    window.timeChart.destroy();
+                }
+
+                window.timeChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: [
+                            'Client Delivery',
+                            'Administrative',
+                            'Marketing',
+                            'Communication',
+                            'Sales',
+                            'Strategy',
+                            'Learning'
+                        ],
+                        datasets: [{
+                            data: [
+                                data.delivery || 0,
+                                data.admin || 0,
+                                data.marketing || 0,
+                                data.communication || 0,
+                                data.sales || 0,
+                                data.strategy || 0,
+                                data.learning || 0
+                            ],
+                            backgroundColor: [
+                                '#5B21B6',
+                                '#DC2626',
+                                '#F59E0B',
+                                '#EC4899',
+                                '#059669',
+                                '#3B82F6',
+                                '#8B5CF6'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 15,
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                console.log('Chart created successfully');
+            } catch (error) {
+                console.error('Error creating chart:', error);
+                // Don't alert here, just log - chart is nice to have but not critical
+            }
+        }
+
+        function generatePriorityRecommendations() {
+            try {
+                console.log('generatePriorityRecommendations called');
+                const data = auditData.timeBreakdown;
+                
+                // High Priority: Biggest time sinks that are automatable
+                let highPriority = '';
+                if (data.admin > 5) {
+                    highPriority = `You're spending ${data.admin} hours/week on admin work. This is your #1 automation target. Implement workflow automation, AI assistants, and delegation systems to reclaim at least 70% of this time.`;
+                } else if (data.marketing > 8) {
+                    highPriority = `Marketing is consuming ${data.marketing} hours/week. Automate content creation with AI, batch your work, and set up scheduling tools to cut this in half.`;
+                } else if (data.communication > 6) {
+                    highPriority = `Client communication is taking ${data.communication} hours/week. Implement email templates, chatbots, and async communication tools to reduce this by 50%.`;
+                } else {
+                    highPriority = 'Your time allocation shows opportunity for systematization across multiple areas. Start with the tasks you find most draining.';
+                }
+                
+                // Medium Priority: Areas to optimize
+                let mediumPriority = '';
+                if (data.sales > 5) {
+                    mediumPriority = `Sales is taking ${data.sales} hours/week. Optimize your funnel, create email sequences, and automate follow-ups to make this more efficient.`;
+                } else if (data.delivery > 20) {
+                    mediumPriority = `Client delivery is ${data.delivery} hours/week. Look for ways to templatize, systematize, and potentially productize your services.`;
+                } else {
+                    mediumPriority = 'Focus on building SOPs for your most frequent tasks so they can be delegated or automated in the future.';
+                }
+                
+                // Low Priority: What to keep doing
+                let lowPriority = '';
+                if (data.strategy > 2) {
+                    lowPriority = `Keep prioritizing strategy time (${data.strategy} hrs/week). This is high-value work that drives your business forward.`;
+                } else if (data.strategy < 2) {
+                    lowPriority = `You're only spending ${data.strategy} hours on strategy. As you reclaim time, invest it here—this is your genius zone.`;
+                } else {
+                    lowPriority = 'Continue investing in learning and development. This compounds over time.';
+                }
+                
+                document.getElementById('high-priority-text').textContent = highPriority;
+                document.getElementById('medium-priority-text').textContent = mediumPriority;
+                document.getElementById('low-priority-text').textContent = lowPriority;
+                
+                console.log('Priority recommendations generated');
+            } catch (error) {
+                console.error('Error generating priority recommendations:', error);
+            }
+        }
+
+        function generateRoadmap() {
+            try {
+                console.log('generateRoadmap called');
+                const priority = auditData.priorities.topPriority;
+                console.log('Priority:', priority);
+            
+            // Phase 1: Quick Wins (Days 1-30)
+            const phase1 = {
+                admin: [
+                    'Set up email templates for common responses',
+                    'Implement automated scheduling tool (Calendly)',
+                    'Create a simple SOP for your top 3 repetitive tasks',
+                    'Set up automated invoicing and payment reminders'
+                ],
+                marketing: [
+                    'Batch create 1 month of social content in one session',
+                    'Set up social media scheduling tool',
+                    'Create content repurposing workflow',
+                    'Implement AI writing assistant for captions and posts'
+                ],
+                sales: [
+                    'Create email templates for discovery, proposals, follow-ups',
+                    'Set up automated lead nurture sequence',
+                    'Implement CRM for pipeline tracking',
+                    'Create one-click proposal system'
+                ],
+                client: [
+                    'Set up client portal for all communications',
+                    'Create FAQ doc to reduce repetitive questions',
+                    'Implement async communication boundaries',
+                    'Set up automated onboarding sequence'
+                ],
+                delivery: [
+                    'Document your service delivery process',
+                    'Create templates for common deliverables',
+                    'Identify repetitive elements to systematize',
+                    'Set up project management system'
+                ],
+                everything: [
+                    'Complete full operations audit',
+                    'Identify top 3 time drains',
+                    'Research automation tools for your business',
+                    'Set up basic CRM and project management'
+                ]
+            };
+            
+            // Phase 2: System Building (Days 31-60)
+            const phase2 = {
+                admin: [
+                    'Build complete administrative workflow automation',
+                    'Hire/train VA for remaining admin tasks',
+                    'Implement AI tools for document generation',
+                    'Set up integrated accounting and bookkeeping system'
+                ],
+                marketing: [
+                    'Build AI-powered content multiplication system',
+                    'Create 90-day content calendar',
+                    'Automate cross-platform posting',
+                    'Set up analytics dashboard for tracking'
+                ],
+                sales: [
+                    'Build automated sales funnel',
+                    'Create self-qualifying lead magnet',
+                    'Implement automated webinar or workshop',
+                    'Set up retargeting campaigns'
+                ],
+                client: [
+                    'Build comprehensive client onboarding system',
+                    'Create self-service knowledge base',
+                    'Implement AI chatbot for common questions',
+                    'Set up automated check-in and feedback systems'
+                ],
+                delivery: [
+                    'Build productized service offering',
+                    'Create done-for-you templates and frameworks',
+                    'Implement quality control systems',
+                    'Train team or VA on delivery processes'
+                ],
+                everything: [
+                    'Build comprehensive backend operations system',
+                    'Integrate all tools and platforms',
+                    'Create master SOP library',
+                    'Implement AI automation across key areas'
+                ]
+            };
+            
+            // Phase 3: Optimization & Scale (Days 61-90)
+            const phase3 = {
+                admin: [
+                    'Measure time saved and opportunity cost reclaimed',
+                    'Optimize automation workflows based on data',
+                    'Scale systems to handle 2x current volume',
+                    'Train team to maintain systems independently'
+                ],
+                marketing: [
+                    'Analyze content performance and double down on winners',
+                    'Optimize content calendar based on engagement',
+                    'Scale to additional platforms with repurposing',
+                    'Test and refine messaging for conversions'
+                ],
+                sales: [
+                    'Optimize funnel based on conversion data',
+                    'Scale successful campaigns',
+                    'Implement advanced nurture sequences',
+                    'Test premium pricing and offers'
+                ],
+                client: [
+                    'Measure client satisfaction and identify gaps',
+                    'Optimize communication systems',
+                    'Scale client capacity with maintained quality',
+                    'Implement referral and upsell automation'
+                ],
+                delivery: [
+                    'Measure delivery efficiency metrics',
+                    'Optimize for quality and speed',
+                    'Scale team to handle increased capacity',
+                    'Test premium service tiers'
+                ],
+                everything: [
+                    'Run complete systems audit and optimization',
+                    'Measure total time reclaimed',
+                    'Scale successful systems across business',
+                    'Plan next phase of growth and automation'
+                ]
+            };
+            
+            // Populate roadmap with priority-specific actions
+            const selectedPhase1 = phase1[priority] || phase1.everything;
+            const selectedPhase2 = phase2[priority] || phase2.everything;
+            const selectedPhase3 = phase3[priority] || phase3.everything;
+            
+            document.getElementById('roadmap-phase1').innerHTML = selectedPhase1.map(action => `<li>${action}</li>`).join('');
+            document.getElementById('roadmap-phase2').innerHTML = selectedPhase2.map(action => `<li>${action}</li>`).join('');
+            document.getElementById('roadmap-phase3').innerHTML = selectedPhase3.map(action => `<li>${action}</li>`).join('');
+            
+            console.log('Roadmap generated successfully');
+            } catch (error) {
+                console.error('Error generating roadmap:', error);
+            }
+        }
+
+        // Email modal
+        function showEmailModal() {
+            document.getElementById('email-modal').classList.add('active');
+        }
+
+        function handleEmailSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('user-email').value;
+            
+            console.log('Email submitted:', email);
+            
+            // Store email for future use
+            auditData.userEmail = email;
+            
+            // Send to Go High Level (or other email service)
+            sendToGoHighLevel(email);
+            
+            // Close modal
+            document.getElementById('email-modal').classList.remove('active');
+            
+            // Show results dashboard
+            showResults();
+            
+            // Auto-download PDF after a short delay
+            setTimeout(() => {
+                generatePDF(email);
+            }, 1000);
+        }
+
+        // Function to re-download PDF (email already captured)
+        function downloadPDFAgain() {
+            if (auditData.userEmail) {
+                generatePDF(auditData.userEmail);
+            } else {
+                // Fallback - shouldn't happen, but just in case
+                const email = prompt('Enter your email to download the report:');
+                if (email) {
+                    auditData.userEmail = email;
+                    generatePDF(email);
+                }
+            }
+        }
+
+        // Send data to Go High Level webhook
+        function sendToGoHighLevel(email) {
+            // ⚠️ REPLACE THIS URL WITH YOUR GO HIGH LEVEL WEBHOOK URL
+            const webhookUrl = 'YOUR-GHL-WEBHOOK-URL-HERE';
+            
+            // If you haven't set up the webhook yet, this will just log to console
+            if (webhookUrl === 'YOUR-GHL-WEBHOOK-URL-HERE') {
+                console.log('⚠️ GHL Webhook not configured yet');
+                console.log('Email would be sent to GHL:', email);
+                console.log('With data:', {
+                    email: email,
+                    source: '15-Hour Work Week Audit',
+                    annual_revenue: auditData.basics.revenue,
+                    hours_per_week: auditData.basics.hoursPerWeek,
+                    business_stage: auditData.basics.stage,
+                    opportunity_cost_annual: Math.round(auditData.calculations.annualOpportunityCost),
+                    opportunity_cost_weekly: Math.round(auditData.calculations.weeklyOpportunityCost),
+                    hourly_rate: Math.round(auditData.calculations.hourlyRate),
+                    low_value_hours: Math.round(auditData.calculations.lowValueHours),
+                    top_priority: auditData.priorities.topPriority,
+                    ideal_hours: auditData.priorities.idealHours,
+                    pain_points: auditData.painPoints.join(', '),
+                    biggest_challenge: auditData.biggestChallenge,
+                    // Time breakdown by category
+                    hours_delivery: auditData.timeBreakdown.delivery,
+                    hours_admin: auditData.timeBreakdown.admin,
+                    hours_marketing: auditData.timeBreakdown.marketing,
+                    hours_communication: auditData.timeBreakdown.communication,
+                    hours_sales: auditData.timeBreakdown.sales,
+                    hours_strategy: auditData.timeBreakdown.strategy,
+                    hours_learning: auditData.timeBreakdown.learning
+                });
+                return;
+            }
+            
+            // Send to Go High Level
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    source: '15-Hour Work Week Audit',
+                    // Business basics
+                    annual_revenue: auditData.basics.revenue,
+                    hours_per_week: auditData.basics.hoursPerWeek,
+                    business_stage: auditData.basics.stage,
+                    // Calculated opportunity costs
+                    opportunity_cost_annual: Math.round(auditData.calculations.annualOpportunityCost),
+                    opportunity_cost_weekly: Math.round(auditData.calculations.weeklyOpportunityCost),
+                    hourly_rate: Math.round(auditData.calculations.hourlyRate),
+                    low_value_hours: Math.round(auditData.calculations.lowValueHours),
+                    // Their priorities and pain points
+                    top_priority: auditData.priorities.topPriority,
+                    ideal_hours: auditData.priorities.idealHours,
+                    pain_points: auditData.painPoints.join(', '),
+                    biggest_challenge: auditData.biggestChallenge,
+                    // Detailed time breakdown
+                    hours_delivery: auditData.timeBreakdown.delivery,
+                    hours_admin: auditData.timeBreakdown.admin,
+                    hours_marketing: auditData.timeBreakdown.marketing,
+                    hours_communication: auditData.timeBreakdown.communication,
+                    hours_sales: auditData.timeBreakdown.sales,
+                    hours_strategy: auditData.timeBreakdown.strategy,
+                    hours_learning: auditData.timeBreakdown.learning
+                })
+            })
+            .then(response => {
+                console.log('Successfully sent to GHL:', response);
+            })
+            .catch(error => {
+                console.error('Error sending to GHL:', error);
+                // Don't block the user experience if webhook fails
+            });
+        }
+
+        // Close modal on outside click (only if results are already showing)
+        document.getElementById('email-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                // Only allow closing if results are already visible
+                const resultsVisible = document.getElementById('results-section').classList.contains('active');
+                if (resultsVisible) {
+                    this.classList.remove('active');
+                }
+                // If results aren't visible yet, don't allow closing (they must enter email)
+            }
+        });
+
+        // PDF Generation
+        function generatePDF(email) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const purple = [91, 33, 182];
+            const gold = [245, 158, 11];
+            const darkGray = [31, 41, 55];
+            const lightGray = [107, 114, 128];
+            
+            // Header
+            doc.setFillColor(...purple);
+            doc.rect(0, 0, 210, 45, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(26);
+            doc.setFont(undefined, 'bold');
+            doc.text('15-Hour Work Week Audit', 105, 22, { align: 'center' });
+            
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            doc.text('Your Personalized Time & Opportunity Analysis', 105, 33, { align: 'center' });
+            
+            // Key Metrics
+            let yPos = 60;
+            doc.setTextColor(...darkGray);
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.text('Your Current State', 20, yPos);
+            
+            yPos += 15;
+            doc.setFillColor(249, 250, 251);
+            doc.rect(20, yPos - 8, 170, 55, 'F');
+            
+            doc.setFontSize(11);
+            doc.setTextColor(...lightGray);
+            doc.setFont(undefined, 'normal');
+            doc.text('Annual Revenue', 30, yPos);
+            doc.setFontSize(16);
+            doc.setTextColor(...purple);
+            doc.setFont(undefined, 'bold');
+            doc.text(`$${auditData.basics.revenue.toLocaleString()}`, 30, yPos + 8);
+            
+            doc.setFontSize(11);
+            doc.setTextColor(...lightGray);
+            doc.setFont(undefined, 'normal');
+            doc.text('Hourly Rate', 30, yPos + 20);
+            doc.setFontSize(16);
+            doc.setTextColor(...purple);
+            doc.setFont(undefined, 'bold');
+            doc.text(`$${Math.round(auditData.calculations.hourlyRate)}`, 30, yPos + 28);
+            
+            doc.setFontSize(11);
+            doc.setTextColor(...lightGray);
+            doc.setFont(undefined, 'normal');
+            doc.text('Hours Working Weekly', 105, yPos);
+            doc.setFontSize(16);
+            doc.setTextColor(...purple);
+            doc.setFont(undefined, 'bold');
+            doc.text(`${auditData.basics.hoursPerWeek} hours`, 105, yPos + 8);
+            
+            doc.setFontSize(11);
+            doc.setTextColor(...lightGray);
+            doc.setFont(undefined, 'normal');
+            doc.text('Hours on Low-Value Work', 105, yPos + 20);
+            doc.setFontSize(16);
+            doc.setTextColor([220, 38, 38]);
+            doc.setFont(undefined, 'bold');
+            doc.text(`${Math.round(auditData.calculations.lowValueHours)} hours`, 105, yPos + 28);
+            
+            // Opportunity Cost Highlight
+            yPos += 50;
+            doc.setFillColor(...gold);
+            doc.rect(20, yPos, 170, 35, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'normal');
+            doc.text('Annual Opportunity Cost', 105, yPos + 12, { align: 'center' });
+            
+            doc.setFontSize(24);
+            doc.setFont(undefined, 'bold');
+            doc.text(`$${Math.round(auditData.calculations.annualOpportunityCost).toLocaleString()}`, 105, yPos + 26, { align: 'center' });
+            
+            // Time Breakdown
+            yPos += 50;
+            doc.setTextColor(...darkGray);
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.text('Your Time Breakdown', 20, yPos);
+            
+            yPos += 10;
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'normal');
+            
+            const breakdown = [
+                { label: 'Client Delivery', value: auditData.timeBreakdown.delivery },
+                { label: 'Administrative', value: auditData.timeBreakdown.admin },
+                { label: 'Marketing', value: auditData.timeBreakdown.marketing },
+                { label: 'Communication', value: auditData.timeBreakdown.communication },
+                { label: 'Sales', value: auditData.timeBreakdown.sales },
+                { label: 'Strategy', value: auditData.timeBreakdown.strategy },
+                { label: 'Learning', value: auditData.timeBreakdown.learning }
+            ];
+            
+            breakdown.forEach(item => {
+                yPos += 8;
+                doc.setTextColor(...darkGray);
+                doc.text(`${item.label}: ${item.value} hrs/week`, 25, yPos);
+            });
+            
+            // New Page - Recommendations
+            doc.addPage();
+            yPos = 20;
+            
+            doc.setFillColor(...purple);
+            doc.rect(0, 0, 210, 35, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(22);
+            doc.setFont(undefined, 'bold');
+            doc.text('Your Personalized Recommendations', 105, 22, { align: 'center' });
+            
+            yPos = 50;
+            doc.setTextColor(...darkGray);
+            doc.setFontSize(16);
+            doc.text('Automation Priority Matrix', 20, yPos);
+            
+            yPos += 12;
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'normal');
+            
+            // Add priority recommendations
+            const highPriority = document.getElementById('high-priority-text').textContent;
+            const mediumPriority = document.getElementById('medium-priority-text').textContent;
+            const lowPriority = document.getElementById('low-priority-text').textContent;
+            
+            doc.setTextColor(220, 38, 38);
+            doc.setFont(undefined, 'bold');
+            doc.text('🔴 Urgent: Automate First', 20, yPos);
+            yPos += 7;
+            doc.setTextColor(...darkGray);
+            doc.setFont(undefined, 'normal');
+            const highSplit = doc.splitTextToSize(highPriority, 170);
+            doc.text(highSplit, 20, yPos);
+            yPos += (highSplit.length * 5) + 10;
+            
+            doc.setTextColor(217, 119, 6);
+            doc.setFont(undefined, 'bold');
+            doc.text('🟡 Important: Optimize Next', 20, yPos);
+            yPos += 7;
+            doc.setTextColor(...darkGray);
+            doc.setFont(undefined, 'normal');
+            const mediumSplit = doc.splitTextToSize(mediumPriority, 170);
+            doc.text(mediumSplit, 20, yPos);
+            yPos += (mediumSplit.length * 5) + 10;
+            
+            doc.setTextColor(5, 150, 105);
+            doc.setFont(undefined, 'bold');
+            doc.text('🟢 Strategic: Keep Doing', 20, yPos);
+            yPos += 7;
+            doc.setTextColor(...darkGray);
+            doc.setFont(undefined, 'normal');
+            const lowSplit = doc.splitTextToSize(lowPriority, 170);
+            doc.text(lowSplit, 20, yPos);
+            yPos += (lowSplit.length * 5) + 15;
+            
+            // 90-Day Roadmap
+            if (yPos > 220) {
+                doc.addPage();
+                yPos = 20;
+            }
+            
+            doc.setTextColor(...darkGray);
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text('Your 90-Day Reclaim Roadmap', 20, yPos);
+            
+            yPos += 12;
+            doc.setFontSize(11);
+            
+            // Phase 1
+            doc.setFillColor(243, 232, 255);
+            doc.rect(20, yPos - 5, 170, 10, 'F');
+            doc.setTextColor(...purple);
+            doc.setFont(undefined, 'bold');
+            doc.text('Days 1-30: Quick Wins', 25, yPos + 2);
+            
+            yPos += 12;
+            doc.setTextColor(...darkGray);
+            doc.setFont(undefined, 'normal');
+            const phase1Items = Array.from(document.getElementById('roadmap-phase1').children);
+            phase1Items.forEach(item => {
+                const text = item.textContent;
+                const split = doc.splitTextToSize(`• ${text}`, 165);
+                doc.text(split, 25, yPos);
+                yPos += (split.length * 5) + 3;
+            });
+            
+            yPos += 5;
+            
+            if (yPos > 240) {
+                doc.addPage();
+                yPos = 20;
+            }
+            
+            // Phase 2
+            doc.setFillColor(243, 232, 255);
+            doc.rect(20, yPos - 5, 170, 10, 'F');
+            doc.setTextColor(...purple);
+            doc.setFont(undefined, 'bold');
+            doc.text('Days 31-60: System Building', 25, yPos + 2);
+            
+            yPos += 12;
+            doc.setTextColor(...darkGray);
+            doc.setFont(undefined, 'normal');
+            const phase2Items = Array.from(document.getElementById('roadmap-phase2').children);
+            phase2Items.forEach(item => {
+                if (yPos > 270) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                const text = item.textContent;
+                const split = doc.splitTextToSize(`• ${text}`, 165);
+                doc.text(split, 25, yPos);
+                yPos += (split.length * 5) + 3;
+            });
+            
+            yPos += 5;
+            
+            if (yPos > 240) {
+                doc.addPage();
+                yPos = 20;
+            }
+            
+            // Phase 3
+            doc.setFillColor(243, 232, 255);
+            doc.rect(20, yPos - 5, 170, 10, 'F');
+            doc.setTextColor(...purple);
+            doc.setFont(undefined, 'bold');
+            doc.text('Days 61-90: Optimization & Scale', 25, yPos + 2);
+            
+            yPos += 12;
+            doc.setTextColor(...darkGray);
+            doc.setFont(undefined, 'normal');
+            const phase3Items = Array.from(document.getElementById('roadmap-phase3').children);
+            phase3Items.forEach(item => {
+                if (yPos > 270) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                const text = item.textContent;
+                const split = doc.splitTextToSize(`• ${text}`, 165);
+                doc.text(split, 25, yPos);
+                yPos += (split.length * 5) + 3;
+            });
+            
+            // Footer on last page
+            yPos = 275;
+            doc.setFillColor(...purple);
+            doc.rect(0, yPos, 210, 22, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(11);
+            doc.text('Ready to reclaim your time and scale systematically?', 105, yPos + 8, { align: 'center' });
+            doc.setFontSize(9);
+            doc.text(`Report generated for: ${email}`, 105, yPos + 15, { align: 'center' });
+            
+            // Save
+            doc.save('15-hour-work-week-audit.pdf');
+        }
+    </script>
+</body>
+</html>
