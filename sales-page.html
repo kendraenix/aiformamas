@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[INSERT YOUR PRODUCT NAME HERE] | Transform Your Life</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Color Palette */
+            --cream: #FAF7F2;
+            --beige: #E8DFD0;
+            --terracotta: #D4897D;
+            --sage: #9CAF88;
+            --dark-text: #2C2C2C;
+            --light-text: #5A5A5A;
+            --white: #FFFFFF;
+
+            /* Typography */
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Montserrat', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--dark-text);
+            line-height: 1.7;
+            background-color: var(--cream);
+        }
+
+        /* Typography Styles */
+        h1, h2, h3, h4, h5 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+        }
+
+        h2 {
+            font-size: 2.8rem;
+        }
+
+        h3 {
+            font-size: 2rem;
+        }
+
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: var(--light-text);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .container-narrow {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Section Spacing */
+        section {
+            padding: 6rem 0;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 1.2rem 3rem;
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background-color: var(--terracotta);
+            color: var(--white);
+            box-shadow: 0 10px 30px rgba(212, 137, 125, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: #C17569;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(212, 137, 125, 0.4);
+        }
+
+        .btn-large {
+            padding: 1.5rem 4rem;
+            font-size: 1.2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--beige) 0%, var(--cream) 100%);
+            padding: 8rem 0 6rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            max-width: 900px;
+            margin: 0 auto 1.5rem;
+            color: var(--dark-text);
+        }
+
+        .hero .subheadline {
+            font-size: 1.4rem;
+            color: var(--light-text);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            line-height: 1.6;
+        }
+
+        /* Empathy Section */
+        .empathy {
+            background-color: var(--white);
+        }
+
+        .empathy h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--terracotta);
+        }
+
+        .pain-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .pain-point {
+            padding: 2rem;
+            background-color: var(--cream);
+            border-radius: 15px;
+            border-left: 4px solid var(--terracotta);
+        }
+
+        .pain-point h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--dark-text);
+        }
+
+        /* Imagine If Section */
+        .imagine {
+            background: linear-gradient(135deg, var(--sage) 0%, #A8BF95 100%);
+            color: var(--white);
+        }
+
+        .imagine h2 {
+            text-align: center;
+            color: var(--white);
+            margin-bottom: 3rem;
+        }
+
+        .imagine p {
+            color: var(--white);
+            font-size: 1.2rem;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .benefit-item {
+            text-align: center;
+        }
+
+        .benefit-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .benefit-item h3 {
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Solution Section */
+        .solution {
+            background-color: var(--cream);
+            text-align: center;
+        }
+
+        .solution h2 {
+            font-size: 3.5rem;
+            color: var(--terracotta);
+            margin-bottom: 2rem;
+        }
+
+        .solution .subtitle {
+            font-size: 1.5rem;
+            font-style: italic;
+            color: var(--light-text);
+            margin-bottom: 2rem;
+        }
+
+        /* What's Inside Section */
+        .whats-inside {
+            background-color: var(--white);
+        }
+
+        .whats-inside h2 {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .modules {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        .module {
+            display: flex;
+            gap: 2rem;
+            padding: 2.5rem;
+            background-color: var(--cream);
+            border-radius: 20px;
+            align-items: flex-start;
+        }
+
+        .module-number {
+            flex-shrink: 0;
+            width: 80px;
+            height: 80px;
+            background-color: var(--terracotta);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-family: var(--font-heading);
+            font-weight: 700;
+        }
+
+        .module-content h3 {
+            margin-bottom: 1rem;
+            color: var(--dark-text);
+        }
+
+        .module-content p {
+            margin-bottom: 0;
+        }
+
+        /* Who Is This For Section */
+        .who-for {
+            background: linear-gradient(135deg, var(--beige) 0%, var(--cream) 100%);
+        }
+
+        .who-for h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .checklist {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background-color: var(--white);
+            border-radius: 12px;
+        }
+
+        .checklist-icon {
+            flex-shrink: 0;
+            width: 30px;
+            height: 30px;
+            background-color: var(--sage);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .checklist-item p {
+            margin: 0;
+            color: var(--dark-text);
+            font-weight: 500;
+        }
+
+        /* About Section */
+        .about {
+            background-color: var(--white);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-image {
+            width: 100%;
+            aspect-ratio: 3/4;
+            background-color: var(--beige);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-text);
+            font-size: 1.2rem;
+        }
+
+        .about-text h2 {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            background-color: var(--cream);
+        }
+
+        .testimonials h2 {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .testimonial {
+            background-color: var(--white);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .testimonial-stars {
+            color: #FFB84D;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            color: var(--dark-text);
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--terracotta);
+        }
+
+        .testimonial-role {
+            font-size: 0.9rem;
+            color: var(--light-text);
+        }
+
+        /* Guarantee Section */
+        .guarantee {
+            background-color: var(--white);
+            text-align: center;
+        }
+
+        .guarantee-box {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 3rem;
+            background: linear-gradient(135deg, var(--beige) 0%, var(--cream) 100%);
+            border-radius: 20px;
+            border: 3px solid var(--sage);
+        }
+
+        .guarantee-badge {
+            width: 120px;
+            height: 120px;
+            background-color: var(--sage);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.1rem;
+            line-height: 1.3;
+            text-align: center;
+        }
+
+        .guarantee-box h2 {
+            margin-bottom: 1.5rem;
+        }
+
+        .guarantee-box p {
+            color: var(--dark-text);
+        }
+
+        /* Final CTA Section */
+        .final-cta {
+            background: linear-gradient(135deg, var(--terracotta) 0%, #C17569 100%);
+            color: var(--white);
+            text-align: center;
+        }
+
+        .final-cta h2 {
+            color: var(--white);
+            margin-bottom: 1rem;
+        }
+
+        .final-cta p {
+            color: var(--white);
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+        }
+
+        .price-box {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem auto;
+            max-width: 500px;
+        }
+
+        .price-label {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .original-price {
+            font-size: 1.5rem;
+            text-decoration: line-through;
+            opacity: 0.7;
+            margin-bottom: 0.5rem;
+        }
+
+        .current-price {
+            font-size: 3.5rem;
+            font-family: var(--font-heading);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-note {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .final-cta .btn-primary {
+            background-color: var(--white);
+            color: var(--terracotta);
+        }
+
+        .final-cta .btn-primary:hover {
+            background-color: var(--cream);
+            color: var(--terracotta);
+        }
+
+        /* FAQ Section */
+        .faq {
+            background-color: var(--cream);
+        }
+
+        .faq h2 {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background-color: var(--white);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-radius: 15px;
+            border-left: 4px solid var(--sage);
+        }
+
+        .faq-question {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            color: var(--dark-text);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .faq-answer {
+            color: var(--light-text);
+            margin-bottom: 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            h3 {
+                font-size: 1.5rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+
+            section {
+                padding: 4rem 0;
+            }
+
+            .hero {
+                padding: 5rem 0 4rem;
+            }
+
+            .hero .subheadline {
+                font-size: 1.1rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .module {
+                flex-direction: column;
+                padding: 2rem;
+            }
+
+            .module-number {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .btn {
+                padding: 1rem 2rem;
+                font-size: 1rem;
+            }
+
+            .btn-large {
+                padding: 1.2rem 2.5rem;
+                font-size: 1.1rem;
+            }
+
+            .current-price {
+                font-size: 2.5rem;
+            }
+
+            .solution h2 {
+                font-size: 2.5rem;
+            }
+
+            .container,
+            .container-narrow {
+                padding: 0 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .pain-points,
+            .benefits-grid,
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="container">
+            <h1>Finally Build Your Dream Business Without Sacrificing Family Time</h1>
+            <p class="subheadline">You're exhausted from trying to "do it all" – and you're ready for a business model that actually works with your life, not against it.</p>
+            <a href="#join" class="btn btn-primary btn-large">Yes! I'm Ready to Get Started</a>
+        </div>
+    </section>
+
+    <!-- EMPATHY SECTION -->
+    <section class="empathy">
+        <div class="container-narrow">
+            <h2>Does This Sound Like You?</h2>
+            <p style="text-align: center; font-size: 1.2rem; color: var(--dark-text);">You're craving financial freedom and creative fulfillment, but every time you try to start something, life gets in the way...</p>
+
+            <div class="pain-points">
+                <div class="pain-point">
+                    <h3>✗ You're Time-Starved</h3>
+                    <p>Between school drop-offs, meal prep, and bedtime routines, you barely have 20 minutes to yourself – let alone time to "build a business."</p>
+                </div>
+                <div class="pain-point">
+                    <h3>✗ You're Overwhelmed</h3>
+                    <p>You've watched the webinars, bought the courses, and bookmarked the Instagram posts... but you still don't know where to start or what steps to take first.</p>
+                </div>
+                <div class="pain-point">
+                    <h3>✗ You're Doubtful</h3>
+                    <p>You wonder if it's even possible for YOU. Maybe business success is only for people with more time, more money, or more experience.</p>
+                </div>
+            </div>
+
+            <p style="text-align: center; margin-top: 3rem; font-size: 1.2rem; color: var(--dark-text); font-weight: 500;">Here's the truth, friend: It's not your fault. You haven't been given the RIGHT strategy.</p>
+        </div>
+    </section>
+
+    <!-- IMAGINE IF SECTION -->
+    <section class="imagine">
+        <div class="container-narrow">
+            <h2>Imagine If You Could...</h2>
+            <p style="text-align: center; font-size: 1.25rem; margin-bottom: 3rem;">What if your life looked like this instead?</p>
+
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon">💰</div>
+                    <h3>Earn Income That Matters</h3>
+                    <p>Bring in $3K, $5K, even $10K+ per month doing work you genuinely love – without hustling 24/7.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">⏰</div>
+                    <h3>Work On YOUR Schedule</h3>
+                    <p>Build your business in just 1-2 hours a day while your kids are at school or napping – no more guilt or burnout.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">✨</div>
+                    <h3>Feel Fulfilled Again</h3>
+                    <p>Wake up excited about your work, proud of what you're creating, and confident in your ability to provide for your family.</p>
+                </div>
+            </div>
+
+            <p style="text-align: center; margin-top: 3rem; font-size: 1.3rem; font-weight: 600;">This isn't a fantasy. This is 100% possible for you – and I'm going to show you exactly how.</p>
+        </div>
+    </section>
+
+    <!-- SOLUTION SECTION -->
+    <section class="solution">
+        <div class="container-narrow">
+            <p style="font-size: 1.2rem; color: var(--light-text); margin-bottom: 1rem;">Introducing...</p>
+            <h2>[INSERT YOUR PRODUCT NAME HERE]</h2>
+            <p class="subtitle">The step-by-step system for busy moms who want to launch a profitable online business – in just 1 hour a day.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. This is your complete roadmap to building a business that fits your life.</p>
+        </div>
+    </section>
+
+    <!-- WHAT'S INSIDE SECTION -->
+    <section class="whats-inside">
+        <div class="container">
+            <h2>Here's Everything You Get Inside</h2>
+
+            <div class="modules">
+                <div class="module">
+                    <div class="module-number">01</div>
+                    <div class="module-content">
+                        <h3>Foundation & Mindset Reset</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. We'll clear the limiting beliefs holding you back and help you identify your unique zone of genius. You'll walk away with clarity on your business idea and unshakeable confidence.</p>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <div class="module-number">02</div>
+                    <div class="module-content">
+                        <h3>Your Profitable Business Model</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Discover the exact business model that fits YOUR life, skills, and schedule. No fluff – just proven strategies that work for real moms.</p>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <div class="module-number">03</div>
+                    <div class="module-content">
+                        <h3>The 1-Hour Daily Action Plan</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Get a detailed, step-by-step daily plan that breaks down EXACTLY what to do in your 60-minute work window. No more decision fatigue or wasted time.</p>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <div class="module-number">04</div>
+                    <div class="module-content">
+                        <h3>Your First Offer & Launch Strategy</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Create your signature offer and learn how to launch it to your first paying customers – even if you have zero audience right now.</p>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <div class="module-number">05</div>
+                    <div class="module-content">
+                        <h3>Marketing That Doesn't Feel Sleazy</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Learn authentic marketing strategies that attract your ideal clients without being pushy, salesy, or spending hours on social media.</p>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <div class="module-number">06</div>
+                    <div class="module-content">
+                        <h3>Scale Without the Overwhelm</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Once you're making consistent income, we'll show you how to grow your business sustainably – without sacrificing your sanity or family time.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 3rem;">
+                <p style="font-size: 1.2rem; font-weight: 600; color: var(--dark-text);">PLUS: Bonus templates, worksheets, and swipe files to make implementation even easier!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHO IS THIS FOR SECTION -->
+    <section class="who-for">
+        <div class="container">
+            <h2>Is This For You?</h2>
+            <p style="text-align: center; font-size: 1.15rem; color: var(--light-text); margin-bottom: 3rem;">This program is perfect if you...</p>
+
+            <div class="checklist">
+                <div class="checklist-item">
+                    <div class="checklist-icon">✓</div>
+                    <p>Are a mom (or caregiver) who wants financial freedom but has limited time</p>
+                </div>
+                <div class="checklist-item">
+                    <div class="checklist-icon">✓</div>
+                    <p>Feel stuck in the "research phase" and need a clear, actionable roadmap</p>
+                </div>
+                <div class="checklist-item">
+                    <div class="checklist-icon">✓</div>
+                    <p>Want to build something meaningful (not just another side hustle that drains you)</p>
+                </div>
+                <div class="checklist-item">
+                    <div class="checklist-icon">✓</div>
+                    <p>Are willing to invest 1-2 hours daily to build your future</p>
+                </div>
+                <div class="checklist-item">
+                    <div class="checklist-icon">✓</div>
+                    <p>Are ready to take action (not just consume more content)</p>
+                </div>
+                <div class="checklist-item">
+                    <div class="checklist-icon">✓</div>
+                    <p>Want a business model that's sustainable, not a "get rich quick" scheme</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section class="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-image">
+                    [INSERT IMAGE HERE]
+                </div>
+                <div class="about-text">
+                    <h2>Hi, I'm [YOUR NAME]</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. I know exactly what it's like to feel stuck between wanting more and feeling like you don't have the time or resources to make it happen.</p>
+
+                    <p>A few years ago, I was in your shoes – overwhelmed, exhausted, and wondering if I'd ever have a business of my own. But I refused to give up. I tested every strategy, failed forward, and eventually cracked the code on building a business that actually works with mom life.</p>
+
+                    <p>Today, I've helped hundreds of women just like you go from "I don't even know where to start" to launching profitable businesses they absolutely love. And now? It's your turn.</p>
+
+                    <p style="font-weight: 600; color: var(--terracotta); font-size: 1.15rem;">I'm not here to sell you a dream – I'm here to give you a proven system that works.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS SECTION -->
+    <section class="testimonials">
+        <div class="container">
+            <h2>Don't Just Take My Word For It</h2>
+
+            <div class="testimonials-grid">
+                <div class="testimonial">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Lorem ipsum dolor sit amet, consectetur adipiscing elit. This program completely changed my life! I went from feeling lost and overwhelmed to launching my business in just 6 weeks. I'm now making $4K/month working part-time hours!"</p>
+                    <p class="testimonial-author">— Sarah M.</p>
+                    <p class="testimonial-role">Mom of 3, Graphic Designer</p>
+                </div>
+
+                <div class="testimonial">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Lorem ipsum dolor sit amet, consectetur adipiscing elit. I was so skeptical at first, but this is THE REAL DEAL. The step-by-step plan made it so easy, even for someone like me with zero business experience. I'm finally contributing financially without sacrificing time with my kids!"</p>
+                    <p class="testimonial-author">— Jessica R.</p>
+                    <p class="testimonial-role">Stay-at-Home Mom, Virtual Assistant</p>
+                </div>
+
+                <div class="testimonial">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Lorem ipsum dolor sit amet, consectetur adipiscing elit. I've tried so many courses before, but this one actually delivered results. The 1-hour daily framework is GENIUS. I launched my coaching business and signed my first 3 clients within 2 months!"</p>
+                    <p class="testimonial-author">— Maria K.</p>
+                    <p class="testimonial-role">Former Teacher, Life Coach</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GUARANTEE SECTION -->
+    <section class="guarantee">
+        <div class="container">
+            <div class="guarantee-box">
+                <div class="guarantee-badge">
+                    30-DAY<br>GUARANTEE
+                </div>
+                <h2>You're Fully Protected</h2>
+                <p>I'm so confident that [INSERT YOUR PRODUCT NAME HERE] will transform your life that I'm offering you a full 30-day money-back guarantee. If you go through the program, implement the strategies, and don't see real progress in your business, simply email my team and we'll refund every penny. No questions asked, no hard feelings.</p>
+                <p style="font-weight: 600; margin-bottom: 0; color: var(--dark-text);">You have nothing to lose and everything to gain.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA SECTION -->
+    <section class="final-cta" id="join">
+        <div class="container-narrow">
+            <h2>Ready to Transform Your Life?</h2>
+            <p>Join [INSERT YOUR PRODUCT NAME HERE] today and start building the business you've been dreaming of.</p>
+
+            <div class="price-box">
+                <p class="price-label">Special Launch Price:</p>
+                <p class="original-price">$997</p>
+                <p class="current-price">$497</p>
+                <p class="price-note">Or 3 payments of $177</p>
+            </div>
+
+            <a href="#checkout" class="btn btn-primary btn-large">Enroll Now & Get Instant Access</a>
+
+            <p style="font-size: 0.95rem; margin-top: 2rem; opacity: 0.9;">🔒 Secure checkout | ✓ 30-day money-back guarantee | ✓ Instant access</p>
+        </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section class="faq">
+        <div class="container">
+            <h2>Frequently Asked Questions</h2>
+
+            <div class="faq-list">
+                <div class="faq-item">
+                    <p class="faq-question">How much time do I really need to commit?</p>
+                    <p class="faq-answer">Lorem ipsum dolor sit amet, consectetur adipiscing elit. The program is designed for busy moms who can dedicate just 1-2 hours per day. We'll show you exactly how to maximize that time so you see real results without overwhelm.</p>
+                </div>
+
+                <div class="faq-item">
+                    <p class="faq-question">I have no business experience. Will this work for me?</p>
+                    <p class="faq-answer">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Absolutely! This program is designed for complete beginners. We start from scratch and walk you through every single step in plain English – no confusing jargon or assumptions.</p>
+                </div>
+
+                <div class="faq-item">
+                    <p class="faq-question">What if I don't have a business idea yet?</p>
+                    <p class="faq-answer">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Perfect! Module 1 is all about helping you discover your unique zone of genius and identify the best business model for YOU. You'll have crystal-clear direction by the end of week one.</p>
+                </div>
+
+                <div class="faq-item">
+                    <p class="faq-question">How long will I have access to the course?</p>
+                    <p class="faq-answer">Lorem ipsum dolor sit amet, consectetur adipiscing elit. You get lifetime access to all course materials, including any future updates. Learn at your own pace and revisit the content whenever you need a refresher.</p>
+                </div>
+
+                <div class="faq-item">
+                    <p class="faq-question">Do I need to be tech-savvy?</p>
+                    <p class="faq-answer">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Not at all! We keep things simple and provide easy-to-follow tutorials for any tech tools you'll need. If you can send an email, you can do this.</p>
+                </div>
+
+                <div class="faq-item">
+                    <p class="faq-question">What if I need extra support?</p>
+                    <p class="faq-answer">Lorem ipsum dolor sit amet, consectetur adipiscing elit. You'll have access to our private community where you can ask questions, get feedback, and connect with other moms on the same journey. Plus, we offer monthly Q&A calls where you can get personalized guidance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER CTA -->
+    <section class="final-cta" style="padding: 4rem 0;">
+        <div class="container-narrow">
+            <h2>Your Dream Business Is Waiting</h2>
+            <p>Don't let another year go by wishing things were different. Take the leap today.</p>
+            <a href="#checkout" class="btn btn-primary btn-large">Yes! I'm Ready to Start</a>
+        </div>
+    </section>
+
+</body>
+</html>
