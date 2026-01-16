@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI for Mamas - Free Business Tools for Mompreneurs</title>
+    <title>Mom Math Calculator - Calculate Your Opportunity Cost</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -12,15 +13,16 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
-            color: #1F2937;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Montserrat', sans-serif;
+            background: #FFFFFF;
+            color: #2D2D3A;
             line-height: 1.6;
             min-height: 100vh;
+            font-size: 16px;
         }
 
         .header {
-            background: white;
+            background: #3B4A6B;
             padding: 30px 20px;
             text-align: center;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -29,101 +31,90 @@
         .logo {
             font-size: 2rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #EC4899 0%, #14B8A6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #FFFFFF;
             margin-bottom: 10px;
         }
 
         .tagline {
             font-size: 1.1rem;
-            color: #6B7280;
+            color: #D4AF37;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
-            padding: 60px 20px;
+            padding: 40px 20px;
         }
 
         .hero {
             text-align: center;
-            margin-bottom: 60px;
-            color: white;
+            margin-bottom: 40px;
         }
 
         .hero h1 {
             font-size: 2.5rem;
-            margin-bottom: 20px;
+            color: #3B4A6B;
+            margin-bottom: 15px;
             font-weight: 700;
         }
 
         .hero p {
-            font-size: 1.3rem;
-            opacity: 0.9;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 40px;
-            margin-bottom: 60px;
-        }
-
-        .tool-card {
-            background: white;
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .tool-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .tool-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-
-        .tool-card h2 {
-            font-size: 1.8rem;
-            color: #1E3A8A;
-            margin-bottom: 15px;
-        }
-
-        .tool-card p {
-            font-size: 1.05rem;
-            color: #6B7280;
-            margin-bottom: 25px;
-            line-height: 1.7;
-        }
-
-        .tool-features {
-            list-style: none;
-            margin-bottom: 30px;
-            padding-left: 0;
-        }
-
-        .tool-features li {
-            padding: 8px 0;
-            padding-left: 30px;
-            position: relative;
-            color: #4B5563;
-        }
-
-        .tool-features li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #14B8A6;
-            font-weight: bold;
             font-size: 1.2rem;
+            color: #2D2D3A;
+            opacity: 0.8;
+        }
+
+        .divider {
+            height: 2px;
+            background: #D4AF37;
+            margin: 30px 0;
+        }
+
+        .input-section {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(59, 74, 107, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #3B4A6B;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 1rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #D91E6B;
+        }
+
+        input::placeholder {
+            color: #9CA3AF;
+        }
+
+        .help-text {
+            font-size: 0.875rem;
+            color: #6B7280;
+            margin-top: 5px;
         }
 
         .btn {
@@ -136,86 +127,222 @@
             cursor: pointer;
             text-decoration: none;
             transition: all 0.3s ease;
-            width: 100%;
             text-align: center;
+            font-family: inherit;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #EC4899 0%, #F472B6 100%);
+        .btn-calculate {
+            background: #D91E6B;
             color: white;
+            width: 100%;
+            font-size: 1.2rem;
+            padding: 18px;
         }
 
-        .btn-primary:hover {
+        .btn-calculate:hover {
+            background: #B91857;
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(236, 72, 153, 0.4);
+            box-shadow: 0 8px 20px rgba(217, 30, 107, 0.3);
         }
 
-        .btn-secondary {
-            background: linear-gradient(135deg, #14B8A6 0%, #06B6D4 100%);
+        .btn-pdf {
+            background: #4DA6A0;
             color: white;
+            margin-right: 15px;
         }
 
-        .btn-secondary:hover {
+        .btn-pdf:hover {
+            background: #3D8680;
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(20, 184, 166, 0.4);
+            box-shadow: 0 6px 15px rgba(77, 166, 160, 0.3);
+        }
+
+        .btn-cta {
+            background: #D4AF37;
+            color: #3B4A6B;
+        }
+
+        .btn-cta:hover {
+            background: #C49D2E;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .results-section {
+            display: none;
+            background: #3B4A6B;
+            color: white;
+            border-radius: 12px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 6px 20px rgba(59, 74, 107, 0.3);
+        }
+
+        .results-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results-section h2 {
+            color: #D4AF37;
+            font-size: 2rem;
+            margin-bottom: 25px;
+            text-align: center;
+            border-bottom: 2px solid #D4AF37;
+            padding-bottom: 15px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-size: 1.1rem;
+            color: #FFFFFF;
+        }
+
+        .result-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #D4AF37;
+        }
+
+        .result-highlight {
+            background: rgba(212, 175, 55, 0.2);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #D4AF37;
+        }
+
+        .result-highlight .result-value {
+            font-size: 2rem;
+        }
+
+        .recommendation {
+            background: rgba(217, 30, 107, 0.15);
+            border: 2px solid #D91E6B;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+
+        .recommendation h3 {
+            color: #D91E6B;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .recommendation p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .priority-high {
+            border-color: #D91E6B;
+            background: rgba(217, 30, 107, 0.15);
+        }
+
+        .priority-high h3 {
+            color: #D91E6B;
+        }
+
+        .priority-medium {
+            border-color: #D4AF37;
+            background: rgba(212, 175, 55, 0.15);
+        }
+
+        .priority-medium h3 {
+            color: #D4AF37;
+        }
+
+        .priority-low {
+            border-color: #4DA6A0;
+            background: rgba(77, 166, 160, 0.15);
+        }
+
+        .priority-low h3 {
+            color: #4DA6A0;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
         }
 
         .cta-section {
-            background: white;
-            border-radius: 16px;
-            padding: 50px 40px;
+            background: linear-gradient(135deg, #3B4A6B 0%, #2D2D3A 100%);
+            border-radius: 12px;
+            padding: 40px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin: 40px 0;
         }
 
         .cta-section h2 {
             font-size: 2rem;
-            color: #1E3A8A;
-            margin-bottom: 20px;
+            color: #D4AF37;
+            margin-bottom: 15px;
         }
 
         .cta-section p {
-            font-size: 1.2rem;
-            color: #6B7280;
-            margin-bottom: 30px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .cta-button {
-            display: inline-block;
-            padding: 18px 40px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(30, 58, 138, 0.4);
+            font-size: 1.1rem;
+            color: #FFFFFF;
+            margin-bottom: 25px;
+            line-height: 1.7;
         }
 
         .footer {
-            background: rgba(255, 255, 255, 0.1);
+            background: #3B4A6B;
             padding: 30px 20px;
             text-align: center;
             color: white;
             margin-top: 60px;
         }
 
+        .footer p {
+            margin: 5px 0;
+        }
+
         .footer a {
-            color: #14B8A6;
+            color: #D4AF37;
             text-decoration: none;
             font-weight: 600;
         }
 
         .footer a:hover {
             text-decoration: underline;
+        }
+
+        .error {
+            color: #DC2626;
+            font-size: 0.875rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error.active {
+            display: block;
         }
 
         @media (max-width: 768px) {
@@ -227,16 +354,31 @@
                 font-size: 1.1rem;
             }
 
-            .tools-grid {
-                grid-template-columns: 1fr;
+            .input-section {
+                padding: 20px;
             }
 
-            .tool-card {
-                padding: 30px;
+            .results-section {
+                padding: 25px;
+            }
+
+            .result-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn-pdf {
+                margin-right: 0;
+                margin-bottom: 10px;
             }
 
             .cta-section {
-                padding: 40px 30px;
+                padding: 30px 20px;
             }
         }
     </style>
@@ -244,61 +386,425 @@
 <body>
     <div class="header">
         <div class="logo">AI for Mamas</div>
-        <div class="tagline">Free AI-powered tools to reclaim your time and scale your business</div>
+        <div class="tagline">Mom Math Calculator</div>
     </div>
 
     <div class="container">
         <div class="hero">
-            <h1>Stop Trading Your Peace for Pennies</h1>
-            <p>Two powerful calculators that show you exactly where your time is going—and what it's costing you</p>
+            <h1>Calculate Your Opportunity Cost</h1>
+            <p>Discover what your time is really worth—and what you're losing every day</p>
         </div>
 
-        <div class="tools-grid">
-            <!-- Mom Math Calculator -->
-            <div class="tool-card">
-                <div class="tool-icon">💰</div>
-                <h2>Mom Math Calculator</h2>
-                <p>Discover what your time is really worth—and what you're losing every day doing low-value work.</p>
-                
-                <ul class="tool-features">
-                    <li>Calculate your true hourly rate</li>
-                    <li>See weekly, monthly, and annual opportunity costs</li>
-                    <li>Get task-specific automation recommendations</li>
-                    <li>Download personalized PDF report</li>
-                </ul>
+        <div class="divider"></div>
 
-                <a href="/calculator/" class="btn btn-primary">Calculate Your Opportunity Cost →</a>
+        <div class="input-section">
+            <form id="calculator-form">
+                <div class="form-group">
+                    <label for="annual-revenue">Annual Revenue ($) *</label>
+                    <input type="number" id="annual-revenue" placeholder="100000" min="0" step="1000" required>
+                    <div class="help-text">Your current annual business revenue</div>
+                    <div class="error" id="revenue-error">Please enter a valid annual revenue</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="hours-per-week">Hours Worked Per Week *</label>
+                    <input type="number" id="hours-per-week" placeholder="40" min="1" max="168" value="40" required>
+                    <div class="help-text">How many hours do you typically work each week?</div>
+                    <div class="error" id="hours-error">Please enter between 1 and 168 hours</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="task-name">Task Name (Optional)</label>
+                    <input type="text" id="task-name" placeholder="e.g., Social media management, Email responses">
+                    <div class="help-text">What task are you considering delegating?</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="task-hours">Hours Spent on Task Per Week *</label>
+                    <input type="number" id="task-hours" placeholder="5" min="0.5" step="0.5" required>
+                    <div class="help-text">Time spent on this specific task weekly</div>
+                    <div class="error" id="task-hours-error">Please enter valid task hours</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="delegation-cost">Cost to Delegate/Automate ($ per month - Optional)</label>
+                    <input type="number" id="delegation-cost" placeholder="500" min="0" step="50">
+                    <div class="help-text">Monthly cost for VA, automation tool, or outsourcing</div>
+                </div>
+
+                <button type="submit" class="btn btn-calculate">Calculate My Opportunity Cost</button>
+            </form>
+        </div>
+
+        <div class="results-section" id="results">
+            <h2>Your Opportunity Cost Analysis</h2>
+
+            <div class="result-item" id="task-name-display" style="display: none;">
+                <span class="result-label">Task:</span>
+                <span class="result-value" id="display-task-name"></span>
             </div>
 
-            <!-- 15-Hour Work Week Audit -->
-            <div class="tool-card">
-                <div class="tool-icon">⏰</div>
-                <h2>15-Hour Work Week Audit</h2>
-                <p>Complete time diagnostic that reveals exactly where your hours are going—and how to get them back.</p>
-                
-                <ul class="tool-features">
-                    <li>Interactive multi-step assessment</li>
-                    <li>Visual breakdown of your time by category</li>
-                    <li>Personalized 90-day reclaim roadmap</li>
-                    <li>Priority automation recommendations</li>
-                </ul>
+            <div class="result-item">
+                <span class="result-label">Your Hourly Rate:</span>
+                <span class="result-value" id="hourly-rate">$0</span>
+            </div>
 
-                <a href="/audit/" class="btn btn-secondary">Take the Free Audit →</a>
+            <div class="result-highlight">
+                <div class="result-item">
+                    <span class="result-label">Weekly Opportunity Cost:</span>
+                    <span class="result-value" id="weekly-cost">$0</span>
+                </div>
+            </div>
+
+            <div class="result-item">
+                <span class="result-label">Monthly Opportunity Cost:</span>
+                <span class="result-value" id="monthly-cost">$0</span>
+            </div>
+
+            <div class="result-item">
+                <span class="result-label">Annual Opportunity Cost:</span>
+                <span class="result-value" id="annual-cost">$0</span>
+            </div>
+
+            <div id="net-savings-section" style="display: none;">
+                <div class="divider" style="background: #D4AF37; margin: 20px 0;"></div>
+
+                <div class="result-item">
+                    <span class="result-label">Annual Delegation Cost:</span>
+                    <span class="result-value" id="annual-delegation-cost">$0</span>
+                </div>
+
+                <div class="result-highlight">
+                    <div class="result-item">
+                        <span class="result-label">Net Annual Savings:</span>
+                        <span class="result-value" id="net-savings">$0</span>
+                    </div>
+                </div>
+
+                <div class="result-item">
+                    <span class="result-label">ROI Percentage:</span>
+                    <span class="result-value" id="roi">0%</span>
+                </div>
+            </div>
+
+            <div class="recommendation" id="recommendation">
+                <h3 id="recommendation-title">Recommendation</h3>
+                <p id="recommendation-text"></p>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-pdf" onclick="exportToPDF()">Save as PDF</button>
+                <a href="https://kendranix.com/automate-and-elevate" class="btn btn-cta" target="_blank">Learn How to Automate →</a>
             </div>
         </div>
 
         <div class="cta-section">
-            <h2>Ready for Done-For-You Systems?</h2>
-            <p>These tools show you the problem. Want me to build the solution? I create complete AI-powered operations systems that turn chaos into consistent cash flow.</p>
-            <a href="https://kendranix.com" class="cta-button">Work With Kendra →</a>
+            <h2>Ready to Reclaim Your Time?</h2>
+            <p>Stop doing $25/hour work when you should be focused on $500/hour opportunities. Learn how to automate and delegate like a pro.</p>
+            <a href="https://kendranix.com/automate-and-elevate" class="btn btn-cta" target="_blank">Automate and Elevate →</a>
         </div>
     </div>
 
     <div class="footer">
-        <p>Built with ❤️ for mompreneurs who want to scale without burning out</p>
+        <p>&copy; 2025 Kendra Nix | Automate and Elevate</p>
         <p style="margin-top: 10px;">
-            <a href="https://kendranix.com">Kendra Nix</a> | Fractional Chief of Staff & AI Operations Architect
+            <a href="https://kendranix.com">Visit KendraNix.com</a>
         </p>
     </div>
+
+    <script>
+        // Get form elements
+        const form = document.getElementById('calculator-form');
+        const resultsSection = document.getElementById('results');
+
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        // Validate input
+        function validateInput(value, min, max) {
+            const num = parseFloat(value);
+            return !isNaN(num) && num >= min && (max === undefined || num <= max);
+        }
+
+        // Calculate opportunity cost
+        function calculateOpportunityCost(event) {
+            event.preventDefault();
+
+            // Get input values
+            const annualRevenue = parseFloat(document.getElementById('annual-revenue').value);
+            const hoursPerWeek = parseFloat(document.getElementById('hours-per-week').value);
+            const taskName = document.getElementById('task-name').value.trim();
+            const taskHours = parseFloat(document.getElementById('task-hours').value);
+            const delegationCost = parseFloat(document.getElementById('delegation-cost').value) || 0;
+
+            // Reset errors
+            document.querySelectorAll('.error').forEach(el => el.classList.remove('active'));
+
+            // Validate inputs
+            let hasError = false;
+
+            if (!validateInput(annualRevenue, 0)) {
+                document.getElementById('revenue-error').classList.add('active');
+                hasError = true;
+            }
+
+            if (!validateInput(hoursPerWeek, 1, 168)) {
+                document.getElementById('hours-error').classList.add('active');
+                hasError = true;
+            }
+
+            if (!validateInput(taskHours, 0.5)) {
+                document.getElementById('task-hours-error').classList.add('active');
+                hasError = true;
+            }
+
+            if (taskHours > hoursPerWeek) {
+                document.getElementById('task-hours-error').textContent = 'Task hours cannot exceed total hours worked';
+                document.getElementById('task-hours-error').classList.add('active');
+                hasError = true;
+            } else {
+                document.getElementById('task-hours-error').textContent = 'Please enter valid task hours';
+            }
+
+            if (hasError) {
+                return;
+            }
+
+            // Calculate hourly rate
+            const weeksPerYear = 52;
+            const totalHoursPerYear = hoursPerWeek * weeksPerYear;
+            const hourlyRate = annualRevenue / totalHoursPerYear;
+
+            // Calculate opportunity costs
+            const weeklyCost = hourlyRate * taskHours;
+            const monthlyCost = weeklyCost * 4.33; // Average weeks per month
+            const annualCost = weeklyCost * weeksPerYear;
+
+            // Calculate net savings if delegation cost provided
+            let netSavings = 0;
+            let roi = 0;
+            let showNetSavings = false;
+
+            if (delegationCost > 0) {
+                const annualDelegationCost = delegationCost * 12;
+                netSavings = annualCost - annualDelegationCost;
+                roi = ((netSavings / annualDelegationCost) * 100);
+                showNetSavings = true;
+
+                // Display delegation costs
+                document.getElementById('annual-delegation-cost').textContent = formatCurrency(annualDelegationCost);
+                document.getElementById('net-savings').textContent = formatCurrency(netSavings);
+                document.getElementById('roi').textContent = roi.toFixed(0) + '%';
+                document.getElementById('net-savings-section').style.display = 'block';
+            } else {
+                document.getElementById('net-savings-section').style.display = 'none';
+            }
+
+            // Display results
+            document.getElementById('hourly-rate').textContent = formatCurrency(hourlyRate);
+            document.getElementById('weekly-cost').textContent = formatCurrency(weeklyCost);
+            document.getElementById('monthly-cost').textContent = formatCurrency(monthlyCost);
+            document.getElementById('annual-cost').textContent = formatCurrency(annualCost);
+
+            // Display task name if provided
+            if (taskName) {
+                document.getElementById('display-task-name').textContent = taskName;
+                document.getElementById('task-name-display').style.display = 'flex';
+            } else {
+                document.getElementById('task-name-display').style.display = 'none';
+            }
+
+            // Generate recommendation based on annual savings
+            const savingsAmount = showNetSavings ? netSavings : annualCost;
+            let recommendationTitle = '';
+            let recommendationText = '';
+            let priorityClass = '';
+
+            if (savingsAmount > 5000) {
+                priorityClass = 'priority-high';
+                recommendationTitle = 'HIGH PRIORITY - Automate or Delegate Immediately';
+                recommendationText = `You're losing ${formatCurrency(savingsAmount)} annually on this task. This is a critical opportunity to free up your time for high-value work. Every week you delay costs you ${formatCurrency(weeklyCost)}.`;
+            } else if (savingsAmount >= 2000) {
+                priorityClass = 'priority-medium';
+                recommendationTitle = 'MEDIUM PRIORITY - Should Be Systematized';
+                recommendationText = `This task represents ${formatCurrency(savingsAmount)} in annual opportunity cost. Consider creating systems or standard operating procedures to streamline this work, then delegate or automate it.`;
+            } else {
+                priorityClass = 'priority-low';
+                recommendationTitle = 'LOW PRIORITY - Consider Batching Instead';
+                recommendationText = `While ${formatCurrency(savingsAmount)} annually is worth reclaiming, this might not be your highest priority for automation. Consider time-batching this task or making it more efficient before investing in delegation.`;
+            }
+
+            // Update recommendation
+            const recommendationDiv = document.getElementById('recommendation');
+            recommendationDiv.className = 'recommendation ' + priorityClass;
+            document.getElementById('recommendation-title').textContent = recommendationTitle;
+            document.getElementById('recommendation-text').textContent = recommendationText;
+
+            // Show results section with animation
+            resultsSection.classList.add('active');
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Export to PDF
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Get values
+            const annualRevenue = parseFloat(document.getElementById('annual-revenue').value);
+            const hoursPerWeek = parseFloat(document.getElementById('hours-per-week').value);
+            const taskName = document.getElementById('task-name').value.trim() || 'Unnamed Task';
+            const taskHours = parseFloat(document.getElementById('task-hours').value);
+            const delegationCost = parseFloat(document.getElementById('delegation-cost').value) || 0;
+
+            const hourlyRate = document.getElementById('hourly-rate').textContent;
+            const weeklyCost = document.getElementById('weekly-cost').textContent;
+            const monthlyCost = document.getElementById('monthly-cost').textContent;
+            const annualCost = document.getElementById('annual-cost').textContent;
+
+            const recommendationTitle = document.getElementById('recommendation-title').textContent;
+            const recommendationText = document.getElementById('recommendation-text').textContent;
+
+            // Set up PDF
+            doc.setFontSize(20);
+            doc.setTextColor(59, 74, 107);
+            doc.text('Mom Math Calculator', 105, 20, { align: 'center' });
+
+            doc.setFontSize(14);
+            doc.setTextColor(212, 175, 55);
+            doc.text('Opportunity Cost Analysis', 105, 30, { align: 'center' });
+
+            // Task info
+            doc.setFontSize(12);
+            doc.setTextColor(45, 45, 58);
+            let yPos = 45;
+
+            doc.setFont(undefined, 'bold');
+            doc.text('Task: ', 20, yPos);
+            doc.setFont(undefined, 'normal');
+            doc.text(taskName, 45, yPos);
+            yPos += 10;
+
+            doc.text(`Annual Revenue: ${formatCurrency(annualRevenue)}`, 20, yPos);
+            yPos += 7;
+            doc.text(`Hours Worked Per Week: ${hoursPerWeek}`, 20, yPos);
+            yPos += 7;
+            doc.text(`Task Hours Per Week: ${taskHours}`, 20, yPos);
+            yPos += 15;
+
+            // Results
+            doc.setFont(undefined, 'bold');
+            doc.setFontSize(14);
+            doc.setTextColor(59, 74, 107);
+            doc.text('Your Results', 20, yPos);
+            yPos += 10;
+
+            doc.setFont(undefined, 'normal');
+            doc.setFontSize(12);
+            doc.setTextColor(45, 45, 58);
+
+            doc.text(`Your Hourly Rate: ${hourlyRate}`, 20, yPos);
+            yPos += 8;
+            doc.text(`Weekly Opportunity Cost: ${weeklyCost}`, 20, yPos);
+            yPos += 8;
+            doc.text(`Monthly Opportunity Cost: ${monthlyCost}`, 20, yPos);
+            yPos += 8;
+
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(217, 30, 107);
+            doc.text(`Annual Opportunity Cost: ${annualCost}`, 20, yPos);
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(45, 45, 58);
+            yPos += 12;
+
+            // Net savings if delegation cost provided
+            if (delegationCost > 0) {
+                const annualDelegationCost = document.getElementById('annual-delegation-cost').textContent;
+                const netSavings = document.getElementById('net-savings').textContent;
+                const roi = document.getElementById('roi').textContent;
+
+                doc.text(`Annual Delegation Cost: ${annualDelegationCost}`, 20, yPos);
+                yPos += 8;
+
+                doc.setFont(undefined, 'bold');
+                doc.setTextColor(212, 175, 55);
+                doc.text(`Net Annual Savings: ${netSavings}`, 20, yPos);
+                doc.setFont(undefined, 'normal');
+                doc.setTextColor(45, 45, 58);
+                yPos += 8;
+
+                doc.text(`ROI: ${roi}`, 20, yPos);
+                yPos += 12;
+            }
+
+            // Recommendation
+            doc.setFont(undefined, 'bold');
+            doc.setFontSize(14);
+            doc.setTextColor(59, 74, 107);
+            doc.text('Recommendation', 20, yPos);
+            yPos += 10;
+
+            doc.setFont(undefined, 'bold');
+            doc.setFontSize(11);
+            doc.setTextColor(217, 30, 107);
+            const titleLines = doc.splitTextToSize(recommendationTitle, 170);
+            doc.text(titleLines, 20, yPos);
+            yPos += titleLines.length * 6;
+
+            doc.setFont(undefined, 'normal');
+            doc.setFontSize(10);
+            doc.setTextColor(45, 45, 58);
+            const textLines = doc.splitTextToSize(recommendationText, 170);
+            doc.text(textLines, 20, yPos);
+            yPos += textLines.length * 5 + 15;
+
+            // CTA
+            doc.setFontSize(12);
+            doc.setTextColor(59, 74, 107);
+            doc.text('Ready to reclaim your time?', 105, yPos, { align: 'center' });
+            yPos += 7;
+            doc.setFontSize(10);
+            doc.setTextColor(212, 175, 55);
+            doc.text('Visit: kendranix.com/automate-and-elevate', 105, yPos, { align: 'center' });
+
+            // Footer
+            doc.setFontSize(9);
+            doc.setTextColor(150, 150, 150);
+            doc.text('© 2025 Kendra Nix | Automate and Elevate', 105, 285, { align: 'center' });
+
+            // Save PDF
+            const fileName = taskName ? `mom-math-${taskName.replace(/\s+/g, '-').toLowerCase()}.pdf` : 'mom-math-analysis.pdf';
+            doc.save(fileName);
+        }
+
+        // Attach event listener
+        form.addEventListener('submit', calculateOpportunityCost);
+
+        // Real-time validation
+        document.getElementById('hours-per-week').addEventListener('input', function(e) {
+            const value = parseFloat(e.target.value);
+            if (value > 168) {
+                e.target.value = 168;
+            }
+        });
+
+        document.getElementById('task-hours').addEventListener('input', function(e) {
+            const hoursPerWeek = parseFloat(document.getElementById('hours-per-week').value);
+            const value = parseFloat(e.target.value);
+            if (value > hoursPerWeek) {
+                document.getElementById('task-hours-error').textContent = 'Task hours cannot exceed total hours worked';
+                document.getElementById('task-hours-error').classList.add('active');
+            } else {
+                document.getElementById('task-hours-error').classList.remove('active');
+            }
+        });
+    </script>
 </body>
 </html>
