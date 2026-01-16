@@ -506,7 +506,7 @@
     </div>
 
     <div class="footer">
-        <p>&copy; 2025 Kendra Nix | Automate and Elevate</p>
+        <p>&copy; 2026 Kendra Nix | Automate and Elevate</p>
         <p style="margin-top: 10px;">
             <a href="https://kendranix.com">Visit KendraNix.com</a>
         </p>
@@ -657,6 +657,11 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
+            // Add border around the entire page
+            doc.setDrawColor(212, 175, 55); // Gold border
+            doc.setLineWidth(1.5);
+            doc.rect(5, 5, 200, 287);
+
             // Get values
             const annualRevenue = parseFloat(document.getElementById('annual-revenue').value);
             const hoursPerWeek = parseFloat(document.getElementById('hours-per-week').value);
@@ -765,19 +770,23 @@
             doc.text(textLines, 20, yPos);
             yPos += textLines.length * 5 + 15;
 
-            // CTA
+            // CTA with clickable link
             doc.setFontSize(12);
             doc.setTextColor(59, 74, 107);
             doc.text('Ready to reclaim your time?', 105, yPos, { align: 'center' });
             yPos += 7;
+
+            // Add clickable hyperlink
             doc.setFontSize(10);
             doc.setTextColor(212, 175, 55);
-            doc.text('Visit: kendranix.com/automate-and-elevate', 105, yPos, { align: 'center' });
+            const linkText = 'kendranix.com/automate-and-elevate';
+            const linkUrl = 'https://kendranix.com/automate-and-elevate';
+            doc.textWithLink(linkText, 105 - (doc.getTextWidth(linkText) / 2), yPos, { url: linkUrl });
 
             // Footer
             doc.setFontSize(9);
             doc.setTextColor(150, 150, 150);
-            doc.text('© 2025 Kendra Nix | Automate and Elevate', 105, 285, { align: 'center' });
+            doc.text('© 2026 Kendra Nix | Automate and Elevate', 105, 285, { align: 'center' });
 
             // Save PDF
             const fileName = taskName ? `mom-math-${taskName.replace(/\s+/g, '-').toLowerCase()}.pdf` : 'mom-math-analysis.pdf';
