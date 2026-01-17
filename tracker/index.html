@@ -56,6 +56,97 @@
             opacity: 0.95;
         }
 
+        .user-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .user-email {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--navy), #4A5D8A);
+            padding: 2rem;
+        }
+
+        .login-box {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .login-box h1 {
+            color: var(--navy);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-box p {
+            color: var(--charcoal);
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+
+        .login-box .form-group {
+            text-align: left;
+        }
+
+        .app-content {
+            display: none;
+        }
+
+        .app-content.active {
+            display: block;
+        }
+
+        .reset-week-btn {
+            background: var(--gold);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .reset-week-btn:hover {
+            background: #C49D2E;
+            transform: translateY(-2px);
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -707,12 +798,38 @@
     </style>
 </head>
 <body>
-    <header>
-        <h1>⏰ Time Audit Tracker</h1>
-        <p>Track your time. Identify opportunities. Reclaim your week.</p>
-    </header>
+    <!-- Login Screen -->
+    <div class="login-screen" id="login-screen">
+        <div class="login-box">
+            <h1>⏰ Time Audit Tracker</h1>
+            <p>Sign in to track your time and get weekly insights</p>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="user-email">Email Address</label>
+                    <input type="email" id="user-email" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="user-name">Your Name</label>
+                    <input type="text" id="user-name" required placeholder="Your Name">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Start Tracking</button>
+            </form>
+        </div>
+    </div>
 
-    <div class="container">
+    <!-- App Content -->
+    <div class="app-content" id="app-content">
+        <header>
+            <h1>⏰ Time Audit Tracker</h1>
+            <p>Track your time. Identify opportunities. Reclaim your week.</p>
+            <div class="user-info">
+                <span class="user-email" id="current-user-email"></span>
+                <button class="reset-week-btn" onclick="resetWeek()">🔄 Reset Week</button>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </header>
+
+        <div class="container">
         <div class="tabs">
             <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
             <button class="tab-btn" data-tab="calendar">7-Day Calendar</button>
@@ -866,40 +983,108 @@
     <!-- Add Entry Button -->
     <button class="add-entry-btn" onclick="openAddModal()">+ Add Entry</button>
 
-    <footer>
-        <p>&copy; 2026 Kendra Nix | Automate and Elevate</p>
-        <a href="https://kendranix.com/automate-and-elevate" class="footer-cta" target="_blank">Get the Full Course</a>
-    </footer>
+        <footer>
+            <p>&copy; 2026 Kendra Nix | Automate and Elevate</p>
+            <a href="https://kendranix.com/automate-and-elevate" class="footer-cta" target="_blank">Get the Full Course</a>
+        </footer>
+    </div> <!-- End app-content -->
 
     <script>
         // Data Management
         let entries = [];
         let currentEditId = null;
+        let currentUser = null;
 
-        // Load data from localStorage
+        // User Authentication
+        function checkAuth() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showApp();
+            } else {
+                showLogin();
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('app-content').classList.remove('active');
+        }
+
+        function showApp() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('app-content').classList.add('active');
+            document.getElementById('current-user-email').textContent = `${currentUser.name} (${currentUser.email})`;
+            loadData();
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('user-email').value;
+            const name = document.getElementById('user-name').value;
+            currentUser = { email, name };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            showApp();
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout? Your data will be saved.')) {
+                localStorage.removeItem('currentUser');
+                currentUser = null;
+                entries = [];
+                showLogin();
+                document.getElementById('login-form').reset();
+            }
+        }
+
+        function resetWeek() {
+            if (confirm('Are you sure you want to reset this week? This will generate a PDF report and clear all current entries. This action cannot be undone.')) {
+                // Generate PDF before clearing
+                if (entries.length > 0) {
+                    exportToPDF();
+                    setTimeout(() => {
+                        // Clear entries
+                        entries = [];
+                        saveData();
+                        alert('Week reset! Your PDF report has been downloaded.');
+                    }, 500);
+                } else {
+                    alert('No entries to reset.');
+                }
+            }
+        }
+
+        // Load data from localStorage (user-specific)
         function loadData() {
-            const saved = localStorage.getItem('timeAuditEntries');
+            if (!currentUser) return;
+            const key = `timeAuditEntries_${currentUser.email}`;
+            const saved = localStorage.getItem(key);
             if (saved) {
                 entries = JSON.parse(saved);
             }
             renderAll();
         }
 
-        // Save data to localStorage
+        // Save data to localStorage (user-specific)
         function saveData() {
-            localStorage.setItem('timeAuditEntries', JSON.stringify(entries));
+            if (!currentUser) return;
+            const key = `timeAuditEntries_${currentUser.email}`;
+            localStorage.setItem(key, JSON.stringify(entries));
             renderAll();
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            loadData();
+            checkAuth();
             setupEventListeners();
             setDefaultDate();
         });
 
         // Setup Event Listeners
         function setupEventListeners() {
+            // Login form submission
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
+
             // Tab switching
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.addEventListener('click', () => switchTab(btn.dataset.tab));
@@ -1386,23 +1571,32 @@
             doc.setTextColor(59, 74, 107); // Navy
             doc.text('Time Audit Report', 20, 20);
 
+            // User info
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text(`${currentUser ? currentUser.name : 'User'}`, 20, 28);
+
             // Date range
             doc.setFontSize(10);
             doc.setTextColor(100, 100, 100);
-            doc.text(`Report Period: ${formatDate(last7Days[0])} - ${formatDate(last7Days[last7Days.length - 1])}`, 20, 30);
+            doc.text(`Report Period: ${formatDate(last7Days[0])} - ${formatDate(last7Days[last7Days.length - 1])}`, 20, 35);
 
             // Summary stats
             const totalHours = weekEntries.reduce((sum, e) => sum + e.duration, 0);
             const lowValueHours = weekEntries.filter(e => e.valueCategory === 'Low').reduce((sum, e) => sum + e.duration, 0);
+            const highValueHours = weekEntries.filter(e => e.valueCategory === 'High').reduce((sum, e) => sum + e.duration, 0);
+            const mediumValueHours = weekEntries.filter(e => e.valueCategory === 'Medium').reduce((sum, e) => sum + e.duration, 0);
 
             doc.setFontSize(12);
             doc.setTextColor(59, 74, 107);
-            doc.text('Summary', 20, 45);
+            doc.text('Weekly Summary', 20, 50);
             doc.setFontSize(10);
             doc.setTextColor(0, 0, 0);
-            doc.text(`Total Hours Tracked: ${totalHours.toFixed(1)}h`, 20, 55);
-            doc.text(`Low-Value Hours: ${lowValueHours.toFixed(1)}h`, 20, 62);
-            doc.text(`Time Reclaim Potential: ${lowValueHours.toFixed(1)} hours/week`, 20, 69);
+            doc.text(`Total Hours Tracked: ${totalHours.toFixed(1)}h`, 20, 60);
+            doc.text(`High-Value Hours: ${highValueHours.toFixed(1)}h (${totalHours > 0 ? ((highValueHours / totalHours) * 100).toFixed(0) : 0}%)`, 20, 67);
+            doc.text(`Medium-Value Hours: ${mediumValueHours.toFixed(1)}h (${totalHours > 0 ? ((mediumValueHours / totalHours) * 100).toFixed(0) : 0}%)`, 20, 74);
+            doc.text(`Low-Value Hours: ${lowValueHours.toFixed(1)}h (${totalHours > 0 ? ((lowValueHours / totalHours) * 100).toFixed(0) : 0}%)`, 20, 81);
+            doc.text(`Time Reclaim Potential: ${lowValueHours.toFixed(1)} hours/week`, 20, 88);
 
             // Entries table
             const tableData = weekEntries.map(e => [
@@ -1414,7 +1608,7 @@
             ]);
 
             doc.autoTable({
-                startY: 80,
+                startY: 100,
                 head: [['Date', 'Task', 'Duration', 'Value', 'Type']],
                 body: tableData,
                 theme: 'grid',
