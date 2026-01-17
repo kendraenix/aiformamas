@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Audit Tracker - Automate and Elevate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #3B4A6B;
+            --fuchsia: #D91E6B;
+            --gold: #D4AF37;
+            --teal: #4DA6A0;
+            --white: #FFFFFF;
+            --charcoal: #2D2D3A;
+            --light-gray: #F5F5F7;
+            --medium-gray: #E0E0E5;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--charcoal);
+            background-color: var(--light-gray);
+            padding-bottom: 80px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--navy), #4A5D8A);
+            color: var(--white);
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--white);
+            border: 2px solid var(--medium-gray);
+            color: var(--navy);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--teal);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: var(--navy);
+            color: var(--white);
+            border-color: var(--navy);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            color: var(--navy);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .card h3 {
+            color: var(--navy);
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .day-card {
+            background: var(--white);
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .day-card:hover {
+            border-color: var(--teal);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .day-card.today {
+            border-color: var(--fuchsia);
+            border-width: 3px;
+        }
+
+        .day-header {
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .day-date {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+        }
+
+        .day-total {
+            font-size: 0.85rem;
+            color: var(--teal);
+            font-weight: 600;
+        }
+
+        .entry-item {
+            padding: 0.5rem;
+            margin: 0.25rem 0;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .entry-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .entry-item.high-value {
+            background: rgba(217, 30, 107, 0.1);
+            border-left: 3px solid var(--fuchsia);
+        }
+
+        .entry-item.medium-value {
+            background: rgba(77, 166, 160, 0.1);
+            border-left: 3px solid var(--teal);
+        }
+
+        .entry-item.low-value {
+            background: rgba(212, 175, 55, 0.1);
+            border-left: 3px solid var(--gold);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--navy), #4A5D8A);
+            color: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .chart-container h3 {
+            margin-bottom: 1rem;
+            color: var(--navy);
+        }
+
+        .automation-list {
+            list-style: none;
+        }
+
+        .automation-item {
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .automation-item.high-priority {
+            border-left-color: var(--fuchsia);
+            background: rgba(217, 30, 107, 0.05);
+        }
+
+        .automation-item.medium-priority {
+            border-left-color: var(--teal);
+            background: rgba(77, 166, 160, 0.05);
+        }
+
+        .automation-item .task-name {
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 0.25rem;
+        }
+
+        .automation-item .task-info {
+            font-size: 0.9rem;
+            color: var(--charcoal);
+            margin-bottom: 0.25rem;
+        }
+
+        .automation-item .recommendation {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .high-priority .recommendation {
+            color: var(--fuchsia);
+        }
+
+        .medium-priority .recommendation {
+            color: var(--teal);
+        }
+
+        .low-priority .recommendation {
+            color: var(--gold);
+        }
+
+        .add-entry-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--fuchsia);
+            color: var(--white);
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(217, 30, 107, 0.4);
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .add-entry-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(217, 30, 107, 0.5);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: var(--navy);
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: var(--charcoal);
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            color: var(--fuchsia);
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .time-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .quick-templates {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .template-btn {
+            padding: 0.5rem 1rem;
+            background: var(--light-gray);
+            border: 1px solid var(--medium-gray);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .template-btn:hover {
+            background: var(--teal);
+            color: var(--white);
+            border-color: var(--teal);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--fuchsia);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: #C01A5D;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--teal);
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: #3E9690;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #DC3545;
+            color: var(--white);
+        }
+
+        .btn-danger:hover {
+            background: #C82333;
+            transform: translateY(-2px);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .entry-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .entry-card {
+            background: var(--light-gray);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--medium-gray);
+        }
+
+        .entry-card.high-value {
+            border-left-color: var(--fuchsia);
+        }
+
+        .entry-card.medium-value {
+            border-left-color: var(--teal);
+        }
+
+        .entry-card.low-value {
+            border-left-color: var(--gold);
+        }
+
+        .entry-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.5rem;
+        }
+
+        .entry-card-title {
+            font-weight: 600;
+            color: var(--navy);
+            font-size: 1.1rem;
+        }
+
+        .entry-card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .entry-card-info {
+            font-size: 0.9rem;
+            color: var(--charcoal);
+        }
+
+        .value-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .value-badge.high {
+            background: var(--fuchsia);
+            color: var(--white);
+        }
+
+        .value-badge.medium {
+            background: var(--teal);
+            color: var(--white);
+        }
+
+        .value-badge.low {
+            background: var(--gold);
+            color: var(--white);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--charcoal);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            opacity: 0.7;
+        }
+
+        footer {
+            background: var(--navy);
+            color: var(--white);
+            padding: 2rem 1rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        footer p {
+            margin-bottom: 1rem;
+        }
+
+        .footer-cta {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background: var(--fuchsia);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .footer-cta:hover {
+            background: #C01A5D;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(217, 30, 107, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            .calendar-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                width: 100%;
+            }
+
+            .add-entry-btn {
+                bottom: 1rem;
+                right: 1rem;
+                padding: 0.75rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn-group .btn {
+                width: 100%;
+            }
+
+            .export-buttons {
+                flex-direction: column;
+            }
+
+            .export-buttons .btn {
+                width: 100%;
+            }
+
+            .time-inputs {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .reclaim-potential {
+            background: linear-gradient(135deg, var(--fuchsia), #E93D7A);
+            color: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .reclaim-potential h3 {
+            color: var(--white);
+            margin-bottom: 1rem;
+        }
+
+        .reclaim-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .reclaim-description {
+            opacity: 0.95;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>⏰ Time Audit Tracker</h1>
+        <p>Track your time. Identify opportunities. Reclaim your week.</p>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+            <button class="tab-btn" data-tab="calendar">7-Day Calendar</button>
+            <button class="tab-btn" data-tab="analytics">Analytics</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div class="tab-content active" id="dashboard">
+            <div class="card">
+                <h2>Quick Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-hours">0</div>
+                        <div class="stat-label">Total Hours (7 days)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-entries">0</div>
+                        <div class="stat-label">Total Entries</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="avg-daily-hours">0</div>
+                        <div class="stat-label">Avg Hours/Day</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Recent Entries</h2>
+                <div id="recent-entries"></div>
+            </div>
+        </div>
+
+        <!-- Calendar Tab -->
+        <div class="tab-content" id="calendar">
+            <div class="card">
+                <h2>7-Day Calendar View</h2>
+                <div class="calendar-grid" id="calendar-grid"></div>
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div class="tab-content" id="analytics">
+            <div id="analytics-content"></div>
+        </div>
+    </div>
+
+    <!-- Add Entry Modal -->
+    <div class="modal" id="entry-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Add Time Entry</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="entry-form">
+                <input type="hidden" id="entry-id">
+
+                <div class="form-group">
+                    <label for="task-name">Task Name</label>
+                    <input type="text" id="task-name" required placeholder="What did you work on?">
+                </div>
+
+                <div class="form-group">
+                    <label>Quick Templates</label>
+                    <div class="quick-templates">
+                        <button type="button" class="template-btn" data-template="Email management">Email management</button>
+                        <button type="button" class="template-btn" data-template="Client meeting">Client meeting</button>
+                        <button type="button" class="template-btn" data-template="Content creation">Content creation</button>
+                        <button type="button" class="template-btn" data-template="Social media">Social media</button>
+                        <button type="button" class="template-btn" data-template="Admin tasks">Admin tasks</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Time Spent</label>
+                    <div class="time-inputs">
+                        <div>
+                            <label for="hours" style="font-size: 0.85rem; font-weight: 400;">Hours</label>
+                            <select id="hours" required>
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="minutes" style="font-size: 0.85rem; font-weight: 400;">Minutes</label>
+                            <select id="minutes" required>
+                                <option value="0">0</option>
+                                <option value="15">15</option>
+                                <option value="30">30</option>
+                                <option value="45">45</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="value-category">Value Category</label>
+                    <select id="value-category" required>
+                        <option value="">Select category...</option>
+                        <option value="High">High - Revenue-generating, strategic work</option>
+                        <option value="Medium">Medium - Important but not directly revenue-generating</option>
+                        <option value="Low">Low - Could be delegated/automated</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="task-type">Task Type</label>
+                    <select id="task-type" required>
+                        <option value="">Select type...</option>
+                        <option value="Client work">Client work</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Content creation">Content creation</option>
+                        <option value="Sales & marketing">Sales & marketing</option>
+                        <option value="Strategy & planning">Strategy & planning</option>
+                        <option value="Learning & development">Learning & development</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="entry-date">Date</label>
+                    <input type="date" id="entry-date" required>
+                </div>
+
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">Save Entry</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="delete-btn" style="display: none;" onclick="deleteEntry()">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Day Details Modal -->
+    <div class="modal" id="day-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="day-modal-title">Entries for</h2>
+                <button class="close-btn" onclick="closeDayModal()">&times;</button>
+            </div>
+            <div id="day-entries"></div>
+        </div>
+    </div>
+
+    <!-- Add Entry Button -->
+    <button class="add-entry-btn" onclick="openAddModal()">+ Add Entry</button>
+
+    <footer>
+        <p>&copy; 2026 Kendra Nix | Automate and Elevate</p>
+        <a href="https://kendranix.com/automate-and-elevate" class="footer-cta" target="_blank">Get the Full Course</a>
+    </footer>
+
+    <script>
+        // Data Management
+        let entries = [];
+        let currentEditId = null;
+
+        // Load data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('timeAuditEntries');
+            if (saved) {
+                entries = JSON.parse(saved);
+            }
+            renderAll();
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('timeAuditEntries', JSON.stringify(entries));
+            renderAll();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            setupEventListeners();
+            setDefaultDate();
+        });
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            // Tab switching
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+            });
+
+            // Entry form submission
+            document.getElementById('entry-form').addEventListener('submit', handleFormSubmit);
+
+            // Template buttons
+            document.querySelectorAll('.template-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.getElementById('task-name').value = this.dataset.template;
+                });
+            });
+
+            // Close modal on background click
+            document.getElementById('entry-modal').addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+            document.getElementById('day-modal').addEventListener('click', function(e) {
+                if (e.target === this) closeDayModal();
+            });
+        }
+
+        // Set default date to today
+        function setDefaultDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('entry-date').value = today;
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+
+            if (tabName === 'analytics') {
+                renderAnalytics();
+            }
+        }
+
+        // Modal Functions
+        function openAddModal() {
+            currentEditId = null;
+            document.getElementById('modal-title').textContent = 'Add Time Entry';
+            document.getElementById('entry-form').reset();
+            document.getElementById('delete-btn').style.display = 'none';
+            setDefaultDate();
+            document.getElementById('entry-modal').classList.add('active');
+        }
+
+        function openEditModal(id) {
+            const entry = entries.find(e => e.id === id);
+            if (!entry) return;
+
+            currentEditId = id;
+            document.getElementById('modal-title').textContent = 'Edit Time Entry';
+            document.getElementById('entry-id').value = id;
+            document.getElementById('task-name').value = entry.taskName;
+
+            const hours = Math.floor(entry.duration);
+            const minutes = Math.round((entry.duration - hours) * 60);
+            document.getElementById('hours').value = hours;
+            document.getElementById('minutes').value = minutes;
+
+            document.getElementById('value-category').value = entry.valueCategory;
+            document.getElementById('task-type').value = entry.taskType;
+            document.getElementById('entry-date').value = entry.date;
+            document.getElementById('delete-btn').style.display = 'block';
+            document.getElementById('entry-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('entry-modal').classList.remove('active');
+            document.getElementById('entry-form').reset();
+            currentEditId = null;
+        }
+
+        function closeDayModal() {
+            document.getElementById('day-modal').classList.remove('active');
+        }
+
+        // Form Submission
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const hours = parseInt(document.getElementById('hours').value);
+            const minutes = parseInt(document.getElementById('minutes').value);
+            const duration = hours + (minutes / 60);
+
+            if (duration === 0) {
+                alert('Please enter a time duration greater than 0');
+                return;
+            }
+
+            const entry = {
+                id: currentEditId || Date.now().toString(),
+                date: document.getElementById('entry-date').value,
+                taskName: document.getElementById('task-name').value,
+                duration: duration,
+                valueCategory: document.getElementById('value-category').value,
+                taskType: document.getElementById('task-type').value,
+                timestamp: currentEditId ? entries.find(e => e.id === currentEditId).timestamp : new Date().toISOString()
+            };
+
+            if (currentEditId) {
+                const index = entries.findIndex(e => e.id === currentEditId);
+                entries[index] = entry;
+            } else {
+                entries.push(entry);
+            }
+
+            saveData();
+            closeModal();
+        }
+
+        // Delete Entry
+        function deleteEntry() {
+            if (!currentEditId) return;
+
+            if (confirm('Are you sure you want to delete this entry?')) {
+                entries = entries.filter(e => e.id !== currentEditId);
+                saveData();
+                closeModal();
+            }
+        }
+
+        // Render All
+        function renderAll() {
+            renderDashboard();
+            renderCalendar();
+        }
+
+        // Render Dashboard
+        function renderDashboard() {
+            // Calculate stats
+            const last7Days = getLast7Days();
+            const weekEntries = entries.filter(e => last7Days.includes(e.date));
+
+            const totalHours = weekEntries.reduce((sum, e) => sum + e.duration, 0);
+            const totalEntries = weekEntries.length;
+            const avgDaily = totalEntries > 0 ? (totalHours / 7).toFixed(1) : 0;
+
+            document.getElementById('total-hours').textContent = totalHours.toFixed(1);
+            document.getElementById('total-entries').textContent = totalEntries;
+            document.getElementById('avg-daily-hours').textContent = avgDaily;
+
+            // Recent entries
+            const recentContainer = document.getElementById('recent-entries');
+            const recentEntries = [...entries]
+                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                .slice(0, 10);
+
+            if (recentEntries.length === 0) {
+                recentContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <h3>No entries yet</h3>
+                        <p>Click the "Add Entry" button to start tracking your time!</p>
+                    </div>
+                `;
+            } else {
+                recentContainer.innerHTML = recentEntries.map(entry => `
+                    <div class="entry-card ${entry.valueCategory.toLowerCase()}-value" onclick="openEditModal('${entry.id}')">
+                        <div class="entry-card-header">
+                            <div>
+                                <div class="entry-card-title">${entry.taskName}</div>
+                                <span class="value-badge ${entry.valueCategory.toLowerCase()}">${entry.valueCategory} Value</span>
+                            </div>
+                        </div>
+                        <div class="entry-card-info">
+                            ${formatDuration(entry.duration)} • ${entry.taskType} • ${formatDate(entry.date)}
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Render Calendar
+        function renderCalendar() {
+            const calendarGrid = document.getElementById('calendar-grid');
+            const last7Days = getLast7Days();
+            const today = new Date().toISOString().split('T')[0];
+
+            calendarGrid.innerHTML = last7Days.map(date => {
+                const dayEntries = entries.filter(e => e.date === date);
+                const totalHours = dayEntries.reduce((sum, e) => sum + e.duration, 0);
+                const dateObj = new Date(date + 'T00:00:00');
+                const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
+                const dayNum = dateObj.getDate();
+                const isToday = date === today;
+
+                return `
+                    <div class="day-card ${isToday ? 'today' : ''}" onclick="showDayDetails('${date}')">
+                        <div class="day-header">${dayName}</div>
+                        <div class="day-date">${dayNum}</div>
+                        <div class="day-total">${totalHours.toFixed(1)}h</div>
+                        ${dayEntries.slice(0, 3).map(entry => `
+                            <div class="entry-item ${entry.valueCategory.toLowerCase()}-value">
+                                ${entry.taskName.substring(0, 20)}${entry.taskName.length > 20 ? '...' : ''}
+                            </div>
+                        `).join('')}
+                        ${dayEntries.length > 3 ? `<div style="font-size: 0.75rem; color: var(--charcoal); margin-top: 0.25rem;">+${dayEntries.length - 3} more</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Show Day Details
+        function showDayDetails(date) {
+            const dayEntries = entries.filter(e => e.date === date);
+            const dateObj = new Date(date + 'T00:00:00');
+            const formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+
+            document.getElementById('day-modal-title').textContent = formattedDate;
+
+            const container = document.getElementById('day-entries');
+            if (dayEntries.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📅</div>
+                        <h3>No entries for this day</h3>
+                        <p>Add an entry to start tracking!</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = dayEntries.map(entry => `
+                    <div class="entry-card ${entry.valueCategory.toLowerCase()}-value" onclick="closeDayModal(); openEditModal('${entry.id}')">
+                        <div class="entry-card-header">
+                            <div>
+                                <div class="entry-card-title">${entry.taskName}</div>
+                                <span class="value-badge ${entry.valueCategory.toLowerCase()}">${entry.valueCategory} Value</span>
+                            </div>
+                        </div>
+                        <div class="entry-card-info">
+                            ${formatDuration(entry.duration)} • ${entry.taskType}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            document.getElementById('day-modal').classList.add('active');
+        }
+
+        // Render Analytics
+        function renderAnalytics() {
+            const container = document.getElementById('analytics-content');
+            const last7Days = getLast7Days();
+            const weekEntries = entries.filter(e => last7Days.includes(e.date));
+
+            if (weekEntries.length === 0) {
+                container.innerHTML = `
+                    <div class="card">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📊</div>
+                            <h3>Start tracking to see analytics</h3>
+                            <p>Add some time entries to unlock insights and automation recommendations!</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Calculate analytics
+            const totalHours = weekEntries.reduce((sum, e) => sum + e.duration, 0);
+            const lowValueEntries = weekEntries.filter(e => e.valueCategory === 'Low');
+            const lowValueHours = lowValueEntries.reduce((sum, e) => sum + e.duration, 0);
+
+            // Value category breakdown
+            const valueBreakdown = {
+                High: weekEntries.filter(e => e.valueCategory === 'High').reduce((sum, e) => sum + e.duration, 0),
+                Medium: weekEntries.filter(e => e.valueCategory === 'Medium').reduce((sum, e) => sum + e.duration, 0),
+                Low: lowValueHours
+            };
+
+            // Task type breakdown
+            const taskTypeBreakdown = {};
+            weekEntries.forEach(e => {
+                taskTypeBreakdown[e.taskType] = (taskTypeBreakdown[e.taskType] || 0) + e.duration;
+            });
+
+            // Automation opportunities
+            const lowValueTasks = {};
+            lowValueEntries.forEach(e => {
+                if (!lowValueTasks[e.taskName]) {
+                    lowValueTasks[e.taskName] = {
+                        taskName: e.taskName,
+                        taskType: e.taskType,
+                        totalHours: 0,
+                        count: 0
+                    };
+                }
+                lowValueTasks[e.taskName].totalHours += e.duration;
+                lowValueTasks[e.taskName].count++;
+            });
+
+            const automationOpportunities = Object.values(lowValueTasks)
+                .sort((a, b) => b.totalHours - a.totalHours);
+
+            // Render
+            container.innerHTML = `
+                <div class="card">
+                    <h2>📊 Analytics Dashboard</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">${totalHours.toFixed(1)}</div>
+                            <div class="stat-label">Total Hours Tracked</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${((valueBreakdown.High / totalHours) * 100 || 0).toFixed(0)}%</div>
+                            <div class="stat-label">High-Value Work</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${lowValueHours.toFixed(1)}h</div>
+                            <div class="stat-label">Low-Value Work</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reclaim-potential">
+                    <h3>💡 Time Reclaim Potential</h3>
+                    <div class="reclaim-value">${lowValueHours.toFixed(1)} hours/week</div>
+                    <div class="reclaim-description">
+                        You're spending ${lowValueHours.toFixed(1)} hours per week on low-value tasks that could potentially be automated, delegated, or systematized.
+                        ${lowValueHours > 0 ? `That's ${((lowValueHours / totalHours) * 100).toFixed(0)}% of your tracked time!` : ''}
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h3>Value Category Breakdown</h3>
+                        <canvas id="value-chart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>Task Type Breakdown</h3>
+                        <canvas id="task-chart"></canvas>
+                    </div>
+                </div>
+
+                ${automationOpportunities.length > 0 ? `
+                    <div class="card">
+                        <h2>🎯 Automation Opportunities</h2>
+                        <ul class="automation-list">
+                            ${automationOpportunities.map(task => {
+                                let priority = 'low-priority';
+                                let recommendation = 'LOW PRIORITY - Consider batching';
+                                if (task.totalHours >= 5) {
+                                    priority = 'high-priority';
+                                    recommendation = 'HIGH PRIORITY - Automate immediately';
+                                } else if (task.totalHours >= 2) {
+                                    priority = 'medium-priority';
+                                    recommendation = 'MEDIUM PRIORITY - Should be systematized';
+                                }
+
+                                return `
+                                    <li class="automation-item ${priority}">
+                                        <div class="task-name">${task.taskName}</div>
+                                        <div class="task-info">
+                                            ${task.totalHours.toFixed(1)} hours/week • ${task.count} occurrence${task.count > 1 ? 's' : ''} • ${task.taskType}
+                                        </div>
+                                        <div class="recommendation">${recommendation}</div>
+                                    </li>
+                                `;
+                            }).join('')}
+                        </ul>
+                    </div>
+                ` : ''}
+
+                <div class="card">
+                    <h2>📥 Export Data</h2>
+                    <div class="export-buttons">
+                        <button class="btn btn-secondary" onclick="exportToPDF()">Export PDF Report</button>
+                        <button class="btn btn-secondary" onclick="exportToCSV()">Export CSV</button>
+                    </div>
+                </div>
+            `;
+
+            // Render Charts
+            setTimeout(() => {
+                renderValueChart(valueBreakdown);
+                renderTaskChart(taskTypeBreakdown);
+            }, 100);
+        }
+
+        // Render Value Chart
+        function renderValueChart(data) {
+            const ctx = document.getElementById('value-chart');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['High Value', 'Medium Value', 'Low Value'],
+                    datasets: [{
+                        data: [data.High, data.Medium, data.Low],
+                        backgroundColor: ['#D91E6B', '#4DA6A0', '#D4AF37'],
+                        borderWidth: 2,
+                        borderColor: '#FFFFFF'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const hours = context.parsed;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((hours / total) * 100).toFixed(1);
+                                    return `${context.label}: ${hours.toFixed(1)}h (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Render Task Chart
+        function renderTaskChart(data) {
+            const ctx = document.getElementById('task-chart');
+            if (!ctx) return;
+
+            const labels = Object.keys(data);
+            const values = Object.values(data);
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Hours',
+                        data: values,
+                        backgroundColor: '#4DA6A0',
+                        borderColor: '#3E9690',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + 'h';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.parsed.y.toFixed(1)} hours`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Export to PDF
+        async function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const last7Days = getLast7Days();
+            const weekEntries = entries.filter(e => last7Days.includes(e.date));
+
+            // Title
+            doc.setFontSize(20);
+            doc.setTextColor(59, 74, 107); // Navy
+            doc.text('Time Audit Report', 20, 20);
+
+            // Date range
+            doc.setFontSize(10);
+            doc.setTextColor(100, 100, 100);
+            doc.text(`Report Period: ${formatDate(last7Days[0])} - ${formatDate(last7Days[last7Days.length - 1])}`, 20, 30);
+
+            // Summary stats
+            const totalHours = weekEntries.reduce((sum, e) => sum + e.duration, 0);
+            const lowValueHours = weekEntries.filter(e => e.valueCategory === 'Low').reduce((sum, e) => sum + e.duration, 0);
+
+            doc.setFontSize(12);
+            doc.setTextColor(59, 74, 107);
+            doc.text('Summary', 20, 45);
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Total Hours Tracked: ${totalHours.toFixed(1)}h`, 20, 55);
+            doc.text(`Low-Value Hours: ${lowValueHours.toFixed(1)}h`, 20, 62);
+            doc.text(`Time Reclaim Potential: ${lowValueHours.toFixed(1)} hours/week`, 20, 69);
+
+            // Entries table
+            const tableData = weekEntries.map(e => [
+                formatDate(e.date),
+                e.taskName,
+                formatDuration(e.duration),
+                e.valueCategory,
+                e.taskType
+            ]);
+
+            doc.autoTable({
+                startY: 80,
+                head: [['Date', 'Task', 'Duration', 'Value', 'Type']],
+                body: tableData,
+                theme: 'grid',
+                headStyles: {
+                    fillColor: [59, 74, 107],
+                    textColor: [255, 255, 255],
+                    fontStyle: 'bold'
+                },
+                styles: {
+                    fontSize: 9
+                }
+            });
+
+            // Footer
+            const finalY = doc.lastAutoTable.finalY || 80;
+            doc.setFontSize(8);
+            doc.setTextColor(100, 100, 100);
+            doc.text('Generated by Time Audit Tracker - Automate and Elevate', 20, finalY + 15);
+            doc.textWithLink('kendranix.com/automate-and-elevate', 20, finalY + 20, { url: 'https://kendranix.com/automate-and-elevate' });
+
+            doc.save('time-audit-report.pdf');
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            const headers = ['Date', 'Task Name', 'Duration (hours)', 'Value Category', 'Task Type'];
+            const rows = entries.map(e => [
+                e.date,
+                `"${e.taskName}"`,
+                e.duration.toFixed(2),
+                e.valueCategory,
+                e.taskType
+            ]);
+
+            const csv = [
+                headers.join(','),
+                ...rows.map(row => row.join(','))
+            ].join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'time-audit-data.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Utility Functions
+        function getLast7Days() {
+            const days = [];
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                days.push(date.toISOString().split('T')[0]);
+            }
+            return days;
+        }
+
+        function formatDuration(hours) {
+            const h = Math.floor(hours);
+            const m = Math.round((hours - h) * 60);
+            if (h === 0) return `${m}m`;
+            if (m === 0) return `${h}h`;
+            return `${h}h ${m}m`;
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr + 'T00:00:00');
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+    </script>
+</body>
+</html>
