@@ -4,318 +4,709 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Time Audit Tracker - Automate and Elevate</title>
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
+    <style>
         :root {
             --navy: #3B4A6B;
             --fuchsia: #D91E6B;
             --gold: #D4AF37;
             --teal: #4DA6A0;
             --white: #FFFFFF;
-            --charcoal: #2D2D3A;
-            --light-gray: #F5F5F7;
-            --medium-gray: #E0E0E5;
+            --light-gray: #F8F9FA;
+            --dark: #2D2D3A;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+            --shadow-xl: 0 20px 25px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            font-size: 16px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+            color: var(--dark);
             line-height: 1.6;
-            color: var(--charcoal);
-            background-color: var(--light-gray);
-            padding-bottom: 80px;
+            min-height: 100vh;
         }
 
-        header {
-            background: linear-gradient(135deg, var(--navy), #4A5D8A);
-            color: var(--white);
-            padding: 2rem 1rem;
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--navy) 0%, #4A5D8A 100%);
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-screen::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(217, 30, 107, 0.1) 0%, transparent 70%);
+            top: -250px;
+            right: -250px;
+            border-radius: 50%;
+        }
+
+        .login-screen::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(77, 166, 160, 0.1) 0%, transparent 70%);
+            bottom: -200px;
+            left: -200px;
+            border-radius: 50%;
+        }
+
+        .login-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.5s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .login-box .logo {
+            font-size: 2.5rem;
             text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 0.5rem;
         }
 
-        header h1 {
-            font-size: 2rem;
+        .login-box h1 {
+            color: var(--navy);
+            font-size: 1.75rem;
             margin-bottom: 0.5rem;
+            text-align: center;
             font-weight: 700;
         }
 
-        header p {
-            font-size: 1.1rem;
-            opacity: 0.95;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 1rem;
+        .login-box p {
+            color: var(--dark);
+            text-align: center;
             margin-bottom: 2rem;
+            opacity: 0.7;
+        }
+
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, var(--navy) 0%, #4A5D8A 100%);
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--white);
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
             flex-wrap: wrap;
         }
 
-        .tab-btn {
-            padding: 0.75rem 1.5rem;
-            background: var(--white);
-            border: 2px solid var(--medium-gray);
-            color: var(--navy);
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            padding: 0.5rem 1.25rem;
+            border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s;
-            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
         }
 
-        .tab-btn:hover {
-            border-color: var(--teal);
-            transform: translateY(-2px);
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
         }
 
-        .tab-btn.active {
-            background: var(--navy);
+        .nav-btn.active {
+            background: var(--fuchsia);
+            border-color: var(--fuchsia);
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
             color: var(--white);
-            border-color: var(--navy);
+            flex-wrap: wrap;
         }
 
-        .tab-content {
+        .user-badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-reset {
+            background: var(--gold);
+            border: none;
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .btn-reset:hover {
+            background: #C49D2E;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Page Views */
+        .page-view {
             display: none;
         }
 
-        .tab-content.active {
+        .page-view.active {
             display: block;
         }
 
+        /* Cards */
         .card {
             background: var(--white);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 1.5rem;
+            box-shadow: var(--shadow-md);
             margin-bottom: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        .card h2 {
-            color: var(--navy);
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
-
-        .card h3 {
-            color: var(--navy);
-            font-size: 1.2rem;
-            margin-bottom: 0.75rem;
-            font-weight: 600;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-        }
-
-        .day-card {
-            background: var(--white);
-            border: 2px solid var(--medium-gray);
-            border-radius: 8px;
-            padding: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .day-card:hover {
-            border-color: var(--teal);
+        .card:hover {
+            box-shadow: var(--shadow-lg);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        .day-card.today {
-            border-color: var(--fuchsia);
-            border-width: 3px;
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
         }
 
-        .day-header {
-            font-weight: 600;
-            color: var(--navy);
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .day-date {
+        .card-title {
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--charcoal);
-            margin-bottom: 0.5rem;
+            color: var(--navy);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
 
-        .day-total {
-            font-size: 0.85rem;
-            color: var(--teal);
-            font-weight: 600;
+        /* Hero Empty State */
+        .hero-empty {
+            background: linear-gradient(135deg, var(--fuchsia) 0%, #E93D7A 100%);
+            border-radius: 20px;
+            padding: 4rem 2rem;
+            text-align: center;
+            color: var(--white);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
         }
 
-        .entry-item {
-            padding: 0.5rem;
-            margin: 0.25rem 0;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s;
+        .hero-empty::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            top: -150px;
+            right: -150px;
+            border-radius: 50%;
         }
 
-        .entry-item:hover {
-            transform: translateX(4px);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        .hero-empty h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            position: relative;
         }
 
-        .entry-item.high-value {
-            background: rgba(217, 30, 107, 0.1);
-            border-left: 3px solid var(--fuchsia);
+        .hero-empty p {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            position: relative;
         }
 
-        .entry-item.medium-value {
-            background: rgba(77, 166, 160, 0.1);
-            border-left: 3px solid var(--teal);
-        }
-
-        .entry-item.low-value {
-            background: rgba(212, 175, 55, 0.1);
-            border-left: 3px solid var(--gold);
-        }
-
+        /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, var(--navy), #4A5D8A);
-            color: var(--white);
-            padding: 1.5rem;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
-        .chart-container {
-            background: var(--white);
-            padding: 1.5rem;
+        .stat-card {
+            background: linear-gradient(135deg, var(--white) 0%, #F8F9FA 100%);
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(217, 30, 107, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .chart-container h3 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
             margin-bottom: 1rem;
-            color: var(--navy);
         }
 
+        .stat-icon.high {
+            background: linear-gradient(135deg, var(--fuchsia) 0%, #E93D7A 100%);
+            color: var(--white);
+        }
+
+        .stat-icon.medium {
+            background: linear-gradient(135deg, var(--teal) 0%, #6BB8B3 100%);
+            color: var(--white);
+        }
+
+        .stat-icon.low {
+            background: linear-gradient(135deg, var(--gold) 0%, #E0BF4A 100%);
+            color: var(--white);
+        }
+
+        .stat-icon.total {
+            background: linear-gradient(135deg, var(--navy) 0%, #4A5D8A 100%);
+            color: var(--white);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            color: var(--dark);
+            opacity: 0.7;
+            font-weight: 500;
+        }
+
+        /* Calendar Grid */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .day-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.25rem;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .day-card.today {
+            border-color: var(--fuchsia);
+        }
+
+        .day-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--teal);
+        }
+
+        .day-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark);
+            opacity: 0.7;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .day-date {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 0.75rem;
+        }
+
+        .day-hours {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--teal);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .progress-ring {
+            width: 48px;
+            height: 48px;
+            position: relative;
+            margin-top: 0.75rem;
+        }
+
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 4;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .progress-ring .bg {
+            stroke: #E9ECEF;
+        }
+
+        .progress-ring .progress {
+            stroke: var(--fuchsia);
+        }
+
+        /* Entry List */
+        .entry-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .entry-item {
+            background: linear-gradient(135deg, var(--white) 0%, #FAFBFC 100%);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            border-left: 4px solid var(--teal);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .entry-item.high-value {
+            border-left-color: var(--fuchsia);
+        }
+
+        .entry-item.medium-value {
+            border-left-color: var(--teal);
+        }
+
+        .entry-item.low-value {
+            border-left-color: var(--gold);
+        }
+
+        .entry-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .entry-info {
+            flex: 1;
+        }
+
+        .entry-name {
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 0.25rem;
+        }
+
+        .entry-meta {
+            font-size: 0.85rem;
+            color: var(--dark);
+            opacity: 0.6;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .value-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .value-badge.high {
+            background: rgba(217, 30, 107, 0.1);
+            color: var(--fuchsia);
+        }
+
+        .value-badge.medium {
+            background: rgba(77, 166, 160, 0.1);
+            color: var(--teal);
+        }
+
+        .value-badge.low {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--gold);
+        }
+
+        /* Charts */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .chart-card h3 {
+            color: var(--navy);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* Automation Opportunities */
         .automation-list {
-            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
         }
 
         .automation-item {
-            padding: 1rem;
-            margin-bottom: 0.75rem;
-            border-radius: 8px;
+            background: linear-gradient(135deg, var(--white) 0%, #FAFBFC 100%);
+            border-radius: 12px;
+            padding: 1.25rem;
             border-left: 4px solid var(--gold);
-            background: rgba(212, 175, 55, 0.05);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
         }
 
         .automation-item.high-priority {
             border-left-color: var(--fuchsia);
-            background: rgba(217, 30, 107, 0.05);
         }
 
         .automation-item.medium-priority {
             border-left-color: var(--teal);
-            background: rgba(77, 166, 160, 0.05);
         }
 
-        .automation-item .task-name {
+        .automation-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .automation-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .priority-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .priority-badge.high {
+            background: var(--fuchsia);
+            color: var(--white);
+        }
+
+        .priority-badge.medium {
+            background: var(--teal);
+            color: var(--white);
+        }
+
+        .priority-badge.low {
+            background: var(--gold);
+            color: var(--white);
+        }
+
+        .automation-task {
             font-weight: 600;
             color: var(--navy);
-            margin-bottom: 0.25rem;
+            font-size: 1.05rem;
         }
 
-        .automation-item .task-info {
+        .automation-details {
             font-size: 0.9rem;
-            color: var(--charcoal);
-            margin-bottom: 0.25rem;
+            color: var(--dark);
+            opacity: 0.7;
+            margin-bottom: 0.5rem;
         }
 
-        .automation-item .recommendation {
+        .automation-recommendation {
             font-size: 0.85rem;
             font-weight: 600;
-            margin-top: 0.5rem;
+            color: var(--navy);
         }
 
-        .high-priority .recommendation {
-            color: var(--fuchsia);
-        }
-
-        .medium-priority .recommendation {
-            color: var(--teal);
-        }
-
-        .low-priority .recommendation {
-            color: var(--gold);
-        }
-
-        .add-entry-btn {
+        /* Floating Action Button */
+        .fab {
             position: fixed;
             bottom: 2rem;
             right: 2rem;
-            background: var(--fuchsia);
-            color: var(--white);
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--fuchsia) 0%, #E93D7A 100%);
             border: none;
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-radius: 50px;
+            border-radius: 50%;
+            color: var(--white);
+            font-size: 1.5rem;
             cursor: pointer;
-            box-shadow: 0 4px 20px rgba(217, 30, 107, 0.4);
-            transition: all 0.3s;
-            z-index: 100;
+            box-shadow: 0 8px 32px rgba(217, 30, 107, 0.4);
+            transition: all 0.3s ease;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
         }
 
-        .add-entry-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 25px rgba(217, 30, 107, 0.5);
+        .fab:hover {
+            transform: scale(1.1) translateY(-2px);
+            box-shadow: 0 12px 40px rgba(217, 30, 107, 0.5);
+            animation: none;
         }
 
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -323,357 +714,256 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
             z-index: 1000;
-            overflow-y: auto;
-        }
-
-        .modal.active {
-            display: flex;
             align-items: center;
             justify-content: center;
             padding: 1rem;
         }
 
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
         .modal-content {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 2rem;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
             max-width: 600px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            position: relative;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .modal-header {
+            padding: 2rem 2rem 1rem;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        .modal-header h2 {
-            color: var(--navy);
+        .modal-title {
             font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--navy);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
 
         .close-btn {
-            background: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             border: none;
-            font-size: 2rem;
-            color: var(--charcoal);
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--dark);
             cursor: pointer;
-            padding: 0;
-            width: 32px;
-            height: 32px;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
+            font-size: 1.25rem;
         }
 
         .close-btn:hover {
+            background: rgba(217, 30, 107, 0.1);
             color: var(--fuchsia);
             transform: rotate(90deg);
         }
 
-        .form-group {
-            margin-bottom: 1.25rem;
+        .modal-body {
+            padding: 2rem;
         }
 
-        .form-group label {
+        /* Form */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
             display: block;
             font-weight: 600;
             color: var(--navy);
             margin-bottom: 0.5rem;
+            font-size: 0.95rem;
         }
 
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
+        .form-input,
+        .form-select {
             width: 100%;
-            padding: 0.75rem;
-            border: 2px solid var(--medium-gray);
-            border-radius: 8px;
+            padding: 0.875rem 1rem;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
             font-size: 1rem;
             font-family: 'Inter', sans-serif;
-            transition: border-color 0.3s;
+            transition: all 0.3s ease;
+            background: var(--white);
         }
 
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
+        .form-input:focus,
+        .form-select:focus {
             outline: none;
             border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(77, 166, 160, 0.1);
         }
 
         .time-inputs {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
+            gap: 1rem;
         }
 
         .quick-templates {
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
-            margin-top: 0.5rem;
+            margin-top: 0.75rem;
         }
 
-        .template-btn {
+        .template-chip {
             padding: 0.5rem 1rem;
             background: var(--light-gray);
-            border: 1px solid var(--medium-gray);
-            border-radius: 6px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
             font-size: 0.85rem;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
 
-        .template-btn:hover {
+        .template-chip:hover {
             background: var(--teal);
-            color: var(--white);
             border-color: var(--teal);
+            color: var(--white);
+            transform: translateY(-2px);
         }
 
+        /* Buttons */
         .btn {
-            padding: 0.75rem 1.5rem;
+            padding: 0.875rem 1.75rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
         }
 
         .btn-primary {
-            background: var(--fuchsia);
+            background: linear-gradient(135deg, var(--fuchsia) 0%, #E93D7A 100%);
             color: var(--white);
+            box-shadow: 0 4px 12px rgba(217, 30, 107, 0.3);
         }
 
         .btn-primary:hover {
-            background: #C01A5D;
-            transform: translateY(-2px);
+            transform: scale(1.02) translateY(-2px);
+            box-shadow: 0 6px 20px rgba(217, 30, 107, 0.4);
         }
 
         .btn-secondary {
-            background: var(--teal);
+            background: linear-gradient(135deg, var(--teal) 0%, #6BB8B3 100%);
             color: var(--white);
+            box-shadow: 0 4px 12px rgba(77, 166, 160, 0.3);
         }
 
         .btn-secondary:hover {
-            background: #3E9690;
-            transform: translateY(-2px);
+            transform: scale(1.02) translateY(-2px);
+            box-shadow: 0 6px 20px rgba(77, 166, 160, 0.4);
         }
 
         .btn-danger {
-            background: #DC3545;
+            background: linear-gradient(135deg, #DC3545 0%, #C82333 100%);
             color: var(--white);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
         }
 
         .btn-danger:hover {
-            background: #C82333;
-            transform: translateY(-2px);
+            transform: scale(1.02) translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
         }
 
         .btn-group {
             display: flex;
             gap: 1rem;
             margin-top: 1.5rem;
-        }
-
-        .export-buttons {
-            display: flex;
-            gap: 1rem;
             flex-wrap: wrap;
         }
 
-        .entry-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .entry-card {
-            background: var(--light-gray);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 0.75rem;
-            border-left: 4px solid var(--medium-gray);
-        }
-
-        .entry-card.high-value {
-            border-left-color: var(--fuchsia);
-        }
-
-        .entry-card.medium-value {
-            border-left-color: var(--teal);
-        }
-
-        .entry-card.low-value {
-            border-left-color: var(--gold);
-        }
-
-        .entry-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 0.5rem;
-        }
-
-        .entry-card-title {
-            font-weight: 600;
-            color: var(--navy);
-            font-size: 1.1rem;
-        }
-
-        .entry-card-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .icon-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0.25rem;
-            font-size: 1.1rem;
-            transition: all 0.2s;
-        }
-
-        .icon-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .entry-card-info {
-            font-size: 0.9rem;
-            color: var(--charcoal);
-        }
-
-        .value-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-left: 0.5rem;
-        }
-
-        .value-badge.high {
-            background: var(--fuchsia);
-            color: var(--white);
-        }
-
-        .value-badge.medium {
-            background: var(--teal);
-            color: var(--white);
-        }
-
-        .value-badge.low {
-            background: var(--gold);
-            color: var(--white);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: var(--charcoal);
-        }
-
-        .empty-state-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.3;
-        }
-
-        .empty-state h3 {
-            color: var(--navy);
-            margin-bottom: 0.5rem;
-        }
-
-        .empty-state p {
-            opacity: 0.7;
-        }
-
+        /* Footer */
         footer {
-            background: var(--navy);
+            background: linear-gradient(135deg, var(--navy) 0%, #4A5D8A 100%);
             color: var(--white);
-            padding: 2rem 1rem;
+            padding: 3rem 2rem;
             text-align: center;
-            margin-top: 3rem;
+            margin-top: 4rem;
         }
 
         footer p {
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
         }
 
         .footer-cta {
-            display: inline-block;
-            padding: 0.75rem 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 2rem;
             background: var(--fuchsia);
             color: var(--white);
             text-decoration: none;
             border-radius: 50px;
             font-weight: 600;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(217, 30, 107, 0.3);
         }
 
         .footer-cta:hover {
-            background: #C01A5D;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(217, 30, 107, 0.4);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 24px rgba(217, 30, 107, 0.4);
         }
 
+        /* Responsive */
         @media (max-width: 768px) {
-            header h1 {
-                font-size: 1.5rem;
+            .nav-container {
+                flex-direction: column;
+                align-items: stretch;
             }
 
-            header p {
-                font-size: 1rem;
+            .nav-links {
+                flex-direction: column;
             }
 
-            .calendar-grid {
-                grid-template-columns: 1fr;
+            .nav-btn {
+                width: 100%;
+                text-align: center;
             }
 
+            .stats-grid,
+            .calendar-grid,
             .charts-grid {
                 grid-template-columns: 1fr;
             }
 
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .tabs {
-                flex-direction: column;
-            }
-
-            .tab-btn {
-                width: 100%;
-            }
-
-            .add-entry-btn {
+            .fab {
                 bottom: 1rem;
                 right: 1rem;
-                padding: 0.75rem 1.5rem;
-                font-size: 1rem;
+                width: 56px;
+                height: 56px;
             }
 
-            .btn-group {
-                flex-direction: column;
-            }
-
-            .btn-group .btn {
-                width: 100%;
-            }
-
-            .export-buttons {
-                flex-direction: column;
-            }
-
-            .export-buttons .btn {
-                width: 100%;
+            .container {
+                padding: 1rem;
             }
 
             .time-inputs {
@@ -681,174 +971,323 @@
             }
         }
 
-        .reclaim-potential {
-            background: linear-gradient(135deg, var(--fuchsia), #E93D7A);
-            color: var(--white);
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
+        /* Loading Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #F0F0F0 25%, #E0E0E0 50%, #F0F0F0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
         }
 
-        .reclaim-potential h3 {
-            color: var(--white);
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--dark);
+            opacity: 0.6;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
             margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Reclaim Potential Card */
+        .reclaim-card {
+            background: linear-gradient(135deg, var(--fuchsia) 0%, #E93D7A 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            color: var(--white);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reclaim-card::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            top: -100px;
+            right: -100px;
+            border-radius: 50%;
+        }
+
+        .reclaim-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
 
         .reclaim-value {
-            font-size: 2rem;
-            font-weight: 700;
+            font-size: 3rem;
+            font-weight: 800;
             margin-bottom: 0.5rem;
         }
 
         .reclaim-description {
             opacity: 0.95;
-            font-size: 0.95rem;
+            line-height: 1.7;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>⏰ Time Audit Tracker</h1>
-        <p>Track your time. Identify opportunities. Reclaim your week.</p>
-    </header>
-
-    <div class="container">
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
-            <button class="tab-btn" data-tab="calendar">7-Day Calendar</button>
-            <button class="tab-btn" data-tab="analytics">Analytics</button>
+    <!-- Login Screen -->
+    <div class="login-screen" id="login-screen">
+        <div class="login-box">
+            <div class="logo">⏰</div>
+            <h1>Time Audit Tracker</h1>
+            <p>Sign in to track your time and unlock powerful insights</p>
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="user-email">Email Address</label>
+                    <input type="email" id="user-email" class="form-input" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="user-name">Your Name</label>
+                    <input type="text" id="user-name" class="form-input" required placeholder="Your Name">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+                    <i class="fas fa-arrow-right"></i> Start Tracking
+                </button>
+            </form>
         </div>
+    </div>
 
-        <!-- Dashboard Tab -->
-        <div class="tab-content active" id="dashboard">
-            <div class="card">
-                <h2>Quick Overview</h2>
-                <div class="stats-grid">
+    <!-- App Content -->
+    <div id="app-content" style="display: none;">
+        <!-- Navigation -->
+        <nav>
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <i class="fas fa-clock"></i>
+                    Time Audit Tracker
+                </div>
+                <div class="nav-links">
+                    <button class="nav-btn active" data-page="dashboard">
+                        <i class="fas fa-home"></i> Dashboard
+                    </button>
+                    <button class="nav-btn" data-page="analytics">
+                        <i class="fas fa-chart-pie"></i> Analytics
+                    </button>
+                </div>
+                <div class="nav-user">
+                    <span class="user-badge">
+                        <i class="fas fa-user"></i>
+                        <span id="current-user"></span>
+                    </span>
+                    <button class="btn-reset" onclick="resetWeek()">
+                        <i class="fas fa-rotate"></i> Reset Week
+                    </button>
+                    <button class="btn-logout" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <!-- Dashboard Page -->
+            <div class="page-view active" id="dashboard-page">
+                <!-- Empty State Hero -->
+                <div class="hero-empty" id="hero-empty" style="display: none;">
+                    <h2>Start Tracking Your Time</h2>
+                    <p>Click the + button below to add your first time entry and unlock powerful insights about where your time is really going.</p>
+                    <i class="fas fa-arrow-down" style="font-size: 2rem; animation: pulse 2s infinite;"></i>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid" id="stats-grid">
                     <div class="stat-card">
+                        <div class="stat-icon total">
+                            <i class="fas fa-clock"></i>
+                        </div>
                         <div class="stat-value" id="total-hours">0</div>
                         <div class="stat-label">Total Hours (7 days)</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value" id="total-entries">0</div>
-                        <div class="stat-label">Total Entries</div>
+                        <div class="stat-icon high">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="stat-value" id="high-hours">0</div>
+                        <div class="stat-label">High-Value Hours</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value" id="avg-daily-hours">0</div>
-                        <div class="stat-label">Avg Hours/Day</div>
+                        <div class="stat-icon medium">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-value" id="medium-hours">0</div>
+                        <div class="stat-label">Medium-Value Hours</div>
                     </div>
+                    <div class="stat-card">
+                        <div class="stat-icon low">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-value" id="low-hours">0</div>
+                        <div class="stat-label">Low-Value Hours</div>
+                    </div>
+                </div>
+
+                <!-- 7-Day Calendar -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-calendar-week"></i>
+                            7-Day Overview
+                        </h2>
+                    </div>
+                    <div class="calendar-grid" id="calendar-grid"></div>
+                </div>
+
+                <!-- Recent Entries -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-list"></i>
+                            Recent Entries
+                        </h2>
+                    </div>
+                    <div class="entry-list" id="recent-entries"></div>
                 </div>
             </div>
 
-            <div class="card">
-                <h2>Recent Entries</h2>
-                <div id="recent-entries"></div>
+            <!-- Analytics Page -->
+            <div class="page-view" id="analytics-page">
+                <div id="analytics-content"></div>
             </div>
         </div>
 
-        <!-- Calendar Tab -->
-        <div class="tab-content" id="calendar">
-            <div class="card">
-                <h2>7-Day Calendar View</h2>
-                <div class="calendar-grid" id="calendar-grid"></div>
-            </div>
-        </div>
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2026 Kendra Nix | Automate and Elevate</p>
+            <a href="https://kendranix.com/automate-and-elevate" class="footer-cta" target="_blank">
+                <i class="fas fa-graduation-cap"></i>
+                Get the Full Course
+            </a>
+        </footer>
 
-        <!-- Analytics Tab -->
-        <div class="tab-content" id="analytics">
-            <div id="analytics-content"></div>
-        </div>
+        <!-- Floating Action Button -->
+        <button class="fab" onclick="openAddModal()">
+            <i class="fas fa-plus"></i>
+        </button>
     </div>
 
-    <!-- Add Entry Modal -->
+    <!-- Entry Modal -->
     <div class="modal" id="entry-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modal-title">Add Time Entry</h2>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
+                <h3 class="modal-title" id="modal-title">
+                    <i class="fas fa-plus-circle"></i>
+                    Add Time Entry
+                </h3>
+                <button class="close-btn" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <form id="entry-form">
-                <input type="hidden" id="entry-id">
+            <div class="modal-body">
+                <form id="entry-form">
+                    <input type="hidden" id="entry-id">
 
-                <div class="form-group">
-                    <label for="task-name">Task Name</label>
-                    <input type="text" id="task-name" required placeholder="What did you work on?">
-                </div>
-
-                <div class="form-group">
-                    <label>Quick Templates</label>
-                    <div class="quick-templates">
-                        <button type="button" class="template-btn" data-template="Email management">Email management</button>
-                        <button type="button" class="template-btn" data-template="Client meeting">Client meeting</button>
-                        <button type="button" class="template-btn" data-template="Content creation">Content creation</button>
-                        <button type="button" class="template-btn" data-template="Social media">Social media</button>
-                        <button type="button" class="template-btn" data-template="Admin tasks">Admin tasks</button>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Time Spent</label>
-                    <div class="time-inputs">
-                        <div>
-                            <label for="hours" style="font-size: 0.85rem; font-weight: 400;">Hours</label>
-                            <select id="hours" required>
-                                <option value="0">0</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="minutes" style="font-size: 0.85rem; font-weight: 400;">Minutes</label>
-                            <select id="minutes" required>
-                                <option value="0">0</option>
-                                <option value="15">15</option>
-                                <option value="30">30</option>
-                                <option value="45">45</option>
-                            </select>
+                    <div class="form-group">
+                        <label class="form-label" for="task-name">
+                            <i class="fas fa-tasks"></i> Task Name
+                        </label>
+                        <input type="text" id="task-name" class="form-input" required placeholder="What did you work on?">
+                        <div class="quick-templates">
+                            <span class="template-chip" data-template="Email management">Email management</span>
+                            <span class="template-chip" data-template="Client meeting">Client meeting</span>
+                            <span class="template-chip" data-template="Content creation">Content creation</span>
+                            <span class="template-chip" data-template="Social media">Social media</span>
+                            <span class="template-chip" data-template="Admin tasks">Admin tasks</span>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="value-category">Value Category</label>
-                    <select id="value-category" required>
-                        <option value="">Select category...</option>
-                        <option value="High">High - Revenue-generating, strategic work</option>
-                        <option value="Medium">Medium - Important but not directly revenue-generating</option>
-                        <option value="Low">Low - Could be delegated/automated</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-hourglass-half"></i> Time Spent
+                        </label>
+                        <div class="time-inputs">
+                            <div>
+                                <select id="hours" class="form-select" required>
+                                    <option value="0">0 hours</option>
+                                    <option value="1">1 hour</option>
+                                    <option value="2">2 hours</option>
+                                    <option value="3">3 hours</option>
+                                    <option value="4">4 hours</option>
+                                    <option value="5">5 hours</option>
+                                    <option value="6">6 hours</option>
+                                    <option value="7">7 hours</option>
+                                    <option value="8">8 hours</option>
+                                </select>
+                            </div>
+                            <div>
+                                <select id="minutes" class="form-select" required>
+                                    <option value="0">0 minutes</option>
+                                    <option value="15">15 minutes</option>
+                                    <option value="30">30 minutes</option>
+                                    <option value="45">45 minutes</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="form-group">
-                    <label for="task-type">Task Type</label>
-                    <select id="task-type" required>
-                        <option value="">Select type...</option>
-                        <option value="Client work">Client work</option>
-                        <option value="Admin">Admin</option>
-                        <option value="Content creation">Content creation</option>
-                        <option value="Sales & marketing">Sales & marketing</option>
-                        <option value="Strategy & planning">Strategy & planning</option>
-                        <option value="Learning & development">Learning & development</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label class="form-label" for="value-category">
+                            <i class="fas fa-layer-group"></i> Value Category
+                        </label>
+                        <select id="value-category" class="form-select" required>
+                            <option value="">Select category...</option>
+                            <option value="High">🔥 High - Revenue-generating, strategic work</option>
+                            <option value="Medium">⭐ Medium - Important but not directly revenue-generating</option>
+                            <option value="Low">⚠️ Low - Could be delegated/automated</option>
+                        </select>
+                    </div>
 
-                <div class="form-group">
-                    <label for="entry-date">Date</label>
-                    <input type="date" id="entry-date" required>
-                </div>
+                    <div class="form-group">
+                        <label class="form-label" for="task-type">
+                            <i class="fas fa-briefcase"></i> Task Type
+                        </label>
+                        <select id="task-type" class="form-select" required>
+                            <option value="">Select type...</option>
+                            <option value="Client work">Client work</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Content creation">Content creation</option>
+                            <option value="Sales & marketing">Sales & marketing</option>
+                            <option value="Strategy & planning">Strategy & planning</option>
+                            <option value="Learning & development">Learning & development</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
 
-                <div class="btn-group">
-                    <button type="submit" class="btn btn-primary">Save Entry</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="delete-btn" style="display: none;" onclick="deleteEntry()">Delete</button>
-                </div>
-            </form>
+                    <div class="form-group">
+                        <label class="form-label" for="entry-date">
+                            <i class="fas fa-calendar"></i> Date
+                        </label>
+                        <input type="date" id="entry-date" class="form-input" required>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary" style="flex: 1;">
+                            <i class="fas fa-save"></i> Save Entry
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()" style="flex: 1;">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                    <button type="button" class="btn btn-danger" id="delete-btn" style="display: none; width: 100%; margin-top: 1rem;" onclick="deleteEntry()">
+                        <i class="fas fa-trash"></i> Delete Entry
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -856,61 +1295,149 @@
     <div class="modal" id="day-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="day-modal-title">Entries for</h2>
-                <button class="close-btn" onclick="closeDayModal()">&times;</button>
+                <h3 class="modal-title" id="day-modal-title">
+                    <i class="fas fa-calendar-day"></i>
+                    Entries for
+                </h3>
+                <button class="close-btn" onclick="closeDayModal()">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <div id="day-entries"></div>
+            <div class="modal-body">
+                <div class="entry-list" id="day-entries"></div>
+            </div>
         </div>
     </div>
-
-    <!-- Add Entry Button -->
-    <button class="add-entry-btn" onclick="openAddModal()">+ Add Entry</button>
-
-    <footer>
-        <p>&copy; 2026 Kendra Nix | Automate and Elevate</p>
-        <a href="https://kendranix.com/automate-and-elevate" class="footer-cta" target="_blank">Get the Full Course</a>
-    </footer>
 
     <script>
         // Data Management
         let entries = [];
         let currentEditId = null;
+        let currentUser = null;
 
-        // Load data from localStorage
+        // User Authentication
+        function checkAuth() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showApp();
+            } else {
+                showLogin();
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('app-content').style.display = 'none';
+        }
+
+        function showApp() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('app-content').style.display = 'block';
+            document.getElementById('current-user').textContent = currentUser.name;
+            loadData();
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('user-email').value;
+            const name = document.getElementById('user-name').value;
+            currentUser = { email, name };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            showApp();
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout? Your data will be saved.')) {
+                localStorage.removeItem('currentUser');
+                currentUser = null;
+                entries = [];
+                showLogin();
+                document.getElementById('login-form').reset();
+            }
+        }
+
+        function resetWeek() {
+            if (confirm('Are you sure you want to reset this week? This will generate a PDF report and clear all current entries. This action cannot be undone.')) {
+                if (entries.length > 0) {
+                    exportToPDF();
+                    setTimeout(() => {
+                        entries = [];
+                        saveData();
+                        showToast('Week reset! Your PDF report has been downloaded.', 'success');
+                    }, 500);
+                } else {
+                    showToast('No entries to reset.', 'info');
+                }
+            }
+        }
+
+        // Toast Notification
+        function showToast(message, type = 'success') {
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 2rem;
+                right: 2rem;
+                background: ${type === 'success' ? 'linear-gradient(135deg, #4DA6A0, #6BB8B3)' : 'linear-gradient(135deg, #D91E6B, #E93D7A)'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+                z-index: 10000;
+                font-weight: 600;
+                animation: slideUp 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'fadeIn 0.3s ease reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Load & Save Data
         function loadData() {
-            const saved = localStorage.getItem('timeAuditEntries');
+            if (!currentUser) return;
+            const key = `timeAuditEntries_${currentUser.email}`;
+            const saved = localStorage.getItem(key);
             if (saved) {
                 entries = JSON.parse(saved);
             }
             renderAll();
         }
 
-        // Save data to localStorage
         function saveData() {
-            localStorage.setItem('timeAuditEntries', JSON.stringify(entries));
+            if (!currentUser) return;
+            const key = `timeAuditEntries_${currentUser.email}`;
+            localStorage.setItem(key, JSON.stringify(entries));
             renderAll();
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            loadData();
+            checkAuth();
             setupEventListeners();
             setDefaultDate();
         });
 
         // Setup Event Listeners
         function setupEventListeners() {
-            // Tab switching
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+            // Login form
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
+
+            // Navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', () => switchPage(btn.dataset.page));
             });
 
-            // Entry form submission
+            // Entry form
             document.getElementById('entry-form').addEventListener('submit', handleFormSubmit);
 
-            // Template buttons
-            document.querySelectorAll('.template-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+            // Template chips
+            document.querySelectorAll('.template-chip').forEach(chip => {
+                chip.addEventListener('click', function() {
                     document.getElementById('task-name').value = this.dataset.template;
                 });
             });
@@ -924,29 +1451,29 @@
             });
         }
 
-        // Set default date to today
+        // Page Switching
+        function switchPage(pageName) {
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.page-view').forEach(page => page.classList.remove('active'));
+
+            document.querySelector(`[data-page="${pageName}"]`).classList.add('active');
+            document.getElementById(`${pageName}-page`).classList.add('active');
+
+            if (pageName === 'analytics') {
+                renderAnalytics();
+            }
+        }
+
+        // Set default date
         function setDefaultDate() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('entry-date').value = today;
         }
 
-        // Tab Switching
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-            document.getElementById(tabName).classList.add('active');
-
-            if (tabName === 'analytics') {
-                renderAnalytics();
-            }
-        }
-
         // Modal Functions
         function openAddModal() {
             currentEditId = null;
-            document.getElementById('modal-title').textContent = 'Add Time Entry';
+            document.getElementById('modal-title').innerHTML = '<i class="fas fa-plus-circle"></i> Add Time Entry';
             document.getElementById('entry-form').reset();
             document.getElementById('delete-btn').style.display = 'none';
             setDefaultDate();
@@ -958,7 +1485,7 @@
             if (!entry) return;
 
             currentEditId = id;
-            document.getElementById('modal-title').textContent = 'Edit Time Entry';
+            document.getElementById('modal-title').innerHTML = '<i class="fas fa-edit"></i> Edit Time Entry';
             document.getElementById('entry-id').value = id;
             document.getElementById('task-name').value = entry.taskName;
 
@@ -993,7 +1520,7 @@
             const duration = hours + (minutes / 60);
 
             if (duration === 0) {
-                alert('Please enter a time duration greater than 0');
+                showToast('Please enter a time duration greater than 0', 'error');
                 return;
             }
 
@@ -1010,8 +1537,10 @@
             if (currentEditId) {
                 const index = entries.findIndex(e => e.id === currentEditId);
                 entries[index] = entry;
+                showToast('Entry updated successfully!', 'success');
             } else {
                 entries.push(entry);
+                showToast('Entry added successfully!', 'success');
             }
 
             saveData();
@@ -1026,6 +1555,7 @@
                 entries = entries.filter(e => e.id !== currentEditId);
                 saveData();
                 closeModal();
+                showToast('Entry deleted successfully!', 'success');
             }
         }
 
@@ -1033,21 +1563,33 @@
         function renderAll() {
             renderDashboard();
             renderCalendar();
+            updateEmptyState();
+        }
+
+        // Update Empty State
+        function updateEmptyState() {
+            const heroEmpty = document.getElementById('hero-empty');
+            if (entries.length === 0) {
+                heroEmpty.style.display = 'block';
+            } else {
+                heroEmpty.style.display = 'none';
+            }
         }
 
         // Render Dashboard
         function renderDashboard() {
-            // Calculate stats
             const last7Days = getLast7Days();
             const weekEntries = entries.filter(e => last7Days.includes(e.date));
 
             const totalHours = weekEntries.reduce((sum, e) => sum + e.duration, 0);
-            const totalEntries = weekEntries.length;
-            const avgDaily = totalEntries > 0 ? (totalHours / 7).toFixed(1) : 0;
+            const highHours = weekEntries.filter(e => e.valueCategory === 'High').reduce((sum, e) => sum + e.duration, 0);
+            const mediumHours = weekEntries.filter(e => e.valueCategory === 'Medium').reduce((sum, e) => sum + e.duration, 0);
+            const lowHours = weekEntries.filter(e => e.valueCategory === 'Low').reduce((sum, e) => sum + e.duration, 0);
 
             document.getElementById('total-hours').textContent = totalHours.toFixed(1);
-            document.getElementById('total-entries').textContent = totalEntries;
-            document.getElementById('avg-daily-hours').textContent = avgDaily;
+            document.getElementById('high-hours').textContent = highHours.toFixed(1);
+            document.getElementById('medium-hours').textContent = mediumHours.toFixed(1);
+            document.getElementById('low-hours').textContent = lowHours.toFixed(1);
 
             // Recent entries
             const recentContainer = document.getElementById('recent-entries');
@@ -1058,23 +1600,23 @@
             if (recentEntries.length === 0) {
                 recentContainer.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">📝</div>
+                        <i class="fas fa-inbox"></i>
                         <h3>No entries yet</h3>
-                        <p>Click the "Add Entry" button to start tracking your time!</p>
+                        <p>Click the + button to add your first time entry</p>
                     </div>
                 `;
             } else {
                 recentContainer.innerHTML = recentEntries.map(entry => `
-                    <div class="entry-card ${entry.valueCategory.toLowerCase()}-value" onclick="openEditModal('${entry.id}')">
-                        <div class="entry-card-header">
-                            <div>
-                                <div class="entry-card-title">${entry.taskName}</div>
-                                <span class="value-badge ${entry.valueCategory.toLowerCase()}">${entry.valueCategory} Value</span>
+                    <div class="entry-item ${entry.valueCategory.toLowerCase()}-value" onclick="openEditModal('${entry.id}')">
+                        <div class="entry-info">
+                            <div class="entry-name">${entry.taskName}</div>
+                            <div class="entry-meta">
+                                <span><i class="fas fa-clock"></i> ${formatDuration(entry.duration)}</span>
+                                <span><i class="fas fa-calendar"></i> ${formatDate(entry.date)}</span>
+                                <span><i class="fas fa-briefcase"></i> ${entry.taskType}</span>
                             </div>
                         </div>
-                        <div class="entry-card-info">
-                            ${formatDuration(entry.duration)} • ${entry.taskType} • ${formatDate(entry.date)}
-                        </div>
+                        <span class="value-badge ${entry.valueCategory.toLowerCase()}">${entry.valueCategory}</span>
                     </div>
                 `).join('');
             }
@@ -1093,18 +1635,22 @@
                 const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
                 const dayNum = dateObj.getDate();
                 const isToday = date === today;
+                const progress = Math.min((totalHours / 8) * 100, 100);
 
                 return `
                     <div class="day-card ${isToday ? 'today' : ''}" onclick="showDayDetails('${date}')">
-                        <div class="day-header">${dayName}</div>
+                        <div class="day-name">${dayName}</div>
                         <div class="day-date">${dayNum}</div>
-                        <div class="day-total">${totalHours.toFixed(1)}h</div>
-                        ${dayEntries.slice(0, 3).map(entry => `
-                            <div class="entry-item ${entry.valueCategory.toLowerCase()}-value">
-                                ${entry.taskName.substring(0, 20)}${entry.taskName.length > 20 ? '...' : ''}
-                            </div>
-                        `).join('')}
-                        ${dayEntries.length > 3 ? `<div style="font-size: 0.75rem; color: var(--charcoal); margin-top: 0.25rem;">+${dayEntries.length - 3} more</div>` : ''}
+                        <div class="day-hours">
+                            <i class="fas fa-clock"></i> ${totalHours.toFixed(1)}h
+                        </div>
+                        <svg class="progress-ring" viewBox="0 0 48 48">
+                            <circle class="bg" cx="24" cy="24" r="20"></circle>
+                            <circle class="progress" cx="24" cy="24" r="20"
+                                stroke-dasharray="${2 * Math.PI * 20}"
+                                stroke-dashoffset="${2 * Math.PI * 20 * (1 - progress / 100)}">
+                            </circle>
+                        </svg>
                     </div>
                 `;
             }).join('');
@@ -1116,29 +1662,28 @@
             const dateObj = new Date(date + 'T00:00:00');
             const formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
-            document.getElementById('day-modal-title').textContent = formattedDate;
+            document.getElementById('day-modal-title').innerHTML = `<i class="fas fa-calendar-day"></i> ${formattedDate}`;
 
             const container = document.getElementById('day-entries');
             if (dayEntries.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">📅</div>
+                        <i class="fas fa-calendar-times"></i>
                         <h3>No entries for this day</h3>
                         <p>Add an entry to start tracking!</p>
                     </div>
                 `;
             } else {
                 container.innerHTML = dayEntries.map(entry => `
-                    <div class="entry-card ${entry.valueCategory.toLowerCase()}-value" onclick="closeDayModal(); openEditModal('${entry.id}')">
-                        <div class="entry-card-header">
-                            <div>
-                                <div class="entry-card-title">${entry.taskName}</div>
-                                <span class="value-badge ${entry.valueCategory.toLowerCase()}">${entry.valueCategory} Value</span>
+                    <div class="entry-item ${entry.valueCategory.toLowerCase()}-value" onclick="closeDayModal(); openEditModal('${entry.id}')">
+                        <div class="entry-info">
+                            <div class="entry-name">${entry.taskName}</div>
+                            <div class="entry-meta">
+                                <span><i class="fas fa-clock"></i> ${formatDuration(entry.duration)}</span>
+                                <span><i class="fas fa-briefcase"></i> ${entry.taskType}</span>
                             </div>
                         </div>
-                        <div class="entry-card-info">
-                            ${formatDuration(entry.duration)} • ${entry.taskType}
-                        </div>
+                        <span class="value-badge ${entry.valueCategory.toLowerCase()}">${entry.valueCategory}</span>
                     </div>
                 `).join('');
             }
@@ -1156,7 +1701,7 @@
                 container.innerHTML = `
                     <div class="card">
                         <div class="empty-state">
-                            <div class="empty-state-icon">📊</div>
+                            <i class="fas fa-chart-line"></i>
                             <h3>Start tracking to see analytics</h3>
                             <p>Add some time entries to unlock insights and automation recommendations!</p>
                         </div>
@@ -1165,25 +1710,21 @@
                 return;
             }
 
-            // Calculate analytics
             const totalHours = weekEntries.reduce((sum, e) => sum + e.duration, 0);
             const lowValueEntries = weekEntries.filter(e => e.valueCategory === 'Low');
             const lowValueHours = lowValueEntries.reduce((sum, e) => sum + e.duration, 0);
 
-            // Value category breakdown
             const valueBreakdown = {
                 High: weekEntries.filter(e => e.valueCategory === 'High').reduce((sum, e) => sum + e.duration, 0),
                 Medium: weekEntries.filter(e => e.valueCategory === 'Medium').reduce((sum, e) => sum + e.duration, 0),
                 Low: lowValueHours
             };
 
-            // Task type breakdown
             const taskTypeBreakdown = {};
             weekEntries.forEach(e => {
                 taskTypeBreakdown[e.taskType] = (taskTypeBreakdown[e.taskType] || 0) + e.duration;
             });
 
-            // Automation opportunities
             const lowValueTasks = {};
             lowValueEntries.forEach(e => {
                 if (!lowValueTasks[e.taskName]) {
@@ -1201,28 +1742,9 @@
             const automationOpportunities = Object.values(lowValueTasks)
                 .sort((a, b) => b.totalHours - a.totalHours);
 
-            // Render
             container.innerHTML = `
-                <div class="card">
-                    <h2>📊 Analytics Dashboard</h2>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value">${totalHours.toFixed(1)}</div>
-                            <div class="stat-label">Total Hours Tracked</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">${((valueBreakdown.High / totalHours) * 100 || 0).toFixed(0)}%</div>
-                            <div class="stat-label">High-Value Work</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">${lowValueHours.toFixed(1)}h</div>
-                            <div class="stat-label">Low-Value Work</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="reclaim-potential">
-                    <h3>💡 Time Reclaim Potential</h3>
+                <div class="reclaim-card">
+                    <h3><i class="fas fa-lightbulb"></i> Time Reclaim Potential</h3>
                     <div class="reclaim-value">${lowValueHours.toFixed(1)} hours/week</div>
                     <div class="reclaim-description">
                         You're spending ${lowValueHours.toFixed(1)} hours per week on low-value tasks that could potentially be automated, delegated, or systematized.
@@ -1230,56 +1752,101 @@
                     </div>
                 </div>
 
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon total">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-value">${totalHours.toFixed(1)}</div>
+                        <div class="stat-label">Total Hours Tracked</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon high">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="stat-value">${((valueBreakdown.High / totalHours) * 100 || 0).toFixed(0)}%</div>
+                        <div class="stat-label">High-Value Work</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon low">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-value">${lowValueHours.toFixed(1)}h</div>
+                        <div class="stat-label">Low-Value Work</div>
+                    </div>
+                </div>
+
                 <div class="charts-grid">
-                    <div class="chart-container">
-                        <h3>Value Category Breakdown</h3>
+                    <div class="chart-card">
+                        <h3><i class="fas fa-chart-pie"></i> Value Category Breakdown</h3>
                         <canvas id="value-chart"></canvas>
                     </div>
-                    <div class="chart-container">
-                        <h3>Task Type Breakdown</h3>
+                    <div class="chart-card">
+                        <h3><i class="fas fa-chart-bar"></i> Task Type Breakdown</h3>
                         <canvas id="task-chart"></canvas>
                     </div>
                 </div>
 
                 ${automationOpportunities.length > 0 ? `
                     <div class="card">
-                        <h2>🎯 Automation Opportunities</h2>
-                        <ul class="automation-list">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-robot"></i>
+                                Automation Opportunities
+                            </h2>
+                        </div>
+                        <div class="automation-list">
                             ${automationOpportunities.map(task => {
-                                let priority = 'low-priority';
+                                let priority = 'low';
                                 let recommendation = 'LOW PRIORITY - Consider batching';
+                                let icon = 'fa-circle';
                                 if (task.totalHours >= 5) {
-                                    priority = 'high-priority';
+                                    priority = 'high';
                                     recommendation = 'HIGH PRIORITY - Automate immediately';
+                                    icon = 'fa-fire';
                                 } else if (task.totalHours >= 2) {
-                                    priority = 'medium-priority';
+                                    priority = 'medium';
                                     recommendation = 'MEDIUM PRIORITY - Should be systematized';
+                                    icon = 'fa-star';
                                 }
 
                                 return `
-                                    <li class="automation-item ${priority}">
-                                        <div class="task-name">${task.taskName}</div>
-                                        <div class="task-info">
+                                    <div class="automation-item ${priority}-priority">
+                                        <div class="automation-header">
+                                            <span class="priority-badge ${priority}">
+                                                <i class="fas ${icon}"></i> ${priority.toUpperCase()}
+                                            </span>
+                                            <span class="automation-task">${task.taskName}</span>
+                                        </div>
+                                        <div class="automation-details">
                                             ${task.totalHours.toFixed(1)} hours/week • ${task.count} occurrence${task.count > 1 ? 's' : ''} • ${task.taskType}
                                         </div>
-                                        <div class="recommendation">${recommendation}</div>
-                                    </li>
+                                        <div class="automation-recommendation">${recommendation}</div>
+                                    </div>
                                 `;
                             }).join('')}
-                        </ul>
+                        </div>
                     </div>
                 ` : ''}
 
                 <div class="card">
-                    <h2>📥 Export Data</h2>
-                    <div class="export-buttons">
-                        <button class="btn btn-secondary" onclick="exportToPDF()">Export PDF Report</button>
-                        <button class="btn btn-secondary" onclick="exportToCSV()">Export CSV</button>
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-download"></i>
+                            Export Data
+                        </h2>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="exportToPDF()">
+                            <i class="fas fa-file-pdf"></i> Export PDF Report
+                        </button>
+                        <button class="btn btn-secondary" onclick="exportToCSV()">
+                            <i class="fas fa-file-csv"></i> Export CSV
+                        </button>
                     </div>
                 </div>
             `;
 
-            // Render Charts
             setTimeout(() => {
                 renderValueChart(valueBreakdown);
                 renderTaskChart(taskTypeBreakdown);
@@ -1292,14 +1859,17 @@
             if (!ctx) return;
 
             new Chart(ctx, {
-                type: 'pie',
+                type: 'doughnut',
                 data: {
                     labels: ['High Value', 'Medium Value', 'Low Value'],
                     datasets: [{
                         data: [data.High, data.Medium, data.Low],
-                        backgroundColor: ['#D91E6B', '#4DA6A0', '#D4AF37'],
-                        borderWidth: 2,
-                        borderColor: '#FFFFFF'
+                        backgroundColor: [
+                            'rgb(217, 30, 107)',
+                            'rgb(77, 166, 160)',
+                            'rgb(212, 175, 55)'
+                        ],
+                        borderWidth: 0
                     }]
                 },
                 options: {
@@ -1307,7 +1877,15 @@
                     maintainAspectRatio: true,
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    family: 'Inter',
+                                    size: 12,
+                                    weight: '600'
+                                }
+                            }
                         },
                         tooltip: {
                             callbacks: {
@@ -1319,6 +1897,10 @@
                                 }
                             }
                         }
+                    },
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true
                     }
                 }
             });
@@ -1339,9 +1921,10 @@
                     datasets: [{
                         label: 'Hours',
                         data: values,
-                        backgroundColor: '#4DA6A0',
-                        borderColor: '#3E9690',
-                        borderWidth: 2
+                        backgroundColor: 'rgba(77, 166, 160, 0.8)',
+                        borderColor: 'rgb(77, 166, 160)',
+                        borderWidth: 2,
+                        borderRadius: 8
                     }]
                 },
                 options: {
@@ -1353,7 +1936,27 @@
                             ticks: {
                                 callback: function(value) {
                                     return value + 'h';
+                                },
+                                font: {
+                                    family: 'Inter',
+                                    size: 12,
+                                    weight: '600'
                                 }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    family: 'Inter',
+                                    size: 11,
+                                    weight: '600'
+                                }
+                            },
+                            grid: {
+                                display: false
                             }
                         }
                     },
@@ -1368,6 +1971,15 @@
                                 }
                             }
                         }
+                    },
+                    animation: {
+                        delay: (context) => {
+                            let delay = 0;
+                            if (context.type === 'data' && context.mode === 'default') {
+                                delay = context.dataIndex * 100;
+                            }
+                            return delay;
+                        }
                     }
                 }
             });
@@ -1381,30 +1993,33 @@
             const last7Days = getLast7Days();
             const weekEntries = entries.filter(e => last7Days.includes(e.date));
 
-            // Title
             doc.setFontSize(20);
-            doc.setTextColor(59, 74, 107); // Navy
+            doc.setTextColor(59, 74, 107);
             doc.text('Time Audit Report', 20, 20);
 
-            // Date range
-            doc.setFontSize(10);
+            doc.setFontSize(12);
             doc.setTextColor(100, 100, 100);
-            doc.text(`Report Period: ${formatDate(last7Days[0])} - ${formatDate(last7Days[last7Days.length - 1])}`, 20, 30);
+            doc.text(`${currentUser ? currentUser.name : 'User'}`, 20, 28);
 
-            // Summary stats
+            doc.setFontSize(10);
+            doc.text(`Report Period: ${formatDate(last7Days[0])} - ${formatDate(last7Days[last7Days.length - 1])}`, 20, 35);
+
             const totalHours = weekEntries.reduce((sum, e) => sum + e.duration, 0);
             const lowValueHours = weekEntries.filter(e => e.valueCategory === 'Low').reduce((sum, e) => sum + e.duration, 0);
+            const highValueHours = weekEntries.filter(e => e.valueCategory === 'High').reduce((sum, e) => sum + e.duration, 0);
+            const mediumValueHours = weekEntries.filter(e => e.valueCategory === 'Medium').reduce((sum, e) => sum + e.duration, 0);
 
             doc.setFontSize(12);
             doc.setTextColor(59, 74, 107);
-            doc.text('Summary', 20, 45);
+            doc.text('Weekly Summary', 20, 50);
             doc.setFontSize(10);
             doc.setTextColor(0, 0, 0);
-            doc.text(`Total Hours Tracked: ${totalHours.toFixed(1)}h`, 20, 55);
-            doc.text(`Low-Value Hours: ${lowValueHours.toFixed(1)}h`, 20, 62);
-            doc.text(`Time Reclaim Potential: ${lowValueHours.toFixed(1)} hours/week`, 20, 69);
+            doc.text(`Total Hours Tracked: ${totalHours.toFixed(1)}h`, 20, 60);
+            doc.text(`High-Value Hours: ${highValueHours.toFixed(1)}h (${totalHours > 0 ? ((highValueHours / totalHours) * 100).toFixed(0) : 0}%)`, 20, 67);
+            doc.text(`Medium-Value Hours: ${mediumValueHours.toFixed(1)}h (${totalHours > 0 ? ((mediumValueHours / totalHours) * 100).toFixed(0) : 0}%)`, 20, 74);
+            doc.text(`Low-Value Hours: ${lowValueHours.toFixed(1)}h (${totalHours > 0 ? ((lowValueHours / totalHours) * 100).toFixed(0) : 0}%)`, 20, 81);
+            doc.text(`Time Reclaim Potential: ${lowValueHours.toFixed(1)} hours/week`, 20, 88);
 
-            // Entries table
             const tableData = weekEntries.map(e => [
                 formatDate(e.date),
                 e.taskName,
@@ -1414,7 +2029,7 @@
             ]);
 
             doc.autoTable({
-                startY: 80,
+                startY: 100,
                 head: [['Date', 'Task', 'Duration', 'Value', 'Type']],
                 body: tableData,
                 theme: 'grid',
@@ -1428,8 +2043,7 @@
                 }
             });
 
-            // Footer
-            const finalY = doc.lastAutoTable.finalY || 80;
+            const finalY = doc.lastAutoTable.finalY || 100;
             doc.setFontSize(8);
             doc.setTextColor(100, 100, 100);
             doc.text('Generated by Time Audit Tracker - Automate and Elevate', 20, finalY + 15);
