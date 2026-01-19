@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workflow Mapper - Visual Automation Designer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/konva@9/konva.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F8F9FA;
+            overflow: hidden;
+        }
+
+        /* Layout Structure */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            background: white;
+            border-bottom: 1px solid #E0E0E0;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 18px;
+            color: #3B4A6B;
+            margin-right: auto;
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .toolbar-divider {
+            width: 1px;
+            height: 24px;
+            background: #E0E0E0;
+        }
+
+        .btn {
+            background: white;
+            border: 1px solid #E0E0E0;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #F8F9FA;
+            border-color: #D91E6B;
+        }
+
+        .btn-primary {
+            background: #D91E6B;
+            color: white;
+            border-color: #D91E6B;
+        }
+
+        .btn-primary:hover {
+            background: #B8185A;
+        }
+
+        .btn-secondary {
+            background: #4DA6A0;
+            color: white;
+            border-color: #4DA6A0;
+        }
+
+        .btn-secondary:hover {
+            background: #3D8680;
+        }
+
+        .btn-icon {
+            padding: 8px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .zoom-display {
+            min-width: 60px;
+            text-align: center;
+            font-weight: 600;
+            color: #3B4A6B;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Element Palette */
+        .palette {
+            width: 220px;
+            background: white;
+            border-right: 1px solid #E0E0E0;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.05);
+        }
+
+        .palette-title {
+            font-weight: 700;
+            font-size: 16px;
+            color: #3B4A6B;
+            margin-bottom: 16px;
+        }
+
+        .palette-item {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            cursor: grab;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .palette-item:hover {
+            border-color: #D91E6B;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .palette-item:active {
+            cursor: grabbing;
+        }
+
+        .palette-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 20px;
+        }
+
+        .palette-icon.trigger {
+            background: rgba(77, 166, 160, 0.1);
+            color: #4DA6A0;
+        }
+
+        .palette-icon.action {
+            background: rgba(217, 30, 107, 0.1);
+            color: #D91E6B;
+        }
+
+        .palette-icon.decision {
+            background: rgba(212, 175, 55, 0.1);
+            color: #D4AF37;
+        }
+
+        .palette-icon.end {
+            background: rgba(59, 74, 107, 0.1);
+            color: #3B4A6B;
+        }
+
+        .palette-label {
+            flex: 1;
+        }
+
+        .palette-label-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #3B4A6B;
+        }
+
+        .palette-label-desc {
+            font-size: 11px;
+            color: #6B7280;
+            margin-top: 2px;
+        }
+
+        /* Canvas Container */
+        .canvas-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: #F8F9FA;
+        }
+
+        #canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Stats Panel */
+        .stats-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            min-width: 200px;
+            z-index: 50;
+        }
+
+        .stats-panel.collapsed {
+            padding: 12px;
+        }
+
+        .stats-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .stats-title {
+            font-weight: 700;
+            font-size: 14px;
+            color: #3B4A6B;
+        }
+
+        .stats-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6B7280;
+            padding: 4px;
+        }
+
+        .stats-content {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .stats-content.hidden {
+            display: none;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        .stat-value {
+            font-weight: 700;
+            font-size: 18px;
+            color: #3B4A6B;
+        }
+
+        .stat-value.highlight {
+            color: #D91E6B;
+        }
+
+        /* Detail Panel */
+        .detail-panel {
+            position: absolute;
+            right: -320px;
+            top: 0;
+            width: 320px;
+            height: 100%;
+            background: white;
+            border-left: 1px solid #E0E0E0;
+            box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            z-index: 200;
+            overflow-y: auto;
+        }
+
+        .detail-panel.open {
+            right: 0;
+        }
+
+        .detail-header {
+            padding: 20px;
+            border-bottom: 1px solid #E0E0E0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #F8F9FA;
+        }
+
+        .detail-title {
+            font-weight: 700;
+            font-size: 16px;
+            color: #3B4A6B;
+        }
+
+        .detail-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6B7280;
+            font-size: 20px;
+            padding: 4px;
+        }
+
+        .detail-content {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: #3B4A6B;
+            margin-bottom: 8px;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #E0E0E0;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #D91E6B;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .detail-actions {
+            padding: 20px;
+            border-top: 1px solid #E0E0E0;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-delete {
+            background: #EF4444;
+            color: white;
+            border-color: #EF4444;
+        }
+
+        .btn-delete:hover {
+            background: #DC2626;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid #E0E0E0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-weight: 700;
+            font-size: 20px;
+            color: #3B4A6B;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6B7280;
+            font-size: 24px;
+            padding: 4px;
+        }
+
+        .modal-content {
+            padding: 24px;
+        }
+
+        .modal-actions {
+            padding: 20px 24px;
+            border-top: 1px solid #E0E0E0;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* Export Options */
+        .export-options {
+            display: grid;
+            gap: 16px;
+        }
+
+        .export-option {
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .export-option:hover {
+            border-color: #D91E6B;
+            background: #FFF5F9;
+        }
+
+        .export-option-title {
+            font-weight: 600;
+            font-size: 16px;
+            color: #3B4A6B;
+            margin-bottom: 4px;
+        }
+
+        .export-option-desc {
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        /* Templates */
+        .template-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .template-card {
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .template-card:hover {
+            border-color: #4DA6A0;
+            background: #F0FFFE;
+            transform: translateY(-2px);
+        }
+
+        .template-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #3B4A6B;
+            margin-bottom: 8px;
+        }
+
+        .template-desc {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        /* Workflows Dashboard */
+        .dashboard {
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .dashboard-title {
+            font-weight: 700;
+            font-size: 28px;
+            color: #3B4A6B;
+        }
+
+        .search-box {
+            padding: 10px 16px;
+            border: 1px solid #E0E0E0;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            width: 300px;
+        }
+
+        .workflow-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .workflow-card {
+            background: white;
+            border: 1px solid #E0E0E0;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .workflow-card:hover {
+            border-color: #D91E6B;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .workflow-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .workflow-card-title {
+            font-weight: 600;
+            font-size: 16px;
+            color: #3B4A6B;
+            flex: 1;
+        }
+
+        .workflow-card-menu {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6B7280;
+            padding: 4px;
+        }
+
+        .workflow-card-info {
+            font-size: 13px;
+            color: #6B7280;
+            margin-bottom: 12px;
+        }
+
+        .workflow-card-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .folder-badge {
+            display: inline-block;
+            background: rgba(77, 166, 160, 0.1);
+            color: #4DA6A0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        /* Footer */
+        .footer {
+            background: white;
+            border-top: 1px solid #E0E0E0;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        .footer-cta {
+            display: inline-block;
+            background: #D91E6B;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 8px;
+            transition: background 0.2s;
+        }
+
+        .footer-cta:hover {
+            background: #B8185A;
+        }
+
+        /* Utilities */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-1 { margin-top: 8px; }
+        .mt-2 { margin-top: 16px; }
+        .mb-1 { margin-bottom: 8px; }
+        .mb-2 { margin-bottom: 16px; }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #D91E6B;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .palette {
+                width: 180px;
+            }
+
+            .stats-panel {
+                position: static;
+                margin: 12px;
+            }
+
+            .template-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .workflow-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container" id="app">
+        <!-- Dashboard View -->
+        <div id="dashboard-view" class="hidden">
+            <div class="toolbar">
+                <div class="logo">
+                    <i class="fas fa-project-diagram"></i> Workflow Mapper
+                </div>
+                <button class="btn btn-primary" onclick="app.createNewWorkflow()">
+                    <i class="fas fa-plus"></i> New Workflow
+                </button>
+            </div>
+
+            <div class="dashboard">
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">My Workflows</h1>
+                    <input type="text" class="search-box" placeholder="Search workflows..." id="workflow-search" oninput="app.searchWorkflows(this.value)">
+                </div>
+
+                <div class="workflow-grid" id="workflow-grid">
+                    <!-- Workflows will be loaded here -->
+                </div>
+
+                <div id="empty-state" class="text-center" style="padding: 60px 20px;">
+                    <i class="fas fa-project-diagram" style="font-size: 64px; color: #E0E0E0; margin-bottom: 20px;"></i>
+                    <h2 style="color: #3B4A6B; margin-bottom: 12px;">No workflows yet</h2>
+                    <p style="color: #6B7280; margin-bottom: 24px;">Create your first workflow to get started</p>
+                    <button class="btn btn-primary" onclick="app.createNewWorkflow()">
+                        <i class="fas fa-plus"></i> Create Workflow
+                    </button>
+                </div>
+            </div>
+
+            <div class="footer">
+                © 2025 Kendra Nix | Automate and Elevate
+                <br>
+                <a href="#" class="footer-cta">Get the Full Course</a>
+            </div>
+        </div>
+
+        <!-- Editor View -->
+        <div id="editor-view">
+            <div class="toolbar">
+                <div class="logo">
+                    <i class="fas fa-arrow-left" onclick="app.backToDashboard()" style="cursor: pointer; margin-right: 12px;"></i>
+                    <span id="workflow-title">New Workflow</span>
+                </div>
+
+                <div class="toolbar-group">
+                    <button class="btn btn-icon" id="undo-btn" onclick="app.undo()" title="Undo (Ctrl+Z)">
+                        <i class="fas fa-undo"></i>
+                    </button>
+                    <button class="btn btn-icon" id="redo-btn" onclick="app.redo()" title="Redo (Ctrl+Shift+Z)">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+
+                <div class="toolbar-divider"></div>
+
+                <div class="toolbar-group">
+                    <button class="btn btn-icon" onclick="app.zoomOut()" title="Zoom Out">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <div class="zoom-display" id="zoom-display">100%</div>
+                    <button class="btn btn-icon" onclick="app.zoomIn()" title="Zoom In">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button class="btn btn-icon" onclick="app.fitToScreen()" title="Fit to Screen">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+
+                <div class="toolbar-divider"></div>
+
+                <div class="toolbar-group">
+                    <button class="btn" id="grid-toggle" onclick="app.toggleGrid()">
+                        <i class="fas fa-th"></i> Grid
+                    </button>
+                    <button class="btn" onclick="app.openTemplates()">
+                        <i class="fas fa-layer-group"></i> Templates
+                    </button>
+                </div>
+
+                <div class="toolbar-divider"></div>
+
+                <div class="toolbar-group">
+                    <button class="btn btn-primary" onclick="app.saveWorkflow()">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                    <button class="btn btn-secondary" onclick="app.openExportModal()">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="palette">
+                    <h3 class="palette-title">Elements</h3>
+
+                    <div class="palette-item" draggable="true" data-type="trigger">
+                        <div class="palette-icon trigger">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="palette-label">
+                            <div class="palette-label-title">Trigger</div>
+                            <div class="palette-label-desc">Start point</div>
+                        </div>
+                    </div>
+
+                    <div class="palette-item" draggable="true" data-type="action">
+                        <div class="palette-icon action">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="palette-label">
+                            <div class="palette-label-title">Action</div>
+                            <div class="palette-label-desc">What happens</div>
+                        </div>
+                    </div>
+
+                    <div class="palette-item" draggable="true" data-type="decision">
+                        <div class="palette-icon decision">
+                            <i class="fas fa-code-branch"></i>
+                        </div>
+                        <div class="palette-label">
+                            <div class="palette-label-title">Decision</div>
+                            <div class="palette-label-desc">IF/THEN logic</div>
+                        </div>
+                    </div>
+
+                    <div class="palette-item" draggable="true" data-type="end">
+                        <div class="palette-icon end">
+                            <i class="fas fa-stop"></i>
+                        </div>
+                        <div class="palette-label">
+                            <div class="palette-label-title">End</div>
+                            <div class="palette-label-desc">End point</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="canvas-container">
+                    <div id="canvas"></div>
+
+                    <div class="stats-panel" id="stats-panel">
+                        <div class="stats-header">
+                            <h3 class="stats-title">Statistics</h3>
+                            <button class="stats-toggle" onclick="app.toggleStats()">
+                                <i class="fas fa-chevron-up" id="stats-toggle-icon"></i>
+                            </button>
+                        </div>
+                        <div class="stats-content" id="stats-content">
+                            <div class="stat-item">
+                                <span class="stat-label">Total Time</span>
+                                <span class="stat-value" id="stat-total-time">0m</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Manual</span>
+                                <span class="stat-value" id="stat-manual">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Automated</span>
+                                <span class="stat-value highlight" id="stat-automated">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Elements</span>
+                                <span class="stat-value" id="stat-elements">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-panel" id="detail-panel">
+                    <div class="detail-header">
+                        <h3 class="detail-title" id="detail-panel-title">Element Details</h3>
+                        <button class="detail-close" onclick="app.closeDetailPanel()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="detail-content" id="detail-panel-content">
+                        <!-- Form will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Modal -->
+        <div class="modal-overlay" id="export-modal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h2 class="modal-title">Export Workflow</h2>
+                    <button class="modal-close" onclick="app.closeExportModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-content">
+                    <div class="export-options">
+                        <div class="export-option" onclick="app.exportPNG()">
+                            <div class="export-option-title">
+                                <i class="fas fa-image"></i> PNG Image
+                            </div>
+                            <div class="export-option-desc">High-resolution diagram for documentation</div>
+                        </div>
+                        <div class="export-option" onclick="app.exportPDF()">
+                            <div class="export-option-title">
+                                <i class="fas fa-file-pdf"></i> PDF Document
+                            </div>
+                            <div class="export-option-desc">Print-ready with title and stats</div>
+                        </div>
+                        <div class="export-option" onclick="app.exportGuide()">
+                            <div class="export-option-title">
+                                <i class="fas fa-file-alt"></i> Implementation Guide
+                            </div>
+                            <div class="export-option-desc">Step-by-step setup instructions</div>
+                        </div>
+                        <div class="export-option" onclick="app.exportJSON()">
+                            <div class="export-option-title">
+                                <i class="fas fa-code"></i> JSON Blueprint
+                            </div>
+                            <div class="export-option-desc">Zapier/Make compatible format</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Templates Modal -->
+        <div class="modal-overlay" id="templates-modal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h2 class="modal-title">Workflow Templates</h2>
+                    <button class="modal-close" onclick="app.closeTemplatesModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-content">
+                    <div class="template-grid" id="template-grid">
+                        <!-- Templates will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="workflow-mapper.js"></script>
+</body>
+</html>
