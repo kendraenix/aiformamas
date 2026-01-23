@@ -1,0 +1,368 @@
+.App {
+  min-height: 100vh;
+  background-color: var(--warm-white);
+}
+
+/* Hero Section */
+.hero {
+  text-align: center;
+  padding: 60px 20px 40px;
+  background-color: var(--warm-white);
+}
+
+.hero h1 {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--fuchsia);
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.hero p {
+  font-size: 24px;
+  color: var(--navy);
+  font-weight: 400;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Calculator Card */
+.calculator-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px 40px;
+}
+
+.calculator-card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.input-group {
+  margin-bottom: 32px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--navy);
+  margin-bottom: 12px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.input-prefix {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: var(--navy);
+  pointer-events: none;
+}
+
+.calculator-card input {
+  width: 100%;
+  padding: 16px 16px 16px 40px;
+  font-size: 18px;
+  font-family: 'Inter', sans-serif;
+  border: 2px solid var(--navy);
+  border-radius: 8px;
+  transition: border-color 0.3s ease;
+}
+
+.calculator-card input:focus {
+  outline: none;
+  border-color: var(--fuchsia);
+}
+
+.calculator-card input::placeholder {
+  color: #9CA3AF;
+}
+
+/* Results Section */
+.results-section {
+  margin-top: 48px;
+  padding: 40px 20px;
+  background-color: var(--warm-white);
+}
+
+.results-section h2 {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 32px;
+}
+
+.results-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.result-card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.result-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 16px;
+}
+
+.result-card .amount {
+  font-size: 64px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 8px;
+  animation: fadeIn 0.5s ease-in;
+}
+
+.result-card.annual .amount {
+  font-size: 72px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mom Math Explanation */
+.mom-math-text {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 32px;
+  background: var(--white);
+  border-radius: 16px;
+  border-left: 4px solid var(--gold);
+}
+
+.mom-math-text p {
+  font-size: 20px;
+  line-height: 1.6;
+  color: var(--charcoal);
+  margin-bottom: 16px;
+}
+
+.mom-math-text p:last-child {
+  margin-bottom: 0;
+}
+
+.comparison-text {
+  font-size: 18px;
+  color: var(--fuchsia);
+  font-weight: 600;
+  text-align: center;
+  margin: 24px 0;
+}
+
+.divider {
+  height: 2px;
+  background: var(--gold);
+  margin: 40px auto;
+  max-width: 200px;
+}
+
+/* Social Share Buttons */
+.social-share {
+  text-align: center;
+  margin: 32px 0;
+}
+
+.social-share h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 16px;
+}
+
+.social-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.social-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid;
+}
+
+.social-btn.twitter {
+  background: var(--white);
+  color: #1DA1F2;
+  border-color: #1DA1F2;
+}
+
+.social-btn.twitter:hover {
+  background: #1DA1F2;
+  color: var(--white);
+}
+
+.social-btn.linkedin {
+  background: var(--white);
+  color: #0A66C2;
+  border-color: #0A66C2;
+}
+
+.social-btn.linkedin:hover {
+  background: #0A66C2;
+  color: var(--white);
+}
+
+/* CTA Section */
+.cta-section {
+  text-align: center;
+  padding: 60px 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.cta-section h2 {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 24px;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  display: inline-block;
+  padding: 18px 40px;
+  font-size: 18px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-primary.fuchsia {
+  background: var(--fuchsia);
+  color: var(--white);
+  box-shadow: 0 4px 12px rgba(217, 30, 107, 0.3);
+}
+
+.btn-primary.fuchsia:hover {
+  background: #C01A5E;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(217, 30, 107, 0.4);
+}
+
+.btn-secondary {
+  display: inline-block;
+  padding: 18px 40px;
+  font-size: 18px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background: var(--white);
+  color: var(--teal);
+  border: 2px solid var(--teal);
+}
+
+.btn-secondary:hover {
+  background: var(--teal);
+  color: var(--white);
+}
+
+/* Responsive Design */
+@media (max-width: 1199px) {
+  .results-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .result-card.annual {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 767px) {
+  .hero h1 {
+    font-size: 36px;
+  }
+
+  .hero p {
+    font-size: 18px;
+  }
+
+  .calculator-card {
+    padding: 24px;
+  }
+
+  .results-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .result-card .amount {
+    font-size: 48px;
+  }
+
+  .result-card.annual .amount {
+    font-size: 56px;
+  }
+
+  .results-section h2 {
+    font-size: 28px;
+  }
+
+  .mom-math-text {
+    padding: 20px;
+  }
+
+  .mom-math-text p {
+    font-size: 18px;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
+}
