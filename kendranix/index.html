@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kendra Nix | Business Operations Tools Directory</title>
+    <meta name="description" content="AI-powered operations tools for $100K+ mompreneurs. No fluff. No theory. Just tested tools that reclaim your time and scale your business.">
+    <link rel="canonical" href="https://kendranix.tech">
+
+    <!-- Fonts -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+    </style>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =================== CSS VARIABLES =================== */
+        :root {
+            /* Primary Colors */
+            --fuchsia: #D91E6B;
+            --fuchsia-light: rgba(217, 30, 107, 0.1);
+            --fuchsia-glow: rgba(217, 30, 107, 0.15);
+            --navy: #3B4A6B;
+            --deep-navy: #0F1E3E;
+            --gold: #D4AF37;
+            --teal: #4DA6A0;
+            --teal-light: rgba(77, 166, 160, 0.05);
+
+            /* Neutrals */
+            --white: #FFFFFF;
+            --warm-white: #F8F7F4;
+            --charcoal: #2D2D3A;
+
+            /* Typography */
+            --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+            /* Spacing */
+            --section-padding-desktop: 120px 80px;
+            --section-padding-tablet: 80px 40px;
+            --section-padding-mobile: 60px 24px;
+
+            /* Shadows */
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --shadow-fuchsia: 0 8px 24px rgba(217, 30, 107, 0.15);
+
+            /* Transitions */
+            --transition-fast: 0.2s ease;
+            --transition-medium: 0.3s ease;
+        }
+
+        /* =================== RESET & BASE =================== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            font-size: 18px;
+            font-weight: 400;
+            line-height: 1.7;
+            color: var(--charcoal);
+            background: var(--warm-white);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: color var(--transition-fast);
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* =================== TYPOGRAPHY =================== */
+        .eyebrow {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: 72px;
+            font-weight: 800;
+            line-height: 1.1;
+            color: var(--navy);
+        }
+
+        h2 {
+            font-size: 56px;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--navy);
+        }
+
+        h3 {
+            font-size: 28px;
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--navy);
+        }
+
+        h4 {
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--navy);
+        }
+
+        .text-large {
+            font-size: 20px;
+            line-height: 1.6;
+        }
+
+        .text-small {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .text-fuchsia {
+            color: var(--fuchsia);
+        }
+
+        .text-gold {
+            color: var(--gold);
+        }
+
+        .text-white {
+            color: var(--white);
+        }
+
+        /* =================== BUTTONS =================== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: var(--font-primary);
+            font-size: 18px;
+            font-weight: 600;
+            padding: 16px 32px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition-medium);
+        }
+
+        .btn-primary {
+            background: var(--fuchsia);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-fuchsia);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--fuchsia);
+            padding: 12px 24px;
+            font-size: 16px;
+        }
+
+        .btn-secondary:hover {
+            background: var(--fuchsia-light);
+        }
+
+        .btn-white {
+            background: var(--white);
+            color: var(--fuchsia);
+        }
+
+        .btn-white:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--white);
+        }
+
+        .btn-outline:hover {
+            background: var(--white);
+            color: var(--fuchsia);
+        }
+
+        .btn-large {
+            padding: 20px 40px;
+            font-size: 20px;
+        }
+
+        /* =================== HERO SECTION =================== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: var(--section-padding-desktop);
+            background: var(--warm-white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 150%;
+            background: radial-gradient(circle, rgba(217, 30, 107, 0.02) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-container {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            margin-bottom: 24px;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--charcoal);
+            max-width: 500px;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .hero-cta {
+            margin-bottom: 24px;
+        }
+
+        .hero-trust {
+            font-size: 16px;
+            color: var(--navy);
+            opacity: 0.6;
+        }
+
+        .hero-visual {
+            position: relative;
+            height: 500px;
+        }
+
+        .hero-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+        }
+
+        .hero-circle-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--fuchsia);
+            opacity: 0.1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .hero-circle-2 {
+            width: 250px;
+            height: 250px;
+            background: var(--teal);
+            opacity: 0.15;
+            top: 30%;
+            left: 30%;
+            filter: blur(30px);
+        }
+
+        .hero-circle-3 {
+            width: 200px;
+            height: 200px;
+            background: var(--gold);
+            opacity: 0.1;
+            bottom: 20%;
+            right: 20%;
+            filter: blur(35px);
+        }
+
+        /* =================== TOOLS SECTION =================== */
+        .tools-section {
+            background: var(--white);
+            padding: var(--section-padding-desktop);
+        }
+
+        .tools-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            margin-bottom: 64px;
+        }
+
+        .section-header h2 {
+            margin-bottom: 16px;
+        }
+
+        .section-header p {
+            font-size: 20px;
+            color: var(--charcoal);
+            max-width: 600px;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+
+        .tool-card {
+            background: var(--white);
+            border: 2px solid var(--teal);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-medium);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card:hover {
+            transform: scale(1.02);
+            box-shadow: var(--shadow-fuchsia);
+            border-color: var(--fuchsia);
+        }
+
+        .tool-card.featured {
+            grid-column: span 8;
+            border-color: var(--fuchsia);
+        }
+
+        .tool-card.medium {
+            grid-column: span 4;
+        }
+
+        .tool-card.half {
+            grid-column: span 6;
+        }
+
+        .tool-card.coming-soon {
+            opacity: 0.8;
+        }
+
+        .tool-card.coming-soon::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+        }
+
+        .tool-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: var(--white);
+            font-size: 28px;
+        }
+
+        .tool-icon.fuchsia {
+            background: var(--fuchsia);
+        }
+
+        .tool-icon.teal {
+            background: var(--teal);
+        }
+
+        .tool-icon.navy {
+            background: var(--navy);
+        }
+
+        .tool-badge {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+
+        .tool-badge.popular {
+            background: var(--fuchsia);
+            color: var(--white);
+        }
+
+        .tool-badge.coming {
+            background: var(--gold);
+            color: var(--deep-navy);
+        }
+
+        .tool-card h3 {
+            margin-bottom: 12px;
+        }
+
+        .tool-card p {
+            color: var(--charcoal);
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .tool-meta {
+            font-size: 16px;
+            color: var(--navy);
+            opacity: 0.7;
+            margin-bottom: 20px;
+        }
+
+        .tool-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--fuchsia);
+            font-weight: 600;
+            font-size: 16px;
+            transition: gap var(--transition-fast);
+        }
+
+        .tool-link:hover {
+            gap: 12px;
+        }
+
+        /* =================== STATS SECTION =================== */
+        .stats-section {
+            background: var(--deep-navy);
+            padding: 80px 0;
+        }
+
+        .stats-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 80px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 48px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 72px;
+            font-weight: 800;
+            color: var(--gold);
+            line-height: 1;
+            letter-spacing: -2px;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 18px;
+            color: var(--white);
+            opacity: 0.8;
+        }
+
+        /* =================== HOW IT WORKS SECTION =================== */
+        .how-section {
+            background: var(--warm-white);
+            padding: var(--section-padding-desktop);
+        }
+
+        .how-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .how-section h2 {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .steps-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .steps-line {
+            position: absolute;
+            top: 60px;
+            left: 15%;
+            right: 15%;
+            height: 2px;
+            background: var(--gold);
+            z-index: 1;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+            color: var(--white);
+            font-size: 48px;
+            font-weight: 800;
+        }
+
+        .step-circle.step-1 {
+            background: var(--fuchsia);
+            box-shadow: 0 8px 24px rgba(217, 30, 107, 0.3);
+        }
+
+        .step-circle.step-2 {
+            background: var(--teal);
+            box-shadow: 0 8px 24px rgba(77, 166, 160, 0.3);
+        }
+
+        .step-circle.step-3 {
+            background: var(--navy);
+            box-shadow: 0 8px 24px rgba(59, 74, 107, 0.3);
+        }
+
+        .step h4 {
+            margin-bottom: 12px;
+        }
+
+        .step p {
+            max-width: 240px;
+            color: var(--charcoal);
+        }
+
+        /* =================== DIFFERENT SECTION =================== */
+        .different-section {
+            background: var(--white);
+            padding: var(--section-padding-desktop);
+        }
+
+        .different-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .different-content h2 {
+            font-size: 48px;
+            margin-bottom: 40px;
+        }
+
+        .checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .check-icon {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            background: var(--teal);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            margin-top: 2px;
+        }
+
+        .checklist-item p {
+            line-height: 1.7;
+        }
+
+        .quote-box {
+            background: var(--teal-light);
+            border-left: 4px solid var(--gold);
+            padding: 40px;
+            border-radius: 0 16px 16px 0;
+        }
+
+        .quote-text {
+            font-size: 24px;
+            font-style: italic;
+            color: var(--navy);
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .quote-author {
+            font-size: 16px;
+            color: var(--charcoal);
+        }
+
+        /* =================== COURSE PREVIEW SECTION =================== */
+        .course-section {
+            background: linear-gradient(180deg, var(--warm-white) 0%, rgba(217, 30, 107, 0.02) 100%);
+            padding: var(--section-padding-desktop);
+        }
+
+        .course-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .course-section .section-header {
+            margin-bottom: 48px;
+        }
+
+        .course-section h2 {
+            font-size: 48px;
+        }
+
+        .locked-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .locked-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            filter: grayscale(0.5);
+            transition: all var(--transition-medium);
+        }
+
+        .locked-card:hover {
+            filter: grayscale(0.3);
+        }
+
+        .locked-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+        }
+
+        .locked-card .tool-badge {
+            background: var(--gold);
+            color: var(--deep-navy);
+        }
+
+        .locked-card h3 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .locked-card p {
+            font-size: 16px;
+            color: var(--charcoal);
+            opacity: 0.8;
+        }
+
+        .course-cta-box {
+            background: var(--white);
+            border: 2px solid var(--fuchsia);
+            border-radius: 16px;
+            padding: 48px;
+            text-align: center;
+        }
+
+        .course-cta-box h3 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        /* =================== FINAL CTA SECTION =================== */
+        .cta-section {
+            background: var(--fuchsia);
+            padding: var(--section-padding-desktop);
+            text-align: center;
+        }
+
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-section h2 {
+            font-size: 56px;
+            color: var(--white);
+            margin-bottom: 16px;
+        }
+
+        .cta-subtitle {
+            font-size: 20px;
+            color: var(--white);
+            opacity: 0.9;
+            margin-bottom: 32px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        /* =================== FOOTER =================== */
+        .footer {
+            background: var(--deep-navy);
+            padding: 80px 80px 40px;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand h3 {
+            font-size: 24px;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .footer-brand p {
+            font-size: 16px;
+            color: var(--white);
+            opacity: 0.7;
+            line-height: 1.5;
+        }
+
+        .footer-links h4 {
+            font-size: 16px;
+            color: var(--white);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .footer-links a {
+            display: block;
+            font-size: 16px;
+            color: var(--white);
+            opacity: 0.8;
+            margin-bottom: 12px;
+            transition: all var(--transition-fast);
+        }
+
+        .footer-links a:hover {
+            color: var(--fuchsia);
+            opacity: 1;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 16px;
+        }
+
+        .social-link {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(77, 166, 160, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--teal);
+            transition: all var(--transition-fast);
+        }
+
+        .social-link:hover {
+            background: var(--teal);
+            color: var(--white);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-bottom p {
+            font-size: 14px;
+            color: var(--white);
+            opacity: 0.5;
+        }
+
+        /* =================== ANIMATIONS =================== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hero-content > * {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .hero-content .eyebrow { animation-delay: 0.1s; }
+        .hero-content h1 { animation-delay: 0.2s; }
+        .hero-content .hero-subtitle { animation-delay: 0.3s; }
+        .hero-content .hero-cta { animation-delay: 0.4s; }
+        .hero-content .hero-trust { animation-delay: 0.5s; }
+
+        .hero-visual {
+            animation: fadeIn 1.2s ease-out forwards;
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+
+        .hero-circle {
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .hero-circle-2 { animation-delay: 0.5s; }
+        .hero-circle-3 { animation-delay: 1s; }
+
+        /* =================== RESPONSIVE =================== */
+        @media (max-width: 1199px) {
+            h1 { font-size: 56px; }
+            h2 { font-size: 44px; }
+
+            .hero-container {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-visual {
+                display: none;
+            }
+
+            .tool-card.featured,
+            .tool-card.medium,
+            .tool-card.half {
+                grid-column: span 6;
+            }
+
+            .different-container {
+                grid-template-columns: 1fr;
+            }
+
+            .locked-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 42px; }
+            h2 { font-size: 36px; }
+            h3 { font-size: 24px; }
+            .text-large { font-size: 18px; }
+
+            .hero {
+                padding: var(--section-padding-mobile);
+                min-height: auto;
+                padding-top: 80px;
+                padding-bottom: 80px;
+            }
+
+            .hero-content {
+                text-align: center;
+            }
+
+            .hero-subtitle {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .tools-section,
+            .how-section,
+            .different-section,
+            .course-section,
+            .cta-section {
+                padding: var(--section-padding-mobile);
+            }
+
+            .tool-card.featured,
+            .tool-card.medium,
+            .tool-card.half {
+                grid-column: span 12;
+            }
+
+            .tool-card {
+                padding: 28px;
+            }
+
+            .stats-container {
+                padding: 0 24px;
+                flex-direction: column;
+            }
+
+            .stat-number {
+                font-size: 56px;
+            }
+
+            .steps-container {
+                flex-direction: column;
+                gap: 48px;
+            }
+
+            .steps-line {
+                display: none;
+            }
+
+            .step-circle {
+                width: 80px;
+                height: 80px;
+                font-size: 32px;
+            }
+
+            .different-container {
+                gap: 48px;
+            }
+
+            .different-content h2 {
+                font-size: 36px;
+            }
+
+            .quote-box {
+                padding: 24px;
+            }
+
+            .quote-text {
+                font-size: 20px;
+            }
+
+            .locked-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .course-cta-box {
+                padding: 32px 24px;
+            }
+
+            .course-cta-box h3 {
+                font-size: 24px;
+            }
+
+            .cta-section h2 {
+                font-size: 36px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-large {
+                padding: 16px 32px;
+                font-size: 18px;
+            }
+
+            .footer {
+                padding: 60px 24px 40px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HERO SECTION -->
+    <section class="hero" id="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <p class="eyebrow">BUSINESS OPERATIONS TOOLS</p>
+                <h1>
+                    Stop Guessing.<br>
+                    Start Using Tools<br>
+                    <span class="text-fuchsia">That Actually Work.</span>
+                </h1>
+                <p class="hero-subtitle">
+                    AI-powered operations tools for $100K+ mompreneurs. No fluff. No theory. Just tested tools that reclaim your time and scale your business.
+                </p>
+                <div class="hero-cta">
+                    <a href="#tools" class="btn btn-primary">Browse Free Tools <span>&darr;</span></a>
+                </div>
+                <p class="hero-trust">Used by 500+ mompreneurs &bull; $31K average opportunity cost saved</p>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-circle hero-circle-1"></div>
+                <div class="hero-circle hero-circle-2"></div>
+                <div class="hero-circle hero-circle-3"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TOOLS SECTION -->
+    <section class="tools-section" id="tools">
+        <div class="tools-container">
+            <div class="section-header animate-on-scroll">
+                <h2>Free Operations Tools</h2>
+                <p>Start here. These tools help you understand where your time is going and what it's costing you.</p>
+            </div>
+
+            <div class="tools-grid">
+                <!-- Mom Math Calculator - Featured -->
+                <div class="tool-card featured animate-on-scroll">
+                    <div class="tool-icon fuchsia">
+                        <i data-lucide="calculator"></i>
+                    </div>
+                    <span class="tool-badge popular">MOST POPULAR</span>
+                    <h3>Mom Math Calculator</h3>
+                    <p>Calculate the exact cost of doing $20/hour work when you should be doing $500/hour strategy.</p>
+                    <p class="tool-meta">2 min &bull; See your $31K+ loss</p>
+                    <a href="/calculator/" class="tool-link">
+                        Calculate Your Cost <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+                    </a>
+                </div>
+
+                <!-- 15-Hour Work Week Audit -->
+                <div class="tool-card medium animate-on-scroll">
+                    <div class="tool-icon teal">
+                        <i data-lucide="clock"></i>
+                    </div>
+                    <h3>15-Hour Work Week Audit</h3>
+                    <p>Discover which tasks are stealing your time and which ones actually move the needle.</p>
+                    <p class="tool-meta">5 min &bull; Time analysis</p>
+                    <a href="/audit/" class="tool-link">
+                        Take the Audit <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+                    </a>
+                </div>
+
+                <!-- SOP Builder -->
+                <div class="tool-card half animate-on-scroll">
+                    <div class="tool-icon teal">
+                        <i data-lucide="file-text"></i>
+                    </div>
+                    <h3>SOP Builder</h3>
+                    <p>Create professional standard operating procedures that make delegation effortless.</p>
+                    <p class="tool-meta">10 min &bull; Export to PDF/Word</p>
+                    <a href="/sop-builder/" class="tool-link">
+                        Build Your SOPs <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+                    </a>
+                </div>
+
+                <!-- Workflow Mapper -->
+                <div class="tool-card half animate-on-scroll">
+                    <div class="tool-icon fuchsia">
+                        <i data-lucide="workflow"></i>
+                    </div>
+                    <h3>Workflow Mapper</h3>
+                    <p>Visualize your business processes and identify bottlenecks holding you back.</p>
+                    <p class="tool-meta">15 min &bull; Visual diagrams</p>
+                    <a href="/workflow-mapper/" class="tool-link">
+                        Map Your Workflow <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+                    </a>
+                </div>
+
+                <!-- Time Audit Tracker -->
+                <div class="tool-card medium animate-on-scroll">
+                    <div class="tool-icon navy">
+                        <i data-lucide="bar-chart-3"></i>
+                    </div>
+                    <h3>Time Audit Tracker</h3>
+                    <p>Track where your hours actually go for a week and get actionable insights.</p>
+                    <p class="tool-meta">Ongoing &bull; Weekly tracking</p>
+                    <a href="/tracker/" class="tool-link">
+                        Start Tracking <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+                    </a>
+                </div>
+
+                <!-- Tech Stack Audit - Coming Soon -->
+                <div class="tool-card featured coming-soon animate-on-scroll">
+                    <div class="tool-icon teal">
+                        <i data-lucide="layers"></i>
+                    </div>
+                    <span class="tool-badge coming">COMING SOON</span>
+                    <h3>Tech Stack Audit</h3>
+                    <p>Analyze your current tools and get AI-powered recommendations to optimize your tech stack for maximum efficiency.</p>
+                    <p class="tool-meta">Coming Q1 2026</p>
+                    <span class="tool-link" style="opacity: 0.5; cursor: not-allowed;">
+                        Get Notified <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS SECTION -->
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stat-item animate-on-scroll">
+                <p class="stat-number" data-target="500">0</p>
+                <p class="stat-label">Mompreneurs Using Tools</p>
+            </div>
+            <div class="stat-item animate-on-scroll">
+                <p class="stat-number" data-target="15" data-suffix=" hrs/week">0</p>
+                <p class="stat-label">Average Time Reclaimed</p>
+            </div>
+            <div class="stat-item animate-on-scroll">
+                <p class="stat-number" data-target="31200" data-prefix="$" data-format="currency">0</p>
+                <p class="stat-label">Avg Opportunity Cost Saved</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS SECTION -->
+    <section class="how-section" id="how">
+        <div class="how-container">
+            <h2 class="animate-on-scroll">How This Works</h2>
+
+            <div class="steps-container">
+                <div class="steps-line"></div>
+
+                <div class="step animate-on-scroll">
+                    <div class="step-circle step-1">1</div>
+                    <h4>Pick Your Tool</h4>
+                    <p>Choose based on what you need most right now</p>
+                </div>
+
+                <div class="step animate-on-scroll">
+                    <div class="step-circle step-2">2</div>
+                    <h4>Use The Tool</h4>
+                    <p>Follow the guided prompts and input your data</p>
+                </div>
+
+                <div class="step animate-on-scroll">
+                    <div class="step-circle step-3">3</div>
+                    <h4>Get Results</h4>
+                    <p>Receive actionable insights and next steps</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHAT MAKES DIFFERENT SECTION -->
+    <section class="different-section" id="different">
+        <div class="different-container">
+            <div class="different-content animate-on-scroll">
+                <h2>What Makes These Tools Different</h2>
+
+                <ul class="checklist">
+                    <li class="checklist-item">
+                        <span class="check-icon">
+                            <i data-lucide="check" style="width: 16px; height: 16px;"></i>
+                        </span>
+                        <p>Built by a Fractional Chief of Staff with Fortune 500 operations experience</p>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-icon">
+                            <i data-lucide="check" style="width: 16px; height: 16px;"></i>
+                        </span>
+                        <p>Every tool shows exact ROI and time savings (not vague "productivity tips")</p>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-icon">
+                            <i data-lucide="check" style="width: 16px; height: 16px;"></i>
+                        </span>
+                        <p>Tested on real $100K+ businesses, not theory</p>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-icon">
+                            <i data-lucide="check" style="width: 16px; height: 16px;"></i>
+                        </span>
+                        <p>No fluff, no filler&mdash;just what actually works</p>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-icon">
+                            <i data-lucide="check" style="width: 16px; height: 16px;"></i>
+                        </span>
+                        <p>Mom Math framework built into every tool</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="quote-box animate-on-scroll">
+                <p class="quote-text">"These tools show me exactly where my money is going. Game changer."</p>
+                <p class="quote-author">&mdash; Sarah M., $180K/year</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- COURSE PREVIEW SECTION -->
+    <section class="course-section" id="course">
+        <div class="course-container">
+            <div class="section-header animate-on-scroll">
+                <h2>Premium Tools Inside Automate & Elevate</h2>
+                <p>These interactive tools are exclusively available to students of my 8-week operations course.</p>
+            </div>
+
+            <div class="locked-grid">
+                <div class="locked-card animate-on-scroll">
+                    <div class="locked-overlay">
+                        <i data-lucide="lock" style="width: 40px; height: 40px;"></i>
+                    </div>
+                    <span class="tool-badge">COURSE EXCLUSIVE</span>
+                    <h3>Client Onboarding Builder</h3>
+                    <p>Create seamless client experiences from first contact to kickoff</p>
+                </div>
+
+                <div class="locked-card animate-on-scroll">
+                    <div class="locked-overlay">
+                        <i data-lucide="lock" style="width: 40px; height: 40px;"></i>
+                    </div>
+                    <span class="tool-badge">COURSE EXCLUSIVE</span>
+                    <h3>Content Repurposing System</h3>
+                    <p>Turn one piece of content into 10+ without extra work</p>
+                </div>
+
+                <div class="locked-card animate-on-scroll">
+                    <div class="locked-overlay">
+                        <i data-lucide="lock" style="width: 40px; height: 40px;"></i>
+                    </div>
+                    <span class="tool-badge">COURSE EXCLUSIVE</span>
+                    <h3>Revenue Operations Dashboard</h3>
+                    <p>Track your numbers that matter with automated reporting</p>
+                </div>
+
+                <div class="locked-card animate-on-scroll">
+                    <div class="locked-overlay">
+                        <i data-lucide="lock" style="width: 40px; height: 40px;"></i>
+                    </div>
+                    <span class="tool-badge">COURSE EXCLUSIVE</span>
+                    <h3>AI Prompt Library</h3>
+                    <p>500+ tested prompts for every business operation</p>
+                </div>
+
+                <div class="locked-card animate-on-scroll">
+                    <div class="locked-overlay">
+                        <i data-lucide="lock" style="width: 40px; height: 40px;"></i>
+                    </div>
+                    <span class="tool-badge">COURSE EXCLUSIVE</span>
+                    <h3>Delegation Framework</h3>
+                    <p>Know exactly what to delegate and how to train anyone</p>
+                </div>
+            </div>
+
+            <div class="course-cta-box animate-on-scroll">
+                <h3>Want access to all 5 tools?</h3>
+                <a href="#" class="btn btn-primary btn-large">Join Automate & Elevate Waitlist</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA SECTION -->
+    <section class="cta-section" id="cta">
+        <div class="cta-container">
+            <h2 class="animate-on-scroll">Ready to Reclaim Your Time?</h2>
+            <p class="cta-subtitle animate-on-scroll">Start with a free tool above, or go deeper:</p>
+            <div class="cta-buttons animate-on-scroll">
+                <a href="#tools" class="btn btn-white btn-large">Browse Tools <span>&uarr;</span></a>
+                <a href="#" class="btn btn-outline btn-large">Book Strategy Call</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>Kendra Nix</h3>
+                    <p>Fractional Chief of Staff &<br>AI Operations Architect</p>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <a href="#tools">Tools</a>
+                    <a href="#">Services</a>
+                    <a href="#course">Course</a>
+                    <a href="#">Contact</a>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Connect</h4>
+                    <div class="footer-social">
+                        <a href="#" class="social-link" aria-label="LinkedIn">
+                            <i data-lucide="linkedin" style="width: 20px; height: 20px;"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Instagram">
+                            <i data-lucide="instagram" style="width: 20px; height: 20px;"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Kendra Nix. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.2
+        };
+
+        const animateOnScroll = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+
+                    // Check if this is a stat number to animate
+                    const statNumber = entry.target.querySelector('.stat-number');
+                    if (statNumber && !statNumber.dataset.animated) {
+                        animateCounter(statNumber);
+                        statNumber.dataset.animated = 'true';
+                    }
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(animateOnScroll, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Counter animation for stats
+        function animateCounter(element) {
+            const target = parseInt(element.dataset.target);
+            const prefix = element.dataset.prefix || '';
+            const suffix = element.dataset.suffix || '';
+            const format = element.dataset.format;
+            const duration = 2000;
+            const startTime = performance.now();
+
+            function updateCounter(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Ease out quad
+                const easeProgress = 1 - (1 - progress) * (1 - progress);
+                const current = Math.floor(easeProgress * target);
+
+                let displayValue = current;
+                if (format === 'currency') {
+                    displayValue = current.toLocaleString();
+                }
+
+                element.textContent = prefix + displayValue + (target === current ? '+' : '') + suffix;
+
+                if (progress < 1) {
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    // Final value with plus sign for "500+"
+                    if (target === 500) {
+                        element.textContent = prefix + target + '+' + suffix;
+                    } else if (format === 'currency') {
+                        element.textContent = prefix + target.toLocaleString() + suffix;
+                    } else {
+                        element.textContent = prefix + target + suffix;
+                    }
+                }
+            }
+
+            requestAnimationFrame(updateCounter);
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Stagger animation delays for tool cards
+        document.querySelectorAll('.tools-grid .tool-card').forEach((card, index) => {
+            card.style.transitionDelay = `${index * 100}ms`;
+        });
+
+        // Stagger animation delays for steps
+        document.querySelectorAll('.step').forEach((step, index) => {
+            step.style.transitionDelay = `${index * 200}ms`;
+        });
+
+        // Stagger animation delays for locked cards
+        document.querySelectorAll('.locked-card').forEach((card, index) => {
+            card.style.transitionDelay = `${index * 100}ms`;
+        });
+    </script>
+</body>
+</html>
