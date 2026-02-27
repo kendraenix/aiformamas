@@ -176,7 +176,47 @@ export default function App() {
           </div>
 
           <div className="cards">
-            {apps.map((a) => {
+            import { apps } from "./appData";
+
+function Section({ title, tier }) {
+  const filtered = apps.filter(app => app.tier === tier);
+
+  if (filtered.length === 0) return null;
+
+  return (
+    <div style={{ marginBottom: "3rem" }}>
+      <h2 style={{ marginBottom: "1rem" }}>{title}</h2>
+
+      <div style={{ display: "grid", gap: "1rem" }}>
+        {filtered.map((app, index) => (
+          <div
+            key={index}
+            style={{
+              padding: "1rem",
+              border: "1px solid #ddd",
+              borderRadius: "8px"
+            }}
+          >
+            <h3>{app.name}</h3>
+            <p>{app.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function AppComplete() {
+  return (
+    <div style={{ padding: "2rem" }}>
+      <h1>Kendra Nix App Store</h1>
+
+      <Section title="Free Apps" tier="free" />
+      <Section title="Paid Apps" tier="paid" />
+      <Section title="Coming Soon" tier="soon" />
+    </div>
+  );
+}
               const Icon = a.icon
               const isLive = a.status.toLowerCase() === 'live'
               return (
