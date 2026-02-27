@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Master Claude Prompt | $0 Link Page Blueprint</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fuchsia: #D91E6B;
+    --fuchsia-dark: #a0154f;
+    --navy: #3B4A6B;
+    --navy-deep: #0F1E3E;
+    --gold: #D4AF37;
+    --teal: #4DA6A0;
+    --white: #FFFFFF;
+    --charcoal: #2D2D3A;
+    --bg: #FAFAF8;
+    --code-bg: #0F1E3E;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--charcoal);
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 15% 10%, rgba(217,30,107,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 90%, rgba(77,166,160,0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page { position: relative; z-index: 1; }
+
+  /* NAV */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 32px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 900;
+    text-decoration: none;
+  }
+  .nav-logo .k { color: var(--fuchsia); }
+  .nav-logo .n { color: var(--navy); }
+
+  .nav-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: rgba(212,175,55,0.1);
+    border: 1px solid rgba(212,175,55,0.25);
+    border-radius: 100px;
+    padding: 5px 14px;
+  }
+
+  /* HERO */
+  .hero {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 24px 56px;
+    text-align: center;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.1s forwards;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 6vw, 52px);
+    font-weight: 900;
+    color: var(--navy-deep);
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.2s forwards;
+  }
+
+  .hero h1 .accent { color: var(--fuchsia); }
+
+  .gold-line {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 20px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.3s forwards;
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--charcoal);
+    max-width: 560px;
+    margin: 0 auto 32px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.35s forwards;
+  }
+
+  /* STEP PILLS */
+  .steps-strip {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.4s forwards;
+  }
+
+  .step-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    border: 1px solid rgba(59,74,107,0.1);
+    border-radius: 100px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    box-shadow: 0 2px 8px rgba(59,74,107,0.06);
+  }
+
+  .step-num {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--fuchsia);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* MAIN CONTENT */
+  .content {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* SECTION BLOCKS */
+  .block {
+    background: white;
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(59,74,107,0.08);
+    box-shadow: 0 2px 20px rgba(59,74,107,0.07);
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  .block-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    padding: 4px 12px;
+    border-radius: 100px;
+  }
+
+  .block-tag.teal { color: var(--teal); background: rgba(77,166,160,0.08); }
+  .block-tag.gold { color: var(--gold); background: rgba(212,175,55,0.1); }
+  .block-tag.fuchsia { color: var(--fuchsia); background: rgba(217,30,107,0.07); }
+
+  .block h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy-deep);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .block p {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--charcoal);
+    margin-bottom: 12px;
+  }
+
+  .block p:last-child { margin-bottom: 0; }
+
+  .block strong { color: var(--fuchsia); font-weight: 700; }
+
+  /* FILL IN FIELDS */
+  .fields-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 20px;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .field-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--navy);
+    background: rgba(59,74,107,0.06);
+    border-radius: 8px;
+    padding: 10px 14px;
+    line-height: 1.4;
+  }
+
+  .field-label span {
+    display: block;
+    font-weight: 400;
+    font-size: 11px;
+    color: var(--charcoal);
+    opacity: 0.6;
+    margin-top: 2px;
+  }
+
+  .field-input-example {
+    font-size: 13px;
+    color: var(--charcoal);
+    background: var(--bg);
+    border: 1.5px dashed rgba(59,74,107,0.2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    line-height: 1.6;
+    font-style: italic;
+    opacity: 0.7;
+  }
+
+  /* THE PROMPT BLOCK */
+  .prompt-block {
+    background: var(--code-bg);
+    border-radius: 20px;
+    padding: 0;
+    margin-bottom: 24px;
+    overflow: hidden;
+    border: 1px solid rgba(212,175,55,0.2);
+    box-shadow: 0 8px 40px rgba(15,30,62,0.3);
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards;
+  }
+
+  .prompt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .prompt-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .prompt-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .dot-r { background: #FF5F57; }
+  .dot-y { background: #FFBD2E; }
+  .dot-g { background: #28C840; }
+
+  .prompt-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.5px;
+  }
+
+  .copy-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(212,175,55,0.15);
+    border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gold);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .copy-btn:hover { background: rgba(212,175,55,0.25); }
+  .copy-btn.copied { color: #28C840; border-color: rgba(40,200,64,0.3); background: rgba(40,200,64,0.1); }
+
+  .prompt-body {
+    padding: 28px 28px 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.85);
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-x: auto;
+  }
+
+  .prompt-body .comment {
+    color: rgba(212,175,55,0.7);
+    font-style: italic;
+  }
+
+  .prompt-body .placeholder {
+    color: #4DA6A0;
+    font-weight: 500;
+  }
+
+  .prompt-body .section-header {
+    color: var(--fuchsia);
+    font-weight: 700;
+  }
+
+  /* CHECKLIST */
+  .checklist {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--charcoal);
+  }
+
+  .check-icon {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: rgba(77,166,160,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* WARNING BOX */
+  .warning-box {
+    background: rgba(217,30,107,0.05);
+    border: 1px solid rgba(217,30,107,0.2);
+    border-left: 4px solid var(--fuchsia);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 20px 0 0;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--charcoal);
+  }
+
+  .warning-box strong { color: var(--fuchsia); }
+
+  /* TIP BOX */
+  .tip-box {
+    background: rgba(77,166,160,0.06);
+    border: 1px solid rgba(77,166,160,0.2);
+    border-left: 4px solid var(--teal);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 20px 0 0;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--charcoal);
+  }
+
+  .tip-box strong { color: var(--teal); }
+
+  /* UPSELL CARD */
+  .upsell-card {
+    background: linear-gradient(135deg, var(--navy-deep) 0%, #1a2d5a 100%);
+    border-radius: 24px;
+    padding: 44px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 24px;
+    box-shadow: 0 16px 60px rgba(15,30,62,0.3);
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards;
+  }
+
+  .upsell-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--fuchsia), var(--gold), var(--teal));
+  }
+
+  .upsell-card::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; right: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: rgba(217,30,107,0.07);
+    pointer-events: none;
+  }
+
+  .upsell-inner { position: relative; z-index: 1; }
+
+  .upsell-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .upsell-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 4vw, 36px);
+    font-weight: 900;
+    color: white;
+    line-height: 1.15;
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+  }
+
+  .upsell-card h2 span { color: var(--fuchsia); }
+
+  .upsell-body {
+    font-size: 15px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.7;
+    max-width: 520px;
+    margin: 0 auto 28px;
+  }
+
+  .upsell-includes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .upsell-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 100px;
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.85);
+  }
+
+  .upsell-pill .u-check { color: var(--teal); }
+
+  .upsell-price-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .upsell-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 44px;
+    font-weight: 900;
+    color: white;
+    line-height: 1;
+  }
+
+  .upsell-price-label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.4;
+    text-align: left;
+  }
+
+  .upsell-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--fuchsia), var(--fuchsia-dark));
+    color: white;
+    text-decoration: none;
+    border-radius: 14px;
+    padding: 18px 40px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 8px 28px rgba(217,30,107,0.4);
+  }
+
+  .upsell-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 36px rgba(217,30,107,0.5);
+  }
+
+  .upsell-fine {
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    margin-top: 14px;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--navy-deep);
+    padding: 28px 24px;
+    text-align: center;
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 6px;
+  }
+  .footer-logo .k { color: var(--fuchsia); }
+  .footer-logo .n { color: rgba(255,255,255,0.8); }
+
+  footer p {
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    line-height: 1.7;
+  }
+
+  footer a { color: var(--teal); text-decoration: none; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .d1 { animation-delay: 0.1s; }
+  .d2 { animation-delay: 0.2s; }
+  .d3 { animation-delay: 0.3s; }
+  .d4 { animation-delay: 0.4s; }
+  .d5 { animation-delay: 0.5s; }
+  .d6 { animation-delay: 0.6s; }
+  .d7 { animation-delay: 0.7s; }
+  .d8 { animation-delay: 0.8s; }
+  .d9 { animation-delay: 0.9s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .field-row { grid-template-columns: 1fr; }
+    .upsell-card { padding: 32px 24px; }
+    nav { padding: 16px 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- NAV -->
+  <nav>
+    <a href="https://kendranix.com" class="nav-logo">
+      <span class="k">Kendra</span> <span class="n">Nix</span>
+    </a>
+    <span class="nav-badge">$0 Link Page Blueprint</span>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">📋 The Master Prompt</div>
+    <h1>Your <span class="accent">Fill-in-the-Blank</span><br>AI Link Page Prompt</h1>
+    <div class="gold-line"></div>
+    <p class="hero-sub">Copy this prompt, fill in your details where you see the <strong style="color:var(--teal);">[BRACKETS]</strong>, paste it into Claude, and watch your branded link page get built in minutes. No code. No designer. No monthly fees.</p>
+
+    <div class="steps-strip">
+      <div class="step-pill"><div class="step-num">1</div> Fill in your details</div>
+      <div class="step-pill"><div class="step-num">2</div> Paste into Claude.ai</div>
+      <div class="step-pill"><div class="step-num">3</div> Download & deploy</div>
+    </div>
+  </section>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- STEP 1: FILL IN YOUR INFO -->
+    <div class="block d1">
+      <div class="block-tag teal">Step 1 — Before You Copy</div>
+      <h2>Gather your info first</h2>
+      <p>Before you copy the prompt below, have these details ready. It takes 5 minutes to pull together and saves you from having to go back and edit the code after.</p>
+
+      <div class="fields-grid">
+        <div class="field-row">
+          <div class="field-label">Your Name <span>First & last</span></div>
+          <div class="field-input-example">e.g. Kendra Nix</div>
+        </div>
+        <div class="field-row">
+          <div class="field-label">Your Title <span>What you do</span></div>
+          <div class="field-input-example">e.g. Business Coach for Mompreneurs</div>
+        </div>
+        <div class="field-row">
+          <div class="field-label">Your Tagline <span>1 sentence max</span></div>
+          <div class="field-input-example">e.g. "Stop hustling. Start systematizing."</div>
+        </div>
+        <div class="field-row">
+          <div class="field-label">Brand Colors <span>Hex codes preferred</span></div>
+          <div class="field-input-example">e.g. Primary: #D91E6B (fuchsia), Secondary: #3B4A6B (navy), Accent: #D4AF37 (gold)</div>
+        </div>
+        <div class="field-row">
+          <div class="field-label">Your Photo URL <span>Right-click → Copy image address</span></div>
+          <div class="field-input-example">e.g. https://yoursite.com/photo.jpg</div>
+        </div>
+        <div class="field-row">
+          <div class="field-label">Your Offers <span>Name + price + link</span></div>
+          <div class="field-input-example">e.g. "The Operations Audit — $1,500 → yoursite.com/audit"</div>
+        </div>
+        <div class="field-row">
+          <div class="field-label">Free Resources <span>Name + link</span></div>
+          <div class="field-input-example">e.g. "15-Hour Work Week Audit → fifteen-hour.lovable.app"</div>
+        </div>
+        <div class="field-row">
+          <div class="field-label">Affiliate Links <span>Tool name + your link</span></div>
+          <div class="field-input-example">e.g. "Go High Level → gohighlevel.com/?fp_ref=yours"</div>
+        </div>
+        <div class="field-row">
+          <div class="field-label">Social Links <span>Full URLs</span></div>
+          <div class="field-input-example">e.g. Instagram, Facebook, LinkedIn, YouTube, Threads</div>
+        </div>
+        <div class="field-row">
+          <div class="field-label">Email Opt-in URL <span>Your Kit/GHL form</span></div>
+          <div class="field-input-example">e.g. https://app.kit.com/forms/XXXXXXX/subscriptions</div>
+        </div>
+      </div>
+
+      <div class="tip-box">
+        <strong>💡 Pro tip:</strong> Open a notes app and paste all your info there first. Then you can copy from your notes into the prompt placeholders without bouncing between tabs.
+      </div>
+    </div>
+
+    <!-- THE PROMPT -->
+    <div class="prompt-block d2">
+      <div class="prompt-header">
+        <div class="prompt-header-left">
+          <div class="prompt-dots">
+            <div class="dot dot-r"></div>
+            <div class="dot dot-y"></div>
+            <div class="dot dot-g"></div>
+          </div>
+          <span class="prompt-title">master-link-page-prompt.txt — Paste into Claude.ai</span>
+        </div>
+        <button class="copy-btn" onclick="copyPrompt(this)" id="copyBtn">
+          📋 Copy Prompt
+        </button>
+      </div>
+      <div class="prompt-body" id="promptText"><span class="comment"># ═══════════════════════════════════════════════
+# THE $0 LINK PAGE BLUEPRINT — MASTER CLAUDE PROMPT
+# By Kendra Nix | kendranix.tech
+# Fill in every [BRACKET] then paste into Claude.ai
+# ═══════════════════════════════════════════════</span>
+
+Build me a stunning single-page link hub (like Linktree but better and free) as a single HTML file I can deploy on my own website or hosting. Make it look premium and professional — not generic.
+
+<span class="section-header">═══ MY BRAND INFO ═══</span>
+
+Name: <span class="placeholder">[YOUR FULL NAME]</span>
+Title: <span class="placeholder">[YOUR PROFESSIONAL TITLE]</span>
+Tagline: <span class="placeholder">[YOUR ONE-LINE TAGLINE IN QUOTES]</span>
+Website: <span class="placeholder">[YOUR WEBSITE URL]</span>
+
+<span class="section-header">═══ MY BRAND COLORS ═══</span>
+
+Primary color: <span class="placeholder">[HEX CODE — used for headlines and CTAs]</span>
+Secondary color: <span class="placeholder">[HEX CODE — used for body text and grounding]</span>
+Accent color: <span class="placeholder">[HEX CODE — used for dividers and luxury touches]</span>
+Background: <span class="placeholder">[HEX CODE or "white"]</span>
+
+<span class="section-header">═══ MY PHOTO ═══</span>
+
+Profile photo URL: <span class="placeholder">[PASTE YOUR PHOTO URL HERE]</span>
+<span class="comment"># Right-click your photo online → "Copy image address" to get the URL
+# OR write "use my initials [XX] if no photo"</span>
+
+<span class="section-header">═══ FREE RESOURCES (show these first) ═══</span>
+
+<span class="comment"># List each freebie on its own line: Name → URL</span>
+Free resource 1: <span class="placeholder">[NAME] → [URL]</span>
+Free resource 2: <span class="placeholder">[NAME] → [URL]</span>
+<span class="comment"># Add or remove lines as needed</span>
+
+<span class="section-header">═══ MY PAID OFFERS ═══</span>
+
+<span class="comment"># List each offer: Name — Price → URL</span>
+Offer 1: <span class="placeholder">[NAME] — $[PRICE] → [URL]</span>
+Offer 2: <span class="placeholder">[NAME] — $[PRICE] → [URL]</span>
+Offer 3: <span class="placeholder">[NAME] — $[PRICE]/month → [URL]</span>
+<span class="comment"># Add or remove lines as needed</span>
+
+<span class="section-header">═══ COURSES / EDUCATION (optional) ═══</span>
+
+Course: <span class="placeholder">[NAME] — $[PRICE] → [URL]</span>
+<span class="comment"># Delete this section if you don't have a course yet</span>
+
+<span class="section-header">═══ EMAIL OPT-IN ═══</span>
+
+<span class="comment"># Place this section between my Paid Offers and any Learn/Course section</span>
+Newsletter name: <span class="placeholder">[YOUR NEWSLETTER NAME or "Join My List"]</span>
+Opt-in headline: <span class="placeholder">[ONE LINE THAT DESCRIBES WHAT THEY GET]</span>
+Opt-in description: <span class="placeholder">[2-3 sentences on why they should sign up]</span>
+Kit form URL: <span class="placeholder">[YOUR KIT/CONVERTKIT FORM SUBSCRIPTION URL]</span>
+<span class="comment"># The form fields should be: First Name + Email
+# On submit: hide the form and show a success message
+# Use fetch() to POST so the page does not redirect</span>
+
+<span class="section-header">═══ AFFILIATE TOOLS (gold-accented section) ═══</span>
+
+<span class="comment"># These should look different from regular links — add a gold left border
+# and a small "★ Affiliate" badge on each card
+# Include a disclosure: "Some links are affiliate links — I only recommend what I use"</span>
+
+Affiliate 1: <span class="placeholder">[TOOL NAME] — [ONE LINE DESCRIPTION] → [YOUR AFFILIATE URL]</span>
+Affiliate 2: <span class="placeholder">[TOOL NAME] — [ONE LINE DESCRIPTION] → [YOUR AFFILIATE URL]</span>
+Affiliate 3: <span class="placeholder">[TOOL NAME] — [ONE LINE DESCRIPTION] → [YOUR AFFILIATE URL]</span>
+<span class="comment"># Add or remove lines as needed</span>
+
+<span class="section-header">═══ SOCIAL MEDIA LINKS ═══</span>
+
+<span class="comment"># Show these as a 2-column icon grid at the bottom</span>
+Instagram: <span class="placeholder">[YOUR INSTAGRAM URL]</span>
+Facebook: <span class="placeholder">[YOUR FACEBOOK URL]</span>
+LinkedIn: <span class="placeholder">[YOUR LINKEDIN URL]</span>
+YouTube: <span class="placeholder">[YOUR YOUTUBE URL]</span>
+Threads: <span class="placeholder">[YOUR THREADS URL]</span>
+<span class="comment"># Delete any you don't use, add TikTok/Pinterest/X if needed</span>
+
+<span class="section-header">═══ DESIGN INSTRUCTIONS ═══</span>
+
+Typography: Use Google Fonts — pair a serif display font for headlines with a clean sans-serif for body text. Choose fonts that feel premium and distinctive, not generic.
+
+Layout: Max width 480px, centered on the page, like a real linktree. Mobile-first.
+
+Card design:
+- Each link is a card with the icon, title, subtitle, and an arrow
+- Hover effect: card lifts up (translateY -3px) with a deeper shadow
+- On hover: reveal a colored left border accent
+- Free resource cards: teal accent color
+- Paid offer cards: primary brand color accent
+- Affiliate cards: gold accent + "★ Affiliate" badge
+
+Animations:
+- All cards fade up with staggered delays (0.1s apart) on page load
+- Smooth hover transitions on all interactive elements
+- Subtle pulsing ring animation around the profile photo
+
+Background:
+- Off-white base (#FAFAF8 or similar)
+- Soft radial gradients in brand colors at very low opacity (5-7%) in corners
+
+Footer:
+- Copyright © 2026 [YOUR NAME]
+- Your website URL
+- FTC disclosure: "This page contains affiliate links. I earn a commission at no additional cost to you."
+
+<span class="section-header">═══ TECHNICAL REQUIREMENTS ═══</span>
+
+- Single HTML file with all CSS and JS inline (no separate files)
+- No external dependencies except Google Fonts
+- Fully mobile responsive
+- All links open in new tab (target="_blank" with rel="noopener")
+- The email opt-in submits via fetch() POST — no page redirect on submit
+- Output a complete, ready-to-deploy HTML file
+
+<span class="comment"># ═══════════════════════════════════════════════
+# DONE! Paste this into claude.ai and hit enter.
+# Your branded link page will be ready in seconds.
+# ═══════════════════════════════════════════════</span></div>
+    </div>
+
+    <!-- STEP 3: DEPLOY -->
+    <div class="block d3">
+      <div class="block-tag gold">Step 3 — Go Live</div>
+      <h2>Deploy your page in 60 seconds</h2>
+      <p>Once Claude gives you the HTML file, here's how to get it live on your own domain — no tech skills needed.</p>
+
+      <ul class="checklist">
+        <li>
+          <div class="check-icon">1️⃣</div>
+          <div><strong style="color:var(--navy);display:block;margin-bottom:3px;">Save the file</strong>Claude will output your complete HTML. Copy all of it and save it as a file called <code style="background:rgba(59,74,107,0.08);padding:2px 6px;border-radius:4px;font-size:12px;">index.html</code> on your computer.</div>
+        </li>
+        <li>
+          <div class="check-icon">2️⃣</div>
+          <div><strong style="color:var(--navy);display:block;margin-bottom:3px;">Go to netlify.com/drop</strong>Drag and drop your <code style="background:rgba(59,74,107,0.08);padding:2px 6px;border-radius:4px;font-size:12px;">index.html</code> file directly onto the page. Netlify will give you a live URL in under 10 seconds. Free.</div>
+        </li>
+        <li>
+          <div class="check-icon">3️⃣</div>
+          <div><strong style="color:var(--navy);display:block;margin-bottom:3px;">Connect your domain (optional)</strong>In Netlify → Site Settings → Domain Management, add your custom domain so it lives at something like <em>links.yourdomain.com</em>.</div>
+        </li>
+        <li>
+          <div class="check-icon">4️⃣</div>
+          <div><strong style="color:var(--navy);display:block;margin-bottom:3px;">Update your bio links</strong>Swap out your Linktree URL everywhere — Instagram bio, email signature, LinkedIn — with your new URL. You own it now.</div>
+        </li>
+      </ul>
+
+      <div class="tip-box">
+        <strong>💡 Want the full walkthrough?</strong> The paid version of this blueprint includes a step-by-step screen recording, how to customize your prompt further, and a complete domain security checklist. See below ↓
+      </div>
+    </div>
+
+    <!-- DOMAIN SECURITY TEASER -->
+    <div class="block d4">
+      <div class="block-tag fuchsia">Bonus — Domain Security</div>
+      <h2>Lock down your website before you share this link everywhere</h2>
+      <p>You just built a beautiful link page that lives on your domain. Now make sure that domain is actually secure. Here are the 3 most common ways mompreneur websites get hacked — and what to do about each one right now.</p>
+
+      <ul class="checklist">
+        <li>
+          <div class="check-icon">🔓</div>
+          <div><strong style="color:var(--navy);display:block;margin-bottom:3px;">Weak or reused passwords on your domain registrar</strong>Your domain registrar (GoDaddy, Namecheap, etc.) is the master key to your entire online presence. Enable two-factor authentication TODAY and use a unique, strong password.</div>
+        </li>
+        <li>
+          <div class="check-icon">⚠️</div>
+          <div><strong style="color:var(--navy);display:block;margin-bottom:3px;">Outdated WordPress plugins</strong>Over 90% of WordPress hacks happen through outdated plugins. Set your plugins to auto-update, or audit them monthly and delete any you're not actively using.</div>
+        </li>
+        <li>
+          <div class="check-icon">🚨</div>
+          <div><strong style="color:var(--navy);display:block;margin-bottom:3px;">No SSL certificate (http instead of https)</strong>If your site still shows "http" in the address bar, search engines flag it as unsafe. Most hosts offer free SSL through Let's Encrypt — turn it on in your hosting dashboard.</div>
+        </li>
+      </ul>
+
+      <div class="warning-box">
+        <strong>Real talk:</strong> If your domain or website gets hacked, you don't just lose your link page — you lose your email list, your SEO authority, and potentially your clients' trust. This is a $0 risk you can eliminate in 20 minutes. Do it today.
+      </div>
+    </div>
+
+    <!-- UPSELL -->
+    <div class="upsell-card d5">
+      <div class="upsell-inner">
+        <div class="upsell-eyebrow">🚀 Ready to go deeper?</div>
+        <h2>Your backend needs more than<br>a <span>link page</span></h2>
+        <p class="upsell-body">
+          You built your link page. Now let's look at the full picture of your operations — what's working, what's leaking money, and exactly what to build next. The Operations Audit + 90-Day Roadmap gives you a custom implementation plan so you stop guessing and start systematizing.
+        </p>
+
+        <div class="upsell-includes">
+          <div class="upsell-pill"><span class="u-check">✓</span> 2-hour deep-dive audit</div>
+          <div class="upsell-pill"><span class="u-check">✓</span> Full systems assessment</div>
+          <div class="upsell-pill"><span class="u-check">✓</span> Custom 90-day roadmap</div>
+          <div class="upsell-pill"><span class="u-check">✓</span> Tool recommendations</div>
+          <div class="upsell-pill"><span class="u-check">✓</span> 30-day Voxer support</div>
+        </div>
+
+        <div class="upsell-price-row">
+          <div class="upsell-price">$1,500</div>
+          <div class="upsell-price-label">One-time investment<br><span style="color:rgba(255,255,255,0.35);font-size:11px;">Best for: $75K–$150K revenue</span></div>
+        </div>
+
+        <a href="https://app.paperbell.com/checkout/packages/201252" target="_blank" class="upsell-btn">
+          Book My Operations Audit →
+        </a>
+
+        <p class="upsell-fine">Limited spots available · Secure checkout via Paperbell</p>
+      </div>
+    </div>
+
+  </div><!-- end content -->
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo"><span class="k">Kendra</span> <span class="n">Nix</span></div>
+    <p>
+      © 2026 Kendra Nix · Fractional Chief of Staff<br>
+      <a href="https://kendranix.com">kendranix.com</a> · <a href="https://kendranix.tech">kendranix.tech</a>
+    </p>
+  </footer>
+
+</div>
+
+<script>
+  function copyPrompt(btn) {
+    const promptEl = document.getElementById('promptText');
+    const text = promptEl.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✅ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = '📋 Copy Prompt';
+        btn.classList.remove('copied');
+      }, 2500);
+    }).catch(() => {
+      // Fallback
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      btn.textContent = '✅ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = '📋 Copy Prompt';
+        btn.classList.remove('copied');
+      }, 2500);
+    });
+  }
+</script>
+</body>
+</html>

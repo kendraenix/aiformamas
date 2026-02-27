@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Buy a Domain & Go Live | $0 Link Page Blueprint</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fuchsia: #D91E6B;
+    --fuchsia-dark: #a0154f;
+    --navy: #3B4A6B;
+    --navy-deep: #0F1E3E;
+    --gold: #D4AF37;
+    --teal: #4DA6A0;
+    --white: #FFFFFF;
+    --charcoal: #2D2D3A;
+    --bg: #FAFAF8;
+    --success: #28C840;
+    --warning: #FFBD2E;
+    --hosting-blue: #0057FF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--charcoal);
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 10% 5%, rgba(217,30,107,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 95%, rgba(77,166,160,0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page { position: relative; z-index: 1; }
+
+  /* ── NAV ── */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 32px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 900;
+    text-decoration: none;
+  }
+  .nav-logo .k { color: var(--fuchsia); }
+  .nav-logo .n { color: var(--navy); }
+
+  .nav-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: rgba(212,175,55,0.1);
+    border: 1px solid rgba(212,175,55,0.25);
+    border-radius: 100px;
+    padding: 5px 14px;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px 32px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.1s forwards;
+  }
+
+  .progress-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .progress-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .p-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .p-step-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .p-step.done .p-step-circle { background: var(--teal); color: white; }
+  .p-step.active .p-step-circle { background: var(--fuchsia); color: white; box-shadow: 0 0 0 4px rgba(217,30,107,0.15); }
+  .p-step.pending .p-step-circle { background: rgba(59,74,107,0.1); color: rgba(59,74,107,0.4); }
+
+  .p-step-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--navy);
+    text-align: center;
+    max-width: 70px;
+    line-height: 1.3;
+  }
+  .p-step.pending .p-step-label { opacity: 0.4; }
+
+  .p-connector {
+    width: 56px;
+    height: 2px;
+    background: rgba(59,74,107,0.12);
+    margin: 0 4px;
+    margin-bottom: 22px;
+    flex-shrink: 0;
+  }
+  .p-connector.done { background: var(--teal); }
+
+  /* ── HERO ── */
+  .hero {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 20px 24px 48px;
+    text-align: center;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.15s forwards;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 5.5vw, 48px);
+    font-weight: 900;
+    color: var(--navy-deep);
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.2s forwards;
+  }
+  .hero h1 .accent { color: var(--fuchsia); }
+
+  .gold-line {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 20px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.25s forwards;
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--charcoal);
+    max-width: 560px;
+    margin: 0 auto;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.3s forwards;
+  }
+
+  /* ── CONTENT ── */
+  .content {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ── WHAT YOU NEED GRID ── */
+  .prereq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 8px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.35s forwards;
+  }
+
+  .prereq-card {
+    background: white;
+    border-radius: 14px;
+    padding: 18px 16px;
+    border: 1px solid rgba(59,74,107,0.09);
+    box-shadow: 0 2px 12px rgba(59,74,107,0.06);
+    text-align: center;
+  }
+
+  .prereq-icon { font-size: 26px; margin-bottom: 8px; }
+  .prereq-title { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .prereq-body { font-size: 12px; line-height: 1.5; color: var(--charcoal); opacity: 0.65; }
+
+  /* ── AFFILIATE NOTICE ── */
+  .affiliate-notice {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(212,175,55,0.07);
+    border: 1px solid rgba(212,175,55,0.25);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin: 20px 0 0;
+    font-size: 13px;
+    color: var(--charcoal);
+    line-height: 1.6;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.4s forwards;
+  }
+
+  .affiliate-notice strong { color: var(--gold); }
+  .affiliate-notice .aff-icon { font-size: 22px; flex-shrink: 0; }
+
+  /* ── PHASE HEADER ── */
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 48px 0 20px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  .phase-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+  }
+  .phase-icon.fuchsia { background: rgba(217,30,107,0.1); }
+  .phase-icon.teal    { background: rgba(77,166,160,0.1); }
+  .phase-icon.gold    { background: rgba(212,175,55,0.1); }
+
+  .phase-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .phase-label.fuchsia { color: var(--fuchsia); }
+  .phase-label.teal    { color: var(--teal); }
+  .phase-label.gold    { color: var(--gold); }
+
+  .phase-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--navy-deep);
+    line-height: 1.2;
+  }
+
+  /* ── STEP CARD ── */
+  .step-card {
+    background: white;
+    border-radius: 18px;
+    margin-bottom: 14px;
+    border: 1px solid rgba(59,74,107,0.08);
+    box-shadow: 0 2px 16px rgba(59,74,107,0.07);
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  .step-card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    cursor: pointer;
+    transition: background 0.2s;
+    user-select: none;
+  }
+  .step-card-header:hover { background: rgba(59,74,107,0.02); }
+
+  .step-num-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 800;
+    flex-shrink: 0;
+    font-family: 'Playfair Display', serif;
+  }
+  .step-num-badge.fuchsia { background: rgba(217,30,107,0.1); color: var(--fuchsia); }
+  .step-num-badge.teal    { background: rgba(77,166,160,0.1); color: var(--teal); }
+  .step-num-badge.gold    { background: rgba(212,175,55,0.1); color: var(--gold); }
+
+  .step-card-title { flex: 1; }
+  .step-card-title h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
+  .step-card-title p  { font-size: 12px; color: var(--charcoal); opacity: 0.55; }
+
+  .step-chevron {
+    font-size: 18px;
+    color: var(--navy);
+    opacity: 0.25;
+    transition: transform 0.3s;
+  }
+  .step-card.open .step-chevron { transform: rotate(180deg); opacity: 0.5; }
+
+  .step-card-body {
+    display: none;
+    padding: 4px 24px 24px;
+    border-top: 1px solid rgba(59,74,107,0.06);
+  }
+  .step-card.open .step-card-body { display: block; }
+
+  /* ── INSTRUCTION LIST ── */
+  .instruction-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 18px;
+  }
+
+  .instruction-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .i-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .i-num.fuchsia { background: rgba(217,30,107,0.1); color: var(--fuchsia); }
+  .i-num.teal    { background: rgba(77,166,160,0.1); color: var(--teal); }
+  .i-num.gold    { background: rgba(212,175,55,0.1); color: var(--gold); }
+
+  .i-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--charcoal);
+    flex: 1;
+  }
+  .i-text strong { color: var(--navy); font-weight: 700; }
+  .i-text code {
+    background: rgba(59,74,107,0.08);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--fuchsia);
+  }
+
+  /* ── INFO BOXES ── */
+  .tip-box {
+    background: rgba(77,166,160,0.06);
+    border: 1px solid rgba(77,166,160,0.2);
+    border-left: 4px solid var(--teal);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 16px;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--charcoal);
+  }
+  .tip-box strong { color: var(--teal); }
+
+  .warning-box {
+    background: rgba(255,189,46,0.07);
+    border: 1px solid rgba(255,189,46,0.25);
+    border-left: 4px solid var(--warning);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 16px;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--charcoal);
+  }
+  .warning-box strong { color: #9a7200; }
+
+  .success-box {
+    background: rgba(40,200,64,0.06);
+    border: 1px solid rgba(40,200,64,0.2);
+    border-left: 4px solid var(--success);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 16px;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--charcoal);
+  }
+  .success-box strong { color: #1a7a2a; }
+
+  /* ── MOCKUP ── */
+  .mockup {
+    background: #1a1a2e;
+    border-radius: 14px;
+    overflow: hidden;
+    margin: 20px 0 0;
+    box-shadow: 0 8px 32px rgba(15,30,62,0.2);
+  }
+
+  .mockup-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .m-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .m-r { background: #FF5F57; }
+  .m-y { background: #FFBD2E; }
+  .m-g { background: #28C840; }
+
+  .mockup-url {
+    flex: 1;
+    background: rgba(255,255,255,0.07);
+    border-radius: 5px;
+    padding: 3px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    margin-left: 6px;
+  }
+
+  /* Hosting.com mockup screen */
+  .hc-screen {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .hc-topbar {
+    background: var(--hosting-blue);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hc-logo {
+    font-size: 15px;
+    font-weight: 800;
+    color: white;
+    letter-spacing: -0.3px;
+  }
+
+  .hc-search-wrap {
+    display: flex;
+    flex: 1;
+    background: white;
+    border-radius: 6px;
+    overflow: hidden;
+    max-width: 380px;
+  }
+
+  .hc-search-input {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--charcoal);
+    border: none;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .hc-search-btn {
+    background: var(--hosting-blue);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .hc-results { padding: 16px; }
+
+  .hc-result-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 14px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border: 1px solid rgba(59,74,107,0.1);
+  }
+  .hc-result-row.available { background: #f0fff4; border-color: rgba(40,200,64,0.2); }
+  .hc-result-row.taken { background: #fafafa; opacity: 0.6; }
+
+  .hc-domain { font-size: 14px; font-weight: 700; color: var(--navy); }
+  .hc-domain span { font-weight: 400; color: var(--charcoal); }
+
+  .hc-avail { font-size: 11px; font-weight: 700; color: var(--success); background: rgba(40,200,64,0.1); border-radius: 100px; padding: 2px 9px; margin-top: 3px; display: inline-block; }
+  .hc-taken { font-size: 11px; font-weight: 600; color: var(--charcoal); opacity: 0.5; background: rgba(59,74,107,0.07); border-radius: 100px; padding: 2px 9px; margin-top: 3px; display: inline-block; }
+
+  .hc-price { font-size: 14px; font-weight: 700; color: var(--navy); }
+  .hc-add-btn { background: var(--hosting-blue); color: white; border: none; border-radius: 6px; padding: 7px 14px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+  /* Netlify mockup */
+  .nl-screen {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .nl-topbar { background: #00AD9F; padding: 10px 16px; }
+  .nl-logo { font-size: 14px; font-weight: 800; color: white; }
+
+  .nl-drop-zone {
+    border: 3px dashed rgba(0,173,159,0.3);
+    border-radius: 12px;
+    padding: 36px 20px;
+    text-align: center;
+    margin: 16px;
+    background: rgba(0,173,159,0.03);
+  }
+  .nl-drop-icon { font-size: 38px; margin-bottom: 10px; }
+  .nl-drop-title { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .nl-drop-sub { font-size: 12px; color: var(--charcoal); opacity: 0.55; margin-bottom: 14px; }
+  .nl-drop-btn { display: inline-block; background: #00AD9F; color: white; border-radius: 8px; padding: 9px 22px; font-size: 13px; font-weight: 700; }
+
+  .nl-success { text-align: center; padding: 28px 20px; }
+  .nl-success-icon { font-size: 40px; margin-bottom: 10px; }
+  .nl-success-title { font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .nl-live-url { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,173,159,0.08); border: 1.5px solid rgba(0,173,159,0.2); border-radius: 8px; padding: 9px 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #00AD9F; font-weight: 600; }
+
+  /* DNS table mockup */
+  .dns-screen { background: white; border-radius: 8px; overflow: hidden; }
+  .dns-header { background: var(--navy-deep); color: white; padding: 10px 16px; font-size: 13px; font-weight: 600; }
+  .dns-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .dns-table th { background: rgba(59,74,107,0.06); padding: 8px 14px; text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--navy); opacity: 0.5; }
+  .dns-table td { padding: 10px 14px; border-bottom: 1px solid rgba(59,74,107,0.07); color: var(--charcoal); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .dns-table tr.highlight td { background: rgba(212,175,55,0.05); }
+  .dns-tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; font-family: 'DM Sans', sans-serif; }
+  .dns-tag.a     { background: rgba(217,30,107,0.1); color: var(--fuchsia); }
+  .dns-tag.cname { background: rgba(77,166,160,0.1); color: var(--teal); }
+  .dns-tag.new   { background: rgba(212,175,55,0.1); color: #9a7200; border: 1px solid rgba(212,175,55,0.3); }
+
+  /* ── UPSELL ── */
+  .upsell-card {
+    background: linear-gradient(135deg, var(--navy-deep) 0%, #1a2d5a 100%);
+    border-radius: 24px;
+    padding: 44px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-top: 48px;
+    box-shadow: 0 16px 60px rgba(15,30,62,0.25);
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards;
+  }
+
+  .upsell-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--fuchsia), var(--gold), var(--teal));
+  }
+
+  .upsell-card::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(217,30,107,0.06);
+    pointer-events: none;
+  }
+
+  .upsell-inner { position: relative; z-index: 1; }
+  .upsell-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+
+  .upsell-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 900;
+    color: white;
+    line-height: 1.15;
+    margin-bottom: 14px;
+  }
+  .upsell-card h2 span { color: var(--fuchsia); }
+
+  .upsell-body { font-size: 15px; color: rgba(255,255,255,0.65); line-height: 1.7; max-width: 500px; margin: 0 auto 28px; }
+
+  .upsell-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 28px; }
+  .upsell-pill { display: flex; align-items: center; gap: 5px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 100px; padding: 6px 14px; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8); }
+  .u-check { color: var(--teal); }
+
+  .upsell-price-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 24px; }
+  .upsell-price { font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 900; color: white; }
+  .upsell-price-label { font-size: 12px; color: rgba(255,255,255,0.4); text-align: left; line-height: 1.5; }
+
+  .upsell-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--fuchsia), var(--fuchsia-dark));
+    color: white;
+    text-decoration: none;
+    border-radius: 14px;
+    padding: 16px 36px;
+    font-size: 15px;
+    font-weight: 700;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 8px 28px rgba(217,30,107,0.35);
+  }
+  .upsell-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(217,30,107,0.5); }
+  .upsell-fine { font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 12px; }
+
+  /* ── FOOTER ── */
+  footer { background: var(--navy-deep); padding: 28px 24px; text-align: center; }
+  .footer-logo { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 900; margin-bottom: 6px; }
+  .footer-logo .k { color: var(--fuchsia); }
+  .footer-logo .n { color: rgba(255,255,255,0.8); }
+  footer p { font-size: 11px; color: rgba(255,255,255,0.3); line-height: 1.7; }
+  footer a { color: var(--teal); text-decoration: none; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .d1  { animation-delay: 0.08s; }
+  .d2  { animation-delay: 0.16s; }
+  .d3  { animation-delay: 0.24s; }
+  .d4  { animation-delay: 0.32s; }
+  .d5  { animation-delay: 0.40s; }
+  .d6  { animation-delay: 0.48s; }
+  .d7  { animation-delay: 0.56s; }
+  .d8  { animation-delay: 0.64s; }
+  .d9  { animation-delay: 0.72s; }
+  .d10 { animation-delay: 0.80s; }
+
+  @media (max-width: 600px) {
+    nav { padding: 16px 20px; }
+    .p-connector { width: 24px; }
+    .p-step-label { font-size: 9px; max-width: 50px; }
+    .upsell-card { padding: 28px 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- NAV -->
+  <nav>
+    <a href="https://kendranix.tech" class="nav-logo">
+      <span class="k">Kendra</span><span class="n"> Nix</span>
+    </a>
+    <span class="nav-badge">$0 Link Page Blueprint</span>
+  </nav>
+
+  <!-- PROGRESS -->
+  <div class="progress-bar">
+    <div class="progress-label">Your journey to owning your links</div>
+    <div class="progress-steps">
+      <div class="p-step done">
+        <div class="p-step-circle">✓</div>
+        <div class="p-step-label">Get the Blueprint</div>
+      </div>
+      <div class="p-connector done"></div>
+      <div class="p-step done">
+        <div class="p-step-circle">✓</div>
+        <div class="p-step-label">Run the Prompt</div>
+      </div>
+      <div class="p-connector done"></div>
+      <div class="p-step active">
+        <div class="p-step-circle">3</div>
+        <div class="p-step-label">Buy Domain</div>
+      </div>
+      <div class="p-connector"></div>
+      <div class="p-step pending">
+        <div class="p-step-circle">4</div>
+        <div class="p-step-label">Go Live</div>
+      </div>
+      <div class="p-connector"></div>
+      <div class="p-step pending">
+        <div class="p-step-circle">🎉</div>
+        <div class="p-step-label">Own It</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">🌐 Step-by-Step Walkthrough</div>
+    <h1>Buy Your Domain &<br><span class="accent">Go Live in 30 Minutes</span></h1>
+    <div class="gold-line"></div>
+    <p class="hero-sub">No tech background needed. We're walking through every single click — from buying your domain on Hosting.com to watching your branded link page go live on Netlify. Let's do this.</p>
+  </section>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- WHAT YOU NEED -->
+    <div class="prereq-grid">
+      <div class="prereq-card">
+        <div class="prereq-icon">💳</div>
+        <div class="prereq-title">A credit or debit card</div>
+        <div class="prereq-body">Your domain runs $10–$15/year. That's it. No monthly fees ever.</div>
+      </div>
+      <div class="prereq-card">
+        <div class="prereq-icon">📄</div>
+        <div class="prereq-title">Your HTML file ready</div>
+        <div class="prereq-body">The file Claude built you, saved on your computer as <code style="font-size:11px;background:rgba(59,74,107,0.08);padding:1px 5px;border-radius:3px;font-family:monospace;">index.html</code></div>
+      </div>
+      <div class="prereq-card">
+        <div class="prereq-icon">📧</div>
+        <div class="prereq-title">An email address</div>
+        <div class="prereq-body">To create your Hosting.com and Netlify accounts. Both are free to sign up.</div>
+      </div>
+      <div class="prereq-card">
+        <div class="prereq-icon">⏱️</div>
+        <div class="prereq-title">About 30 minutes</div>
+        <div class="prereq-body">Domain setup takes the most time. Netlify deployment is literally 60 seconds.</div>
+      </div>
+    </div>
+
+    <!-- AFFILIATE NOTICE -->
+    <div class="affiliate-notice">
+      <div class="aff-icon">★</div>
+      <div><strong>Heads up:</strong> The Hosting.com link below is an affiliate link — I earn a small commission at no extra cost to you. I only recommend tools I actually use and trust. This one's genuinely solid for domain purchases.</div>
+    </div>
+
+    <!-- ═══════════════════════════
+         PHASE 1 — HOSTING.COM
+    ═══════════════════════════ -->
+    <div class="phase-header d1">
+      <div class="phase-icon fuchsia">🌐</div>
+      <div>
+        <div class="phase-label fuchsia">Phase 1 of 3</div>
+        <div class="phase-title">Buy Your Domain on Hosting.com</div>
+      </div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="step-card open d2">
+      <div class="step-card-header" onclick="toggleStep(this)">
+        <div class="step-num-badge fuchsia">1</div>
+        <div class="step-card-title">
+          <h3>Create your Hosting.com account</h3>
+          <p>Free to sign up — takes 2 minutes</p>
+        </div>
+        <div class="step-chevron">⌄</div>
+      </div>
+      <div class="step-card-body">
+        <ul class="instruction-list">
+          <li class="instruction-item">
+            <div class="i-num fuchsia">1</div>
+            <div class="i-text">Click this link to go to Hosting.com: <a href="https://my.hosting.com/aff/5347c7f0db2dff6edc9cd5259c36399ab344b43f" target="_blank" rel="noopener" style="color:var(--fuchsia);font-weight:700;">Open Hosting.com →</a></div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num fuchsia">2</div>
+            <div class="i-text">Click <strong>"Sign Up"</strong> or <strong>"Get Started"</strong> in the top navigation</div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num fuchsia">3</div>
+            <div class="i-text">Enter your email address, create a password, and click <strong>"Create Account"</strong></div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num fuchsia">4</div>
+            <div class="i-text">Check your inbox and click the verification link they send you to confirm your account</div>
+          </li>
+        </ul>
+        <div class="tip-box">
+          <strong>💡 Tip:</strong> Use a real email you check regularly — Hosting.com will send renewal reminders here. Missing a renewal reminder = losing your domain. Don't use a throwaway address.
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step-card d3">
+      <div class="step-card-header" onclick="toggleStep(this)">
+        <div class="step-num-badge fuchsia">2</div>
+        <div class="step-card-title">
+          <h3>Search for your domain name</h3>
+          <p>Find something available and on-brand</p>
+        </div>
+        <div class="step-chevron">⌄</div>
+      </div>
+      <div class="step-card-body">
+        <ul class="instruction-list">
+          <li class="instruction-item">
+            <div class="i-num fuchsia">1</div>
+            <div class="i-text">Once logged in, find the <strong>Domain Search</strong> bar — it's usually front and center on the dashboard or under a "Domains" menu</div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num fuchsia">2</div>
+            <div class="i-text">Type the domain name you want — for example <code>yourname.com</code>, <code>yourname.co</code>, or <code>links.yourbrand.com</code></div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num fuchsia">3</div>
+            <div class="i-text">Hit <strong>Search</strong> — Hosting.com will show you which extensions are available and their prices</div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num fuchsia">4</div>
+            <div class="i-text">Look for the green <strong>"Available"</strong> indicator next to your preferred domain. Click <strong>"Add to Cart"</strong> on the one you want.</div>
+          </li>
+        </ul>
+
+        <!-- HOSTING.COM MOCKUP -->
+        <div class="mockup">
+          <div class="mockup-bar">
+            <div class="m-dot m-r"></div>
+            <div class="m-dot m-y"></div>
+            <div class="m-dot m-g"></div>
+            <div class="mockup-url">hosting.com/domains/search?q=yourname</div>
+          </div>
+          <div style="padding:10px;">
+            <div class="hc-screen">
+              <div class="hc-topbar">
+                <div class="hc-logo">Hosting.com</div>
+                <div class="hc-search-wrap">
+                  <input class="hc-search-input" value="yourname.com" readonly />
+                  <button class="hc-search-btn">Search</button>
+                </div>
+              </div>
+              <div class="hc-results">
+                <div class="hc-result-row available">
+                  <div>
+                    <div class="hc-domain">yourname<span>.com</span></div>
+                    <div class="hc-avail">✓ Available</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="hc-price">$12.99/yr</div>
+                    <button class="hc-add-btn">Add to Cart</button>
+                  </div>
+                </div>
+                <div class="hc-result-row taken">
+                  <div>
+                    <div class="hc-domain">yourname<span>.net</span></div>
+                    <div class="hc-taken">✗ Taken</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="hc-price" style="opacity:0.3;">—</div>
+                  </div>
+                </div>
+                <div class="hc-result-row available">
+                  <div>
+                    <div class="hc-domain">yourname<span>.co</span></div>
+                    <div class="hc-avail">✓ Available</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="hc-price">$9.99/yr</div>
+                    <button class="hc-add-btn">Add to Cart</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tip-box" style="margin-top:16px;">
+          <strong>💡 Domain name tips:</strong> Keep it short and easy to spell. Your own name works great — <code style="font-size:11px;">yourname.com</code> or <code style="font-size:11px;">yourname.co</code>. Avoid hyphens and numbers. If your .com is taken, .co is a clean professional alternative.
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step-card d4">
+      <div class="step-card-header" onclick="toggleStep(this)">
+        <div class="step-num-badge fuchsia">3</div>
+        <div class="step-card-title">
+          <h3>Complete your purchase</h3>
+          <p>Skip the upsells — just buy the domain</p>
+        </div>
+        <div class="step-chevron">⌄</div>
+      </div>
+      <div class="step-card-body">
+        <ul class="instruction-list">
+          <li class="instruction-item">
+            <div class="i-num fuchsia">1</div>
+            <div class="i-text">Click <strong>"Checkout"</strong> or <strong>"View Cart"</strong> to proceed</div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num fuchsia">2</div>
+            <div class="i-text">Set the registration period to <strong>1 year</strong> — you can always renew, no need to lock in multiple years right now</div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num fuchsia">3</div>
+            <div class="i-text">Hosting.com may offer add-ons like email hosting, SSL, or a website builder. <strong>Skip all of these</strong> — Netlify handles SSL for free and you don't need the rest</div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num fuchsia">4</div>
+            <div class="i-text">Enter your payment details and click <strong>"Complete Purchase"</strong></div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num fuchsia">5</div>
+            <div class="i-text">🎉 You'll get a confirmation email. <strong>Your domain is now yours!</strong> Keep that email — it has your domain login details.</div>
+          </li>
+        </ul>
+        <div class="warning-box">
+          <strong>⚠️ Watch out for upsells:</strong> Domain registrars love to add extras at checkout — hosting plans, email accounts, SSL certificates. You do NOT need any of these today. Just the domain. Netlify covers everything else for free.
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════
+         PHASE 2 — NETLIFY
+    ═══════════════════════════ -->
+    <div class="phase-header d5">
+      <div class="phase-icon teal">⚡</div>
+      <div>
+        <div class="phase-label teal">Phase 2 of 3</div>
+        <div class="phase-title">Deploy Your Page on Netlify</div>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step-card d5">
+      <div class="step-card-header" onclick="toggleStep(this)">
+        <div class="step-num-badge teal">4</div>
+        <div class="step-card-title">
+          <h3>Create your free Netlify account</h3>
+          <p>Free forever for this type of site</p>
+        </div>
+        <div class="step-chevron">⌄</div>
+      </div>
+      <div class="step-card-body">
+        <ul class="instruction-list">
+          <li class="instruction-item">
+            <div class="i-num teal">1</div>
+            <div class="i-text">Go to <a href="https://netlify.com" target="_blank" rel="noopener" style="color:var(--teal);font-weight:700;">netlify.com</a> and click <strong>"Sign Up"</strong></div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num teal">2</div>
+            <div class="i-text">Sign up with your email address — or use Google for faster setup</div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num teal">3</div>
+            <div class="i-text">Verify your email if prompted, then you're in and ready to deploy</div>
+          </li>
+        </ul>
+        <div class="tip-box">
+          <strong>💡 Why Netlify?</strong> It's 100% free for sites like yours, automatically adds HTTPS/SSL security, and lets you connect a custom domain in minutes. Used by millions of websites worldwide.
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step-card d6">
+      <div class="step-card-header" onclick="toggleStep(this)">
+        <div class="step-num-badge teal">5</div>
+        <div class="step-card-title">
+          <h3>Drop your file and go live</h3>
+          <p>This is the magic — 60 seconds flat</p>
+        </div>
+        <div class="step-chevron">⌄</div>
+      </div>
+      <div class="step-card-body">
+        <ul class="instruction-list">
+          <li class="instruction-item">
+            <div class="i-num teal">1</div>
+            <div class="i-text">Go to <a href="https://app.netlify.com/drop" target="_blank" rel="noopener" style="color:var(--teal);font-weight:700;">app.netlify.com/drop</a></div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num teal">2</div>
+            <div class="i-text">Find your <code>index.html</code> file on your computer and <strong>drag it directly onto the drop zone</strong> on that page</div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num teal">3</div>
+            <div class="i-text">Netlify deploys your site in seconds and gives you a live URL like <code>purple-sunshine-abc123.netlify.app</code></div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num teal">4</div>
+            <div class="i-text">Click the URL to see your live page — <strong>it's already on the internet!</strong></div>
+          </li>
+        </ul>
+
+        <!-- NETLIFY DROP MOCKUP -->
+        <div class="mockup">
+          <div class="mockup-bar">
+            <div class="m-dot m-r"></div>
+            <div class="m-dot m-y"></div>
+            <div class="m-dot m-g"></div>
+            <div class="mockup-url">app.netlify.com/drop</div>
+          </div>
+          <div style="padding:10px;">
+            <div class="nl-screen">
+              <div class="nl-topbar"><div class="nl-logo">Netlify</div></div>
+              <div class="nl-drop-zone">
+                <div class="nl-drop-icon">📂</div>
+                <div class="nl-drop-title">Drag and drop your site output folder here</div>
+                <div class="nl-drop-sub">Or drag your <strong>index.html</strong> file here to deploy instantly</div>
+                <div class="nl-drop-btn">Browse to upload</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUCCESS STATE -->
+        <div class="mockup" style="margin-top:10px;">
+          <div class="mockup-bar">
+            <div class="m-dot m-r"></div>
+            <div class="m-dot m-y"></div>
+            <div class="m-dot m-g"></div>
+            <div class="mockup-url">app.netlify.com/sites/your-site/overview</div>
+          </div>
+          <div style="padding:10px;">
+            <div class="nl-screen">
+              <div class="nl-success">
+                <div class="nl-success-icon">🎉</div>
+                <div class="nl-success-title">Your site is live!</div>
+                <div style="font-size:12px;color:var(--charcoal);opacity:0.5;margin-bottom:10px;">Deployed in 3 seconds</div>
+                <div class="nl-live-url">🔗 purple-sunshine-abc123.netlify.app</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="success-box">
+          <strong>✅ You're live!</strong> Your link page is on the internet right now. You can share this Netlify URL immediately while we connect your custom domain — that's next.
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════
+         PHASE 3 — CONNECT DOMAIN
+    ═══════════════════════════ -->
+    <div class="phase-header d7">
+      <div class="phase-icon gold">🔗</div>
+      <div>
+        <div class="phase-label gold">Phase 3 of 3</div>
+        <div class="phase-title">Connect Your Domain</div>
+      </div>
+    </div>
+
+    <!-- STEP 6 -->
+    <div class="step-card d7">
+      <div class="step-card-header" onclick="toggleStep(this)">
+        <div class="step-num-badge gold">6</div>
+        <div class="step-card-title">
+          <h3>Add your domain in Netlify</h3>
+          <p>Tell Netlify which domain to use</p>
+        </div>
+        <div class="step-chevron">⌄</div>
+      </div>
+      <div class="step-card-body">
+        <ul class="instruction-list">
+          <li class="instruction-item">
+            <div class="i-num gold">1</div>
+            <div class="i-text">In your Netlify dashboard, click your site name to open it</div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num gold">2</div>
+            <div class="i-text">Click <strong>"Domain settings"</strong> in the left sidebar (or "Set up a custom domain")</div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num gold">3</div>
+            <div class="i-text">Click <strong>"Add a domain"</strong> and type in the domain you bought — for example <code>yourname.com</code></div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num gold">4</div>
+            <div class="i-text">Click <strong>"Verify"</strong> — Netlify will confirm it found your domain and give you DNS records to copy</div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num gold">5</div>
+            <div class="i-text">Netlify will show you two values — a <strong>Type A record</strong> and a <strong>CNAME record</strong>. Copy these — you'll need them in the next step.</div>
+          </li>
+        </ul>
+        <div class="tip-box">
+          <strong>💡 What are DNS records?</strong> Think of them as a forwarding address. You're telling the internet: "When someone types my domain, send them to Netlify." It takes 15–30 minutes to kick in after you set it up.
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 7 -->
+    <div class="step-card d8">
+      <div class="step-card-header" onclick="toggleStep(this)">
+        <div class="step-num-badge gold">7</div>
+        <div class="step-card-title">
+          <h3>Add DNS records in Hosting.com</h3>
+          <p>Point your domain to Netlify</p>
+        </div>
+        <div class="step-chevron">⌄</div>
+      </div>
+      <div class="step-card-body">
+        <ul class="instruction-list">
+          <li class="instruction-item">
+            <div class="i-num gold">1</div>
+            <div class="i-text">Log back into <a href="https://my.hosting.com/aff/5347c7f0db2dff6edc9cd5259c36399ab344b43f" target="_blank" rel="noopener" style="color:var(--fuchsia);font-weight:700;">Hosting.com</a> and go to your <strong>Domain List</strong></div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num gold">2</div>
+            <div class="i-text">Click <strong>"Manage"</strong> next to the domain you just bought</div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num gold">3</div>
+            <div class="i-text">Find the <strong>"DNS / Nameservers"</strong> or <strong>"Advanced DNS"</strong> section</div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num gold">4</div>
+            <div class="i-text">Add a new <strong>Type A record</strong> — set Host to <code>@</code>, and paste the IP address Netlify gave you as the Value</div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num gold">5</div>
+            <div class="i-text">Add a new <strong>CNAME record</strong> — set Host to <code>www</code>, and paste the Netlify subdomain as the Value (it ends in <code>.netlify.app</code>)</div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num gold">6</div>
+            <div class="i-text">Click <strong>Save</strong> on both records</div>
+          </li>
+        </ul>
+
+        <!-- DNS TABLE MOCKUP -->
+        <div class="mockup" style="margin-top:20px;">
+          <div class="mockup-bar">
+            <div class="m-dot m-r"></div>
+            <div class="m-dot m-y"></div>
+            <div class="m-dot m-g"></div>
+            <div class="mockup-url">hosting.com → Domain Manager → DNS Settings</div>
+          </div>
+          <div style="padding:10px;">
+            <div class="dns-screen">
+              <div class="dns-header">DNS Records — yourname.com</div>
+              <table class="dns-table">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Host</th>
+                    <th>Value</th>
+                    <th>TTL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="dns-tag a">A</span></td>
+                    <td>@</td>
+                    <td>75.2.60.5</td>
+                    <td>Auto</td>
+                  </tr>
+                  <tr class="highlight">
+                    <td><span class="dns-tag a">A</span> <span class="dns-tag new">NEW</span></td>
+                    <td>@</td>
+                    <td style="color:var(--fuchsia);">104.198.14.52 ← paste Netlify IP here</td>
+                    <td>Auto</td>
+                  </tr>
+                  <tr class="highlight">
+                    <td><span class="dns-tag cname">CNAME</span> <span class="dns-tag new">NEW</span></td>
+                    <td>www</td>
+                    <td style="color:var(--teal);">purple-sunshine-abc123.netlify.app ← your Netlify URL</td>
+                    <td>Auto</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="warning-box">
+          <strong>⚠️ DNS takes time:</strong> After saving, it can take anywhere from 15 minutes to 24 hours for your domain to fully point to Netlify. This is normal — the internet just needs time to update. Grab a coffee. ☕
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 8 -->
+    <div class="step-card d9">
+      <div class="step-card-header" onclick="toggleStep(this)">
+        <div class="step-num-badge gold">8</div>
+        <div class="step-card-title">
+          <h3>Enable HTTPS (free SSL)</h3>
+          <p>Makes your site secure — takes 10 seconds</p>
+        </div>
+        <div class="step-chevron">⌄</div>
+      </div>
+      <div class="step-card-body">
+        <ul class="instruction-list">
+          <li class="instruction-item">
+            <div class="i-num gold">1</div>
+            <div class="i-text">Back in Netlify, go to your site's <strong>Domain settings</strong></div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num gold">2</div>
+            <div class="i-text">Scroll down to the <strong>"HTTPS"</strong> section</div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num gold">3</div>
+            <div class="i-text">Click <strong>"Verify DNS configuration"</strong> — once your DNS has propagated, this will turn green</div>
+          </li>
+          <li class="instruction-item">
+            <div class="i-num gold">4</div>
+            <div class="i-text">Click <strong>"Provision certificate"</strong> — Netlify installs a free SSL certificate automatically. Your site will now show <code>https://</code> 🔒</div>
+          </li>
+        </ul>
+        <div class="success-box">
+          <strong>✅ You're fully live on your own domain!</strong> Visit <code>yourname.com</code> in your browser and you'll see your branded link page — secured with HTTPS, on a domain you own, with zero monthly fees. Go update your Instagram bio, email signature, and everywhere else you've been sharing Linktree. You're done. 🎉
+        </div>
+      </div>
+    </div>
+
+    <!-- FINAL CHECKLIST -->
+    <div style="background:white;border-radius:18px;padding:28px;border:1px solid rgba(59,74,107,0.08);box-shadow:0 2px 16px rgba(59,74,107,0.07);margin-top:8px;opacity:0;animation:fadeUp 0.6s ease 0.9s forwards;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:14px;">🏁 Final Checklist</div>
+      <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--navy-deep);margin-bottom:16px;">Before you call it done</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:var(--charcoal);">
+          <input type="checkbox" style="width:18px;height:18px;accent-color:var(--fuchsia);cursor:pointer;"> Domain purchased on Hosting.com
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:var(--charcoal);">
+          <input type="checkbox" style="width:18px;height:18px;accent-color:var(--fuchsia);cursor:pointer;"> HTML file saved as <code style="font-size:12px;background:rgba(59,74,107,0.08);padding:1px 5px;border-radius:3px;">index.html</code>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:var(--charcoal);">
+          <input type="checkbox" style="width:18px;height:18px;accent-color:var(--fuchsia);cursor:pointer;"> Site deployed on Netlify
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:var(--charcoal);">
+          <input type="checkbox" style="width:18px;height:18px;accent-color:var(--fuchsia);cursor:pointer;"> DNS records added in Hosting.com
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:var(--charcoal);">
+          <input type="checkbox" style="width:18px;height:18px;accent-color:var(--fuchsia);cursor:pointer;"> HTTPS enabled in Netlify
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:var(--charcoal);">
+          <input type="checkbox" style="width:18px;height:18px;accent-color:var(--fuchsia);cursor:pointer;"> Instagram bio link updated
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:var(--charcoal);">
+          <input type="checkbox" style="width:18px;height:18px;accent-color:var(--fuchsia);cursor:pointer;"> Email signature updated
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:var(--charcoal);">
+          <input type="checkbox" style="width:18px;height:18px;accent-color:var(--fuchsia);cursor:pointer;"> Old Linktree officially cancelled 🎉
+        </label>
+      </div>
+    </div>
+
+    <!-- UPSELL -->
+    <div class="upsell-card d10">
+      <div class="upsell-inner">
+        <div class="upsell-eyebrow">🚀 Ready to go deeper?</div>
+        <h2>Your link page is live.<br>Now let's look at your <span>whole backend.</span></h2>
+        <p class="upsell-body">
+          You just systematized your first piece of digital real estate. Imagine what happens when we apply that same thinking to your entire business. The Operations Audit gives you a complete picture of what's working, what's leaking, and exactly what to build next.
+        </p>
+        <div class="upsell-pills">
+          <div class="upsell-pill"><span class="u-check">✓</span> 2-hour deep-dive audit</div>
+          <div class="upsell-pill"><span class="u-check">✓</span> Full systems assessment</div>
+          <div class="upsell-pill"><span class="u-check">✓</span> Custom 90-day roadmap</div>
+          <div class="upsell-pill"><span class="u-check">✓</span> Tool recommendations</div>
+          <div class="upsell-pill"><span class="u-check">✓</span> 30-day Voxer support</div>
+        </div>
+        <div class="upsell-price-row">
+          <div class="upsell-price">$1,500</div>
+          <div class="upsell-price-label">One-time investment<br><span style="color:rgba(255,255,255,0.3);font-size:11px;">Best for: $75K–$150K revenue</span></div>
+        </div>
+        <a href="https://app.paperbell.com/checkout/packages/201252" target="_blank" rel="noopener" class="upsell-btn">
+          Book My Operations Audit →
+        </a>
+        <p class="upsell-fine">Limited spots available · Secure checkout via Paperbell</p>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo"><span class="k">Kendra</span><span class="n"> Nix</span></div>
+    <p>
+      © 2026 Kendra Nix · Fractional Chief of Staff<br>
+      <a href="https://kendranix.com">kendranix.com</a> · <a href="https://kendranix.tech">kendranix.tech</a>
+    </p>
+  </footer>
+
+</div>
+
+<script>
+  function toggleStep(header) {
+    const card = header.parentElement;
+    const isOpen = card.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.step-card').forEach(c => c.classList.remove('open'));
+    // Open this one if it was closed
+    if (!isOpen) card.classList.add('open');
+  }
+</script>
+</body>
+</html>
