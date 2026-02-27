@@ -1,0 +1,68 @@
+export const apps = [
+  // ─── FREE ───────────────────────────────────────────────
+  {
+    id: 'ai-for-mamas',
+    name: 'AI for Mamas',
+    description: 'AI tools and resources designed for busy moms who want to work smarter, not harder.',
+    tier: 'free',
+    href: 'https://aiformamas.com/',
+    external: true,
+    cta: 'Open',
+  },
+  {
+    id: 'ai-literacy-lab',
+    name: 'AI Literacy Lab',
+    description: 'Build real AI literacy with hands-on practice, guided lessons, and practical prompts.',
+    tier: 'free',
+    href: 'https://ailiteracylab.lovable.app',
+    external: true,
+    cta: 'Open',
+  },
+  {
+    id: 'fifteen-hour-audit',
+    name: '15 Hour Work Week Audit',
+    description: 'Discover which tasks are stealing your time and which ones actually move the needle.',
+    tier: 'free',
+    href: 'https://fifteen-hour.lovable.app',
+    external: true,
+    cta: 'Open',
+  },
+  {
+    id: 'mom-math-calculator',
+    name: 'Mom Math Calculator',
+    description: 'Calculate the exact cost of doing $20/hour work when you should be doing $500/hour strategy.',
+    tier: 'free',
+    href: 'https://kendranix.com/mom-math-calculator',
+    external: true,
+    cta: 'Open',
+  },
+  {
+    id: 'link-page-blueprint',
+    name: 'The $0 Link Page Blueprint',
+    description: 'Build a beautiful, high-converting link page for free — no tech skills or budget required.',
+    tier: 'free',
+    href: 'https://kendranix-tech.vercel.app/blueprint',
+    external: true,
+    cta: 'Get Blueprint',
+  },
+
+  // ─── COMING SOON (claims-related) ───────────────────────
+  {
+    id: 'policy-help-desk',
+    name: 'Policy Help Desk',
+    description: "Understand your insurance policy in plain English. Know what's covered before disaster strikes.",
+    tier: 'soon',
+    href: 'https://app.kit.com/forms/9141530/subscriptions',
+    external: true,
+    cta: 'Join Waitlist',
+  },
+  {
+    id: 'claim-coach',
+    name: 'Claim Coach',
+    description: 'Step-by-step guidance for smarter insurance claims — from first filing to final settlement.',
+    tier: 'soon',
+    href: 'https://app.kit.com/forms/9141530/subscriptions',
+    external: true,
+    cta: 'Join Waitlist',
+  },
+]

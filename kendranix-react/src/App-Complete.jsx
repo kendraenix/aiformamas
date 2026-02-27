@@ -8,39 +8,85 @@ import {
   LayoutGrid,
   Zap,
   Lock,
+  Calculator,
+  Clock,
+  Link,
+  Brain,
+  Mail,
 } from 'lucide-react'
+import { apps } from './appData.js'
 
-const apps = [
-  {
-    name: 'Policy Help Desk',
-    desc: 'Understand your policy. Protect your home.',
-    status: 'Live',
-    icon: FileText,
-    cta: 'Open',
-    href: '#',
-    bullets: ['Plain-English summaries', 'Coverage & exclusions', 'Claim-ready notes'],
-  },
-  {
-    name: 'Claim Coach',
-    desc: 'Step-by-step guidance for smarter claims.',
-    status: 'Coming Soon',
-    icon: Shield,
-    cta: 'Join Waitlist',
-    href: '#',
-    bullets: ['Upload docs & organize', 'Timeline + next actions', 'Negotiation prep'],
-  },
-  {
-    name: 'Vision Activated',
-    desc: 'Turn vision into action with systems that stick.',
-    status: 'Coming Soon',
-    icon: Sparkles,
-    cta: 'Preview',
-    href: '#',
-    bullets: ['Quarterly focus boards', 'Action plan generator', 'Progress rituals'],
-  },
-]
+// Map app IDs to icons
+const iconMap = {
+  'ai-for-mamas': Sparkles,
+  'ai-literacy-lab': Brain,
+  'fifteen-hour-audit': Clock,
+  'mom-math-calculator': Calculator,
+  'link-page-blueprint': Link,
+  'policy-help-desk': FileText,
+  'claim-coach': Shield,
+}
+
+const tierMeta = {
+  free: { label: 'Free', badgeClass: 'live' },
+  paid: { label: 'Paid', badgeClass: 'paid' },
+  soon: { label: 'Coming Soon', badgeClass: 'soon' },
+}
+
+function AppCard({ app }) {
+  const Icon = iconMap[app.id] || Zap
+  const { label, badgeClass } = tierMeta[app.tier]
+  const isSoon = app.tier === 'soon'
+
+  return (
+    <div className={`card ${isSoon ? 'cardSoon' : ''}`}>
+      <div className="cardTop">
+        <div className="cardIcon">
+          <Icon size={18} />
+        </div>
+        <span className={`badge ${badgeClass}`}>{label}</span>
+      </div>
+
+      <div className="cardBody">
+        <div className="cardTitle">{app.name}</div>
+        <div className="cardDesc">{app.description}</div>
+      </div>
+
+      <div className="cardFooter">
+        <a
+          className={`cardCta ${isSoon ? 'secondary' : 'primary'}`}
+          href={app.href}
+          {...(app.external ? { target: '_blank', rel: 'noreferrer' } : {})}
+        >
+          {app.cta} <ArrowRight size={16} />
+        </a>
+      </div>
+    </div>
+  )
+}
+
+function SectionBlock({ title, subtitle, items }) {
+  if (items.length === 0) return null
+  return (
+    <section className="section">
+      <div className="sectionHead">
+        <h2>{title}</h2>
+        {subtitle && <p>{subtitle}</p>}
+      </div>
+      <div className="cards">
+        {items.map((app) => (
+          <AppCard key={app.id} app={app} />
+        ))}
+      </div>
+    </section>
+  )
+}
 
 export default function App() {
+  const free = apps.filter((a) => a.tier === 'free')
+  const paid = apps.filter((a) => a.tier === 'paid')
+  const soon = apps.filter((a) => a.tier === 'soon')
+
   return (
     <div className="bg">
       <header className="nav">
@@ -65,6 +111,7 @@ export default function App() {
       </header>
 
       <main className="wrap">
+        {/* ── HERO ── */}
         <section className="hero">
           <div className="heroLeft">
             <div className="pill">
@@ -78,8 +125,8 @@ export default function App() {
             </h1>
 
             <p className="subhead">
-              A growing ecosystem of apps that turn overwhelm into a plan — from insurance policy clarity to
-              mom-friendly systems that help you move.
+              A growing ecosystem of apps that turn overwhelm into a plan — from free productivity
+              tools to mom-friendly systems that help you move.
             </p>
 
             <div className="ctaRow" id="get-started">
@@ -116,39 +163,28 @@ export default function App() {
 
               <div className="glassGrid">
                 <div className="mini">
-                  <div className="miniIcon">
-                    <Zap size={16} />
-                  </div>
+                  <div className="miniIcon"><Zap size={16} /></div>
                   <div className="miniText">
                     <div className="miniHead">Fast clarity</div>
                     <div className="miniSub">Less Googling, more doing</div>
                   </div>
                 </div>
-
                 <div className="mini">
-                  <div className="miniIcon">
-                    <Shield size={16} />
-                  </div>
+                  <div className="miniIcon"><Shield size={16} /></div>
                   <div className="miniText">
                     <div className="miniHead">Better protection</div>
-                    <div className="miniSub">Know what’s covered</div>
+                    <div className="miniSub">Know what's covered</div>
                   </div>
                 </div>
-
                 <div className="mini">
-                  <div className="miniIcon">
-                    <FileText size={16} />
-                  </div>
+                  <div className="miniIcon"><FileText size={16} /></div>
                   <div className="miniText">
                     <div className="miniHead">Cleaner docs</div>
                     <div className="miniSub">Organize in minutes</div>
                   </div>
                 </div>
-
                 <div className="mini">
-                  <div className="miniIcon">
-                    <Sparkles size={16} />
-                  </div>
+                  <div className="miniIcon"><Sparkles size={16} /></div>
                   <div className="miniText">
                     <div className="miniHead">Momentum</div>
                     <div className="miniSub">Tiny steps that compound</div>
@@ -163,83 +199,72 @@ export default function App() {
                     <div className="meterFill" />
                   </div>
                 </div>
-                <div className="tinyNote">New tools drop as they’re ready.</div>
+                <div className="tinyNote">New tools drop as they're ready.</div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="section" id="apps">
-          <div className="sectionHead">
-            <h2>Apps</h2>
-            <p>Pick a tool, get a plan, move forward.</p>
-          </div>
+        {/* ── APP SECTIONS ── */}
+        <div id="apps">
+          <SectionBlock
+            title="Free Apps"
+            subtitle="Start here — no cost, no catch."
+            items={free}
+          />
+          <SectionBlock
+            title="Paid Apps"
+            subtitle="Premium tools built for serious operators."
+            items={paid}
+          />
+        </div>
 
-          <div className="cards">
-            {apps.map((a) => {
-              const Icon = a.icon
-              const isLive = a.status.toLowerCase() === 'live'
-              return (
-                <div className="card" key={a.name}>
-                  <div className="cardTop">
-                    <div className="cardIcon">
-                      <Icon size={18} />
-                    </div>
-                    <span className={`badge ${isLive ? 'live' : 'soon'}`}>{a.status}</span>
-                  </div>
-
-                  <div className="cardBody">
-                    <div className="cardTitle">{a.name}</div>
-                    <div className="cardDesc">{a.desc}</div>
-
-                    <ul className="bullets">
-                      {a.bullets.map((b) => (
-                        <li key={b}>
-                          <CheckCircle2 size={16} />
-                          <span>{b}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="cardFooter">
-                    <a className={`cardCta ${isLive ? 'primary' : 'secondary'}`} href={a.href}>
-                      {a.cta} <ArrowRight size={16} />
-                    </a>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </section>
-
+        {/* ── EMAIL SIGNUP ── */}
         <section className="section" id="newsletter">
-          <div className="ctaPanel">
+          <div className="ctaPanel signupPanel">
+            <div className="signupIcon">
+              <Mail size={22} />
+            </div>
             <div className="ctaCopy">
-              <h3>Get notified when new apps go live</h3>
+              <h3>Join the Founder List</h3>
               <p>
-                Drop your email and I’ll send updates when tools ship (no spam, just releases and helpful
-                resources).
+                Get early access to new apps, exclusive resources, and updates — straight to your inbox.
               </p>
             </div>
-
-            <form className="ctaForm" onSubmit={(e) => e.preventDefault()}>
-              <input className="input" type="email" placeholder="you@email.com" />
-              <button className="primary big" type="submit">
-                Notify me <ArrowRight size={16} />
-              </button>
-            </form>
-
-            <div className="finePrint">You can unsubscribe anytime.</div>
+            <a
+              className="primary big signupBtn"
+              href="https://app.kit.com/forms/9141530/subscriptions"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Join the Founder List <ArrowRight size={16} />
+            </a>
+            <div className="finePrint">No spam. Unsubscribe anytime.</div>
           </div>
         </section>
 
+        {/* ── COMING SOON ── */}
+        <SectionBlock
+          title="Coming Soon"
+          subtitle="On the roadmap — join the waitlist to get notified first."
+          items={soon}
+        />
+
+        {/* ── FOOTER ── */}
         <footer className="footer">
           <div>© {new Date().getFullYear()} Kendra Nix</div>
           <div className="footerLinks">
             <a href="#apps">Apps</a>
             <span>•</span>
             <a href="#newsletter">Updates</a>
+            <span>•</span>
+            <a href="https://kendranix.com/privacy-policy/" target="_blank" rel="noreferrer">
+              Privacy Policy
+            </a>
+            <span>•</span>
+            <a href="https://kendranix.com/contact" target="_blank" rel="noreferrer">
+              Contact
+            </a>
           </div>
         </footer>
       </main>
