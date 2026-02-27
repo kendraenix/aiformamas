@@ -312,9 +312,9 @@ a{ color: inherit; text-decoration:none; }
 
 .card{
   border-radius: var(--radius);
-  border: 1px solid rgba(255,255,255,.14);
-  background: rgba(255,255,255,.05);
-  box-shadow: 0 16px 55px rgba(0,0,0,.35);
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.88);
+  box-shadow: 0 16px 55px rgba(0,0,0,.12);
   overflow:hidden;
   display:flex;
   flex-direction:column;
@@ -333,25 +333,23 @@ a{ color: inherit; text-decoration:none; }
   display:flex;
   align-items:center;
   justify-content:center;
-  border: 1px solid rgba(255,255,255,.14);
-  background: rgba(255,255,255,.07);
+  border: 1px solid var(--line);
+  background: rgba(139,92,246,.08);
+  color: var(--accent);
 }
 
 .badge{
   font-size: 12px;
   padding: 6px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,.14);
+  border: 1px solid var(--line);
   color: var(--muted);
-  background: rgba(0,0,0,.10);
-}
-.badge.live{
-  border-color: rgba(34,197,94,.40);
-  background: rgba(34,197,94,.12);
-  color: rgba(255,255,255,.92);
+  background: rgba(0,0,0,.04);
 }
 .badge.soon{
-  border-color: rgba(255,255,255,.18);
+  border-color: rgba(100,100,100,.25);
+  background: rgba(0,0,0,.06);
+  color: var(--muted);
 }
 
 .cardBody{
@@ -362,9 +360,11 @@ a{ color: inherit; text-decoration:none; }
   font-weight: 720;
   font-size: 16px;
   margin-top: 8px;
+  color: var(--text);
 }
 .cardDesc{
-  color: var(--muted);
+  color: var(--text);
+  opacity: 0.85;
   margin-top: 6px;
   line-height: 1.45;
 }
@@ -463,7 +463,8 @@ a{ color: inherit; text-decoration:none; }
 
 /* ── Coming Soon card softening ── */
 .cardSoon{
-  opacity: .72;
+  opacity: .75;
+  background: rgba(255,255,255,.6);
 }
 .cardSoon:hover{
   opacity: 1;
@@ -491,4 +492,164 @@ a{ color: inherit; text-decoration:none; }
 .signupBtn{
   align-self: flex-start;
   margin-top: 4px;
+}
+
+/* ── Free badge (green) ── */
+.badge.free{
+  border-color: rgba(34,197,94,.40);
+  background: rgba(34,197,94,.12);
+  color: var(--text);
+}
+
+/* ── Disabled CTA ── */
+.cardCta.disabled{
+  pointer-events: none;
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: rgba(255,255,255,.04);
+  border-color: var(--line);
+}
+
+/* ── Email Gate Box ── */
+.gateBox{
+  margin-bottom: 16px;
+  padding: 20px;
+  border-radius: var(--radius);
+  border: 2px dashed rgba(139,92,246,.35);
+  background: rgba(139,92,246,.06);
+}
+
+.gateIcon{
+  width: 44px; height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(139,92,246,.25);
+  background: rgba(139,92,246,.12);
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.gateCopy h3{
+  margin: 0;
+  font-size: 18px;
+  color: var(--text);
+}
+
+.gateCopy p{
+  margin: 6px 0 0;
+  color: var(--text);
+  opacity: 0.8;
+  line-height: 1.5;
+}
+
+.gateForm{
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.gateForm .input{
+  flex: 1 1 240px;
+  background: rgba(255,255,255,.85);
+  color: var(--text);
+  border-color: rgba(139,92,246,.25);
+}
+
+.gateForm .input::placeholder{
+  color: var(--muted);
+}
+
+.gateError{
+  margin-top: 8px;
+  color: #ef4444;
+  font-size: 13px;
+}
+
+/* ── Waitlist Box (Coming Soon) ── */
+.waitlistBox{
+  margin-top: 16px;
+  padding: 20px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.04);
+}
+
+.waitlistBox.waitlistSuccess{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--accent2);
+  background: rgba(34,197,94,.08);
+  border-color: rgba(34,197,94,.25);
+}
+
+.waitlistSuccess h4{
+  margin: 0;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.waitlistSuccess p{
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--text);
+  opacity: 0.8;
+}
+
+.waitlistIcon{
+  width: 44px; height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(139,92,246,.15);
+  margin-bottom: 10px;
+}
+
+.waitlistCopy h4{
+  margin: 0;
+  font-size: 18px;
+  color: var(--text);
+}
+
+.waitlistCopy p{
+  margin: 6px 0 0;
+  color: var(--text);
+  opacity: 0.8;
+  line-height: 1.5;
+}
+
+.waitlistForm{
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.waitlistForm .input{
+  flex: 1 1 180px;
+  min-width: 160px;
+}
+
+/* ── Better contrast overall ── */
+.sectionHead h2{
+  color: var(--text);
+}
+
+.sectionHead p{
+  color: var(--text);
+  opacity: 0.75;
+}
+
+.ctaPanel h3,
+.ctaPanel p{
+  color: var(--text);
+}
+
+.ctaPanel p{
+  opacity: 0.8;
 }

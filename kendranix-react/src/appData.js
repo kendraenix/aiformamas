@@ -1,23 +1,5 @@
 export const apps = [
-  // ─── FREE ───────────────────────────────────────────────
-  {
-    id: 'ai-for-mamas',
-    name: 'AI for Mamas',
-    description: 'AI tools and resources designed for busy moms who want to work smarter, not harder.',
-    tier: 'free',
-    href: 'https://aiformamas.com/',
-    external: true,
-    cta: 'Open',
-  },
-  {
-    id: 'ai-literacy-lab',
-    name: 'AI Literacy Lab',
-    description: 'Build real AI literacy with hands-on practice, guided lessons, and practical prompts.',
-    tier: 'free',
-    href: 'https://ailiteracylab.lovable.app',
-    external: true,
-    cta: 'Open',
-  },
+  // ─── FREE (gated behind email) ──────────────────────────
   {
     id: 'fifteen-hour-audit',
     name: '15 Hour Work Week Audit',
@@ -45,6 +27,26 @@ export const apps = [
     external: true,
     cta: 'Get Blueprint',
   },
+  {
+    id: 'sop-builder',
+    name: 'SOP Builder',
+    description: 'Create professional standard operating procedures that make delegation effortless.',
+    tier: 'free',
+    href: 'https://aiformamas.com/sop-builder/',
+    external: true,
+    cta: 'Open',
+  },
+
+  // ─── PAID ───────────────────────────────────────────────
+  {
+    id: 'vision-to-action',
+    name: 'Vision to Action',
+    description: 'Turn your big-picture vision into an actionable plan with guided vision boards and goal tracking.',
+    tier: 'paid',
+    href: 'https://lovable.dev/projects/cbb98bbb-3d6d-4b9d-9afd-1aae90531365',
+    external: true,
+    cta: 'View',
+  },
 
   // ─── COMING SOON (claims-related) ───────────────────────
   {
@@ -52,17 +54,17 @@ export const apps = [
     name: 'Policy Help Desk',
     description: "Understand your insurance policy in plain English. Know what's covered before disaster strikes.",
     tier: 'soon',
-    href: 'https://app.kit.com/forms/9141530/subscriptions',
-    external: true,
-    cta: 'Join Waitlist',
+    href: '',
+    external: false,
+    cta: 'Coming Soon',
   },
   {
     id: 'claim-coach',
     name: 'Claim Coach',
     description: 'Step-by-step guidance for smarter insurance claims — from first filing to final settlement.',
     tier: 'soon',
-    href: 'https://app.kit.com/forms/9141530/subscriptions',
-    external: true,
-    cta: 'Join Waitlist',
+    href: '',
+    external: false,
+    cta: 'Coming Soon',
   },
 ]

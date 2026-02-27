@@ -1,4 +1,5 @@
 import './App-Complete.css'
+import { useState, useEffect } from 'react'
 import {
   ArrowRight,
   CheckCircle2,
@@ -11,35 +12,85 @@ import {
   Calculator,
   Clock,
   Link,
-  Brain,
   Mail,
+  Eye,
+  Unlock,
 } from 'lucide-react'
 import { apps } from './appData.js'
 
 // Map app IDs to icons
 const iconMap = {
-  'ai-for-mamas': Sparkles,
-  'ai-literacy-lab': Brain,
   'fifteen-hour-audit': Clock,
   'mom-math-calculator': Calculator,
   'link-page-blueprint': Link,
+  'sop-builder': FileText,
+  'vision-to-action': Eye,
   'policy-help-desk': FileText,
   'claim-coach': Shield,
 }
 
 const tierMeta = {
-  free: { label: 'Free', badgeClass: 'live' },
+  free: { label: 'Free', badgeClass: 'free' },
   paid: { label: 'Paid', badgeClass: 'paid' },
   soon: { label: 'Coming Soon', badgeClass: 'soon' },
 }
 
-function AppCard({ app }) {
-  const Icon = iconMap[app.id] || Zap
-  const { label, badgeClass } = tierMeta[app.tier]
-  const isSoon = app.tier === 'soon'
+const KIT_FORM_URL = 'https://app.kit.com/forms/9141530/subscriptions'
+
+// ─────────────────────────────────────────────────────────────
+// Email Gate Box (for Free Apps)
+// ─────────────────────────────────────────────────────────────
+function EmailGateBox({ onUnlock }) {
+  const [email, setEmail] = useState('')
+  const [error, setError] = useState('')
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (!email || !email.includes('@')) {
+      setError('Please enter a valid email.')
+      return
+    }
+    localStorage.setItem('freeAppsUnlocked', 'true')
+    localStorage.setItem('userEmail', email)
+    onUnlock()
+  }
 
   return (
-    <div className={`card ${isSoon ? 'cardSoon' : ''}`}>
+    <div className="gateBox">
+      <div className="gateIcon">
+        <Lock size={20} />
+      </div>
+      <div className="gateCopy">
+        <h3>Unlock Free Tools</h3>
+        <p>Enter your email to get instant access to all free apps.</p>
+      </div>
+      <form className="gateForm" onSubmit={handleSubmit}>
+        <input
+          type="email"
+          className="input"
+          placeholder="you@email.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <button type="submit" className="primary big">
+          Unlock <Unlock size={16} />
+        </button>
+      </form>
+      {error && <div className="gateError">{error}</div>}
+      <div className="finePrint">No spam. We respect your privacy.</div>
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// App Card (Free / Paid)
+// ─────────────────────────────────────────────────────────────
+function AppCard({ app, locked = false }) {
+  const Icon = iconMap[app.id] || Zap
+  const { label, badgeClass } = tierMeta[app.tier]
+
+  return (
+    <div className="card">
       <div className="cardTop">
         <div className="cardIcon">
           <Icon size={18} />
@@ -53,36 +104,138 @@ function AppCard({ app }) {
       </div>
 
       <div className="cardFooter">
-        <a
-          className={`cardCta ${isSoon ? 'secondary' : 'primary'}`}
-          href={app.href}
-          {...(app.external ? { target: '_blank', rel: 'noreferrer' } : {})}
-        >
-          {app.cta} <ArrowRight size={16} />
-        </a>
+        {locked ? (
+          <span className="cardCta secondary disabled">
+            <Lock size={14} /> Unlock above
+          </span>
+        ) : (
+          <a
+            className="cardCta primary"
+            href={app.href}
+            {...(app.external ? { target: '_blank', rel: 'noreferrer' } : {})}
+          >
+            {app.cta} <ArrowRight size={16} />
+          </a>
+        )}
       </div>
     </div>
   )
 }
 
-function SectionBlock({ title, subtitle, items }) {
-  if (items.length === 0) return null
+// ─────────────────────────────────────────────────────────────
+// Coming Soon Card (no link, inline waitlist form)
+// ─────────────────────────────────────────────────────────────
+function ComingSoonCard({ app }) {
+  const Icon = iconMap[app.id] || Zap
+
   return (
-    <section className="section">
-      <div className="sectionHead">
-        <h2>{title}</h2>
-        {subtitle && <p>{subtitle}</p>}
+    <div className="card cardSoon">
+      <div className="cardTop">
+        <div className="cardIcon">
+          <Icon size={18} />
+        </div>
+        <span className="badge soon">Coming Soon</span>
       </div>
-      <div className="cards">
-        {items.map((app) => (
-          <AppCard key={app.id} app={app} />
-        ))}
+
+      <div className="cardBody">
+        <div className="cardTitle">{app.name}</div>
+        <div className="cardDesc">{app.description}</div>
       </div>
-    </section>
+
+      <div className="cardFooter">
+        <span className="cardCta secondary disabled">
+          <Clock size={14} /> Coming Soon
+        </span>
+      </div>
+    </div>
   )
 }
 
+// ─────────────────────────────────────────────────────────────
+// Coming Soon Waitlist Form
+// ─────────────────────────────────────────────────────────────
+function WaitlistForm() {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (!name.trim()) {
+      setError('Please enter your name.')
+      return
+    }
+    if (!email || !email.includes('@')) {
+      setError('Please enter a valid email.')
+      return
+    }
+    // Open Kit form in new tab with pre-filled email (Kit doesn't support direct POST)
+    const kitUrl = `${KIT_FORM_URL}?email_address=${encodeURIComponent(email)}&first_name=${encodeURIComponent(name)}`
+    window.open(kitUrl, '_blank')
+    setSubmitted(true)
+    setError('')
+  }
+
+  if (submitted) {
+    return (
+      <div className="waitlistBox waitlistSuccess">
+        <CheckCircle2 size={24} />
+        <div>
+          <h4>You're on the list!</h4>
+          <p>We'll email you when these tools are ready.</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="waitlistBox">
+      <div className="waitlistIcon">
+        <Mail size={20} />
+      </div>
+      <div className="waitlistCopy">
+        <h4>Get Notified First</h4>
+        <p>Join the waitlist to be the first to know when these tools launch.</p>
+      </div>
+      <form className="waitlistForm" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          className="input"
+          placeholder="Your name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input
+          type="email"
+          className="input"
+          placeholder="you@email.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <button type="submit" className="primary big">
+          Join Waitlist <ArrowRight size={16} />
+        </button>
+      </form>
+      {error && <div className="gateError">{error}</div>}
+      <div className="finePrint">No spam. Unsubscribe anytime.</div>
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// Main App
+// ─────────────────────────────────────────────────────────────
 export default function App() {
+  const [unlocked, setUnlocked] = useState(false)
+
+  useEffect(() => {
+    const stored = localStorage.getItem('freeAppsUnlocked')
+    if (stored === 'true') {
+      setUnlocked(true)
+    }
+  }, [])
+
   const free = apps.filter((a) => a.tier === 'free')
   const paid = apps.filter((a) => a.tier === 'paid')
   const soon = apps.filter((a) => a.tier === 'soon')
@@ -133,8 +286,8 @@ export default function App() {
               <a className="primary big" href="#apps">
                 Explore the Apps <ArrowRight size={16} />
               </a>
-              <a className="secondary big" href="#newsletter">
-                Get updates
+              <a className="secondary big" href="#coming-soon">
+                Join Waitlist
               </a>
             </div>
 
@@ -207,48 +360,53 @@ export default function App() {
 
         {/* ── APP SECTIONS ── */}
         <div id="apps">
-          <SectionBlock
-            title="Free Apps"
-            subtitle="Start here — no cost, no catch."
-            items={free}
-          />
-          <SectionBlock
-            title="Paid Apps"
-            subtitle="Premium tools built for serious operators."
-            items={paid}
-          />
+          {/* FREE APPS */}
+          <section className="section">
+            <div className="sectionHead">
+              <h2>Free Apps</h2>
+              <p>Start here — no cost, just results.</p>
+            </div>
+
+            {!unlocked && <EmailGateBox onUnlock={() => setUnlocked(true)} />}
+
+            <div className="cards">
+              {free.map((app) => (
+                <AppCard key={app.id} app={app} locked={!unlocked} />
+              ))}
+            </div>
+          </section>
+
+          {/* PAID APPS */}
+          {paid.length > 0 && (
+            <section className="section">
+              <div className="sectionHead">
+                <h2>Paid Apps</h2>
+                <p>Premium tools built for serious operators.</p>
+              </div>
+              <div className="cards">
+                {paid.map((app) => (
+                  <AppCard key={app.id} app={app} />
+                ))}
+              </div>
+            </section>
+          )}
         </div>
 
-        {/* ── EMAIL SIGNUP ── */}
-        <section className="section" id="newsletter">
-          <div className="ctaPanel signupPanel">
-            <div className="signupIcon">
-              <Mail size={22} />
-            </div>
-            <div className="ctaCopy">
-              <h3>Join the Founder List</h3>
-              <p>
-                Get early access to new apps, exclusive resources, and updates — straight to your inbox.
-              </p>
-            </div>
-            <a
-              className="primary big signupBtn"
-              href="https://app.kit.com/forms/9141530/subscriptions"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Join the Founder List <ArrowRight size={16} />
-            </a>
-            <div className="finePrint">No spam. Unsubscribe anytime.</div>
-          </div>
-        </section>
-
         {/* ── COMING SOON ── */}
-        <SectionBlock
-          title="Coming Soon"
-          subtitle="On the roadmap — join the waitlist to get notified first."
-          items={soon}
-        />
+        <section className="section" id="coming-soon">
+          <div className="sectionHead">
+            <h2>Coming Soon</h2>
+            <p>On the roadmap — join the waitlist to get notified first.</p>
+          </div>
+
+          <div className="cards">
+            {soon.map((app) => (
+              <ComingSoonCard key={app.id} app={app} />
+            ))}
+          </div>
+
+          <WaitlistForm />
+        </section>
 
         {/* ── FOOTER ── */}
         <footer className="footer">
@@ -256,7 +414,7 @@ export default function App() {
           <div className="footerLinks">
             <a href="#apps">Apps</a>
             <span>•</span>
-            <a href="#newsletter">Updates</a>
+            <a href="#coming-soon">Waitlist</a>
             <span>•</span>
             <a href="https://kendranix.com/privacy-policy/" target="_blank" rel="noreferrer">
               Privacy Policy
