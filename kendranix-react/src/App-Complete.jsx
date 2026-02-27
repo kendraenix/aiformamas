@@ -38,46 +38,71 @@ const tierMeta = {
 const KIT_FORM_URL = 'https://app.kit.com/forms/9141530/subscriptions'
 
 // ─────────────────────────────────────────────────────────────
-// Email Gate Box (for Free Apps)
+// Email Gate Modal (for Free Apps)
 // ─────────────────────────────────────────────────────────────
-function EmailGateBox({ onUnlock }) {
+function EmailGateModal({ onClose, targetUrl }) {
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    if (!name.trim()) {
+      setError('Please enter your name.')
+      return
+    }
     if (!email || !email.includes('@')) {
       setError('Please enter a valid email.')
       return
     }
-    localStorage.setItem('freeAppsUnlocked', 'true')
+    // Store access flag
+    localStorage.setItem('hasEmailAccess', 'true')
+    localStorage.setItem('userName', name)
     localStorage.setItem('userEmail', email)
-    onUnlock()
+
+    // Open Kit form in new tab with pre-filled data
+    const kitUrl = `${KIT_FORM_URL}?email_address=${encodeURIComponent(email)}&first_name=${encodeURIComponent(name)}`
+    window.open(kitUrl, '_blank')
+
+    // Navigate to the target app
+    if (targetUrl) {
+      window.open(targetUrl, '_blank')
+    }
+    onClose()
   }
 
   return (
-    <div className="gateBox">
-      <div className="gateIcon">
-        <Lock size={20} />
-      </div>
-      <div className="gateCopy">
+    <div className="modalOverlay" onClick={onClose}>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modalIcon">
+          <Lock size={24} />
+        </div>
         <h3>Unlock Free Tools</h3>
-        <p>Enter your email to get instant access to all free apps.</p>
+        <p>Enter your info to get instant access to all free apps.</p>
+        <form className="modalForm" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            className="input modalInput"
+            placeholder="Your name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            autoFocus
+          />
+          <input
+            type="email"
+            className="input modalInput"
+            placeholder="you@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <button type="submit" className="primary big modalBtn">
+            Unlock Free Apps <Unlock size={16} />
+          </button>
+        </form>
+        {error && <div className="modalError">{error}</div>}
+        <div className="modalFinePrint">No spam. Unsubscribe anytime.</div>
+        <button className="modalClose" onClick={onClose}>×</button>
       </div>
-      <form className="gateForm" onSubmit={handleSubmit}>
-        <input
-          type="email"
-          className="input"
-          placeholder="you@email.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <button type="submit" className="primary big">
-          Unlock <Unlock size={16} />
-        </button>
-      </form>
-      {error && <div className="gateError">{error}</div>}
-      <div className="finePrint">No spam. We respect your privacy.</div>
     </div>
   )
 }
@@ -85,9 +110,17 @@ function EmailGateBox({ onUnlock }) {
 // ─────────────────────────────────────────────────────────────
 // App Card (Free / Paid)
 // ─────────────────────────────────────────────────────────────
-function AppCard({ app, locked = false }) {
+function AppCard({ app, onGatedClick, hasAccess }) {
   const Icon = iconMap[app.id] || Zap
   const { label, badgeClass } = tierMeta[app.tier]
+  const isFree = app.tier === 'free'
+
+  const handleClick = (e) => {
+    if (isFree && !hasAccess) {
+      e.preventDefault()
+      onGatedClick(app.href)
+    }
+  }
 
   return (
     <div className="card">
@@ -104,15 +137,16 @@ function AppCard({ app, locked = false }) {
       </div>
 
       <div className="cardFooter">
-        {locked ? (
-          <span className="cardCta secondary disabled">
-            <Lock size={14} /> Unlock above
-          </span>
+        {isFree && !hasAccess ? (
+          <button className="cardCta primary" onClick={handleClick}>
+            <Lock size={14} /> Unlock to Open
+          </button>
         ) : (
           <a
             className="cardCta primary"
             href={app.href}
-            {...(app.external ? { target: '_blank', rel: 'noreferrer' } : {})}
+            target="_blank"
+            rel="noreferrer"
           >
             {app.cta} <ArrowRight size={16} />
           </a>
@@ -123,10 +157,14 @@ function AppCard({ app, locked = false }) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// Coming Soon Card (no link, inline waitlist form)
+// Coming Soon Card
 // ─────────────────────────────────────────────────────────────
 function ComingSoonCard({ app }) {
   const Icon = iconMap[app.id] || Zap
+
+  const scrollToWaitlist = () => {
+    document.getElementById('waitlist-form')?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   return (
     <div className="card cardSoon">
@@ -143,9 +181,9 @@ function ComingSoonCard({ app }) {
       </div>
 
       <div className="cardFooter">
-        <span className="cardCta secondary disabled">
-          <Clock size={14} /> Coming Soon
-        </span>
+        <button className="cardCta secondary" onClick={scrollToWaitlist}>
+          Join Waitlist <ArrowRight size={16} />
+        </button>
       </div>
     </div>
   )
@@ -170,7 +208,6 @@ function WaitlistForm() {
       setError('Please enter a valid email.')
       return
     }
-    // Open Kit form in new tab with pre-filled email (Kit doesn't support direct POST)
     const kitUrl = `${KIT_FORM_URL}?email_address=${encodeURIComponent(email)}&first_name=${encodeURIComponent(name)}`
     window.open(kitUrl, '_blank')
     setSubmitted(true)
@@ -179,7 +216,7 @@ function WaitlistForm() {
 
   if (submitted) {
     return (
-      <div className="waitlistBox waitlistSuccess">
+      <div className="waitlistBox waitlistSuccess" id="waitlist-form">
         <CheckCircle2 size={24} />
         <div>
           <h4>You're on the list!</h4>
@@ -190,7 +227,7 @@ function WaitlistForm() {
   }
 
   return (
-    <div className="waitlistBox">
+    <div className="waitlistBox" id="waitlist-form">
       <div className="waitlistIcon">
         <Mail size={20} />
       </div>
@@ -217,7 +254,7 @@ function WaitlistForm() {
           Join Waitlist <ArrowRight size={16} />
         </button>
       </form>
-      {error && <div className="gateError">{error}</div>}
+      {error && <div className="modalError">{error}</div>}
       <div className="finePrint">No spam. Unsubscribe anytime.</div>
     </div>
   )
@@ -227,21 +264,50 @@ function WaitlistForm() {
 // Main App
 // ─────────────────────────────────────────────────────────────
 export default function App() {
-  const [unlocked, setUnlocked] = useState(false)
+  const [hasAccess, setHasAccess] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const [targetUrl, setTargetUrl] = useState('')
 
   useEffect(() => {
-    const stored = localStorage.getItem('freeAppsUnlocked')
+    const stored = localStorage.getItem('hasEmailAccess')
     if (stored === 'true') {
-      setUnlocked(true)
+      setHasAccess(true)
     }
   }, [])
+
+  const handleGatedClick = (url) => {
+    setTargetUrl(url)
+    setShowModal(true)
+  }
+
+  const handleModalClose = () => {
+    setShowModal(false)
+    setTargetUrl('')
+    // Check if access was granted
+    const stored = localStorage.getItem('hasEmailAccess')
+    if (stored === 'true') {
+      setHasAccess(true)
+    }
+  }
 
   const free = apps.filter((a) => a.tier === 'free')
   const paid = apps.filter((a) => a.tier === 'paid')
   const soon = apps.filter((a) => a.tier === 'soon')
 
+  // Determine grid class based on item count
+  const getGridClass = (count) => {
+    if (count === 4) return 'cards cards2'
+    if (count === 1) return 'cards cards1'
+    if (count === 2) return 'cards cards2'
+    return 'cards'
+  }
+
   return (
     <div className="bg">
+      {showModal && (
+        <EmailGateModal onClose={handleModalClose} targetUrl={targetUrl} />
+      )}
+
       <header className="nav">
         <div className="brand">
           <div className="logo">
@@ -249,16 +315,16 @@ export default function App() {
           </div>
           <div className="brandText">
             <div className="brandName">Kendra Nix</div>
-            <div className="brandSub">Apps</div>
+            <div className="brandSub">Business Operations Tools</div>
           </div>
         </div>
 
         <div className="navActions">
           <a className="ghost" href="#apps">
-            Browse Apps
+            Explore Apps
           </a>
-          <a className="primary" href="#get-started">
-            Get Started <ArrowRight size={16} />
+          <a className="primary" href="#waitlist-form">
+            Join Waitlist <ArrowRight size={16} />
           </a>
         </div>
       </header>
@@ -268,25 +334,25 @@ export default function App() {
         <section className="hero">
           <div className="heroLeft">
             <div className="pill">
-              <Lock size={14} />
-              <span>Private, practical, and built for real life</span>
+              <Sparkles size={14} />
+              <span>Free tools for mompreneurs & founders</span>
             </div>
 
             <h1 className="headline">
-              Your tools for clarity, confidence, and better decisions —
-              <span className="accent"> all in one place</span>.
+              Business Operations Tools Directory
+              <span className="accent"> — all in one place</span>.
             </h1>
 
             <p className="subhead">
-              A growing ecosystem of apps that turn overwhelm into a plan — from free productivity
-              tools to mom-friendly systems that help you move.
+              A curated collection of apps that help busy founders reclaim time,
+              build systems, and scale smarter — from free calculators to premium tools.
             </p>
 
             <div className="ctaRow" id="get-started">
               <a className="primary big" href="#apps">
                 Explore the Apps <ArrowRight size={16} />
               </a>
-              <a className="secondary big" href="#coming-soon">
+              <a className="secondary big" href="#waitlist-form">
                 Join Waitlist
               </a>
             </div>
@@ -323,17 +389,17 @@ export default function App() {
                   </div>
                 </div>
                 <div className="mini">
-                  <div className="miniIcon"><Shield size={16} /></div>
+                  <div className="miniIcon"><Calculator size={16} /></div>
                   <div className="miniText">
-                    <div className="miniHead">Better protection</div>
-                    <div className="miniSub">Know what's covered</div>
+                    <div className="miniHead">Real numbers</div>
+                    <div className="miniSub">Know your true costs</div>
                   </div>
                 </div>
                 <div className="mini">
                   <div className="miniIcon"><FileText size={16} /></div>
                   <div className="miniText">
-                    <div className="miniHead">Cleaner docs</div>
-                    <div className="miniSub">Organize in minutes</div>
+                    <div className="miniHead">Clean systems</div>
+                    <div className="miniSub">SOPs that actually work</div>
                   </div>
                 </div>
                 <div className="mini">
@@ -367,11 +433,14 @@ export default function App() {
               <p>Start here — no cost, just results.</p>
             </div>
 
-            {!unlocked && <EmailGateBox onUnlock={() => setUnlocked(true)} />}
-
-            <div className="cards">
+            <div className={getGridClass(free.length)}>
               {free.map((app) => (
-                <AppCard key={app.id} app={app} locked={!unlocked} />
+                <AppCard
+                  key={app.id}
+                  app={app}
+                  hasAccess={hasAccess}
+                  onGatedClick={handleGatedClick}
+                />
               ))}
             </div>
           </section>
@@ -383,9 +452,14 @@ export default function App() {
                 <h2>Paid Apps</h2>
                 <p>Premium tools built for serious operators.</p>
               </div>
-              <div className="cards">
+              <div className={getGridClass(paid.length)}>
                 {paid.map((app) => (
-                  <AppCard key={app.id} app={app} />
+                  <AppCard
+                    key={app.id}
+                    app={app}
+                    hasAccess={true}
+                    onGatedClick={() => {}}
+                  />
                 ))}
               </div>
             </section>
@@ -399,7 +473,7 @@ export default function App() {
             <p>On the roadmap — join the waitlist to get notified first.</p>
           </div>
 
-          <div className="cards">
+          <div className={getGridClass(soon.length)}>
             {soon.map((app) => (
               <ComingSoonCard key={app.id} app={app} />
             ))}
@@ -414,7 +488,7 @@ export default function App() {
           <div className="footerLinks">
             <a href="#apps">Apps</a>
             <span>•</span>
-            <a href="#coming-soon">Waitlist</a>
+            <a href="#waitlist-form">Waitlist</a>
             <span>•</span>
             <a href="https://kendranix.com/privacy-policy/" target="_blank" rel="noreferrer">
               Privacy Policy

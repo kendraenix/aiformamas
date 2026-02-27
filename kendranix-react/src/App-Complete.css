@@ -653,3 +653,169 @@ a{ color: inherit; text-decoration:none; }
 .ctaPanel p{
   opacity: 0.8;
 }
+
+/* ── Modal ── */
+.modalOverlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal{
+  position: relative;
+  max-width: 420px;
+  width: 100%;
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: 0 24px 80px rgba(0,0,0,.25);
+}
+
+.modalIcon{
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(139,92,246,.15), rgba(34,197,94,.1));
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.modal h3{
+  margin: 0;
+  font-size: 22px;
+  color: var(--text);
+}
+
+.modal p{
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.modalForm{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.modalInput{
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #f8f9fa;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.modalInput::placeholder{
+  color: #94a3b8;
+}
+
+.modalInput:focus{
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(139,92,246,.12);
+}
+
+.modalBtn{
+  width: 100%;
+  justify-content: center;
+  padding: 14px 20px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.modalError{
+  margin-top: 8px;
+  color: #ef4444;
+  font-size: 13px;
+}
+
+.modalFinePrint{
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.modalClose{
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  font-size: 24px;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.modalClose:hover{
+  background: rgba(0,0,0,.05);
+}
+
+/* ── Grid Variants ── */
+.cards.cards2{
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.cards.cards1{
+  grid-template-columns: 1fr;
+  max-width: 400px;
+}
+
+@media (max-width: 768px){
+  .cards.cards2{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Better footer contrast ── */
+.footer{
+  color: var(--text);
+  opacity: 0.7;
+}
+
+.footerLinks a{
+  color: var(--text);
+}
+
+/* ── Better input contrast ── */
+.input{
+  background: rgba(255,255,255,.9);
+  color: var(--text);
+  border-color: var(--line);
+}
+
+.input::placeholder{
+  color: #94a3b8;
+}
+
+.input:focus{
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* ── Card button styles ── */
+.cardCta.primary,
+.cardCta.secondary{
+  cursor: pointer;
+}
+
+button.cardCta{
+  border: none;
+  font-size: inherit;
+  font-family: inherit;
+}
