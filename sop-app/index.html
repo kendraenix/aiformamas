@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOP Builder – Automate and Elevate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --navy:    #3B4A6B;
+            --fuchsia: #D91E6B;
+            --gold:    #D4AF37;
+            --teal:    #4DA6A0;
+            --dark:    #2D2D3A;
+            --gray:    #F8F9FA;
+            --border:  #E2E6ED;
+            --error:   #D32F2F;
+            --success: #2E7D32;
+            --radius:  10px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #2D3A5A 0%, #3B4A6B 60%, #4A3060 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        /* Brand */
+        .brand {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #fff;
+        }
+
+        .brand-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .brand-logo i {
+            font-size: 2rem;
+            color: var(--gold);
+        }
+
+        .brand-logo span {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .brand p {
+            font-size: 0.95rem;
+            opacity: 0.75;
+        }
+
+        /* Card */
+        .auth-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 440px;
+            overflow: hidden;
+        }
+
+        /* Tabs */
+        .auth-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .auth-tab {
+            padding: 1.1rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
+            background: var(--gray);
+            color: #999;
+            transition: all 0.2s;
+            letter-spacing: 0.2px;
+        }
+
+        .auth-tab.active {
+            background: #fff;
+            color: var(--navy);
+            border-bottom: 3px solid var(--fuchsia);
+        }
+
+        /* Form body */
+        .auth-body {
+            padding: 2rem;
+        }
+
+        .form-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-sub {
+            font-size: 0.88rem;
+            color: #888;
+            margin-bottom: 1.75rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.4rem;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #bbb;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 11px 14px 11px 38px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            color: var(--dark);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #fff;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--fuchsia);
+            box-shadow: 0 0 0 3px rgba(217,30,107,0.08);
+        }
+
+        .form-input.error {
+            border-color: var(--error);
+        }
+
+        .toggle-pw {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #bbb;
+            font-size: 0.9rem;
+            padding: 4px;
+        }
+
+        .toggle-pw:hover { color: var(--navy); }
+
+        .error-msg {
+            font-size: 0.8rem;
+            color: var(--error);
+            margin-top: 0.3rem;
+            display: none;
+        }
+
+        .error-msg.show { display: block; }
+
+        /* Alert banner */
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            font-size: 0.88rem;
+            margin-bottom: 1.25rem;
+            display: none;
+            align-items: flex-start;
+            gap: 0.6rem;
+        }
+
+        .alert.show { display: flex; }
+
+        .alert-error {
+            background: #FFF0F0;
+            color: var(--error);
+            border: 1px solid #FFD0D0;
+        }
+
+        .alert-success {
+            background: #F0FFF4;
+            color: var(--success);
+            border: 1px solid #B2DFDB;
+        }
+
+        /* Submit button */
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            background: var(--fuchsia);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.25rem;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            background: #be185d;
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 1.25rem 0;
+            color: #bbb;
+            font-size: 0.8rem;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* Forgot / switch links */
+        .text-link {
+            background: none;
+            border: none;
+            color: var(--fuchsia);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0;
+            text-decoration: underline;
+        }
+
+        .text-link:hover { color: #be185d; }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 1.25rem;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        /* Password strength */
+        .pw-strength {
+            margin-top: 0.4rem;
+            display: none;
+        }
+
+        .pw-strength.show { display: block; }
+
+        .strength-bar {
+            height: 4px;
+            border-radius: 2px;
+            background: var(--border);
+            overflow: hidden;
+            margin-bottom: 0.3rem;
+        }
+
+        .strength-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s, background 0.3s;
+            width: 0;
+        }
+
+        .strength-label {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        /* Forgot password panel */
+        .forgot-panel {
+            display: none;
+        }
+
+        /* Password requirements */
+        .pw-reqs {
+            list-style: none;
+            font-size: 0.78rem;
+            color: #aaa;
+            margin-top: 0.4rem;
+            display: none;
+        }
+
+        .pw-reqs.show { display: block; }
+
+        .pw-reqs li {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 0.2rem;
+            transition: color 0.2s;
+        }
+
+        .pw-reqs li.met { color: var(--success); }
+        .pw-reqs li i { font-size: 0.7rem; }
+
+        /* Footer */
+        .page-footer {
+            margin-top: 2rem;
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Brand -->
+    <div class="brand">
+        <div class="brand-logo">
+            <i class="fas fa-file-alt"></i>
+            <span>SOP Builder</span>
+        </div>
+        <p>Automate and Elevate Framework</p>
+    </div>
+
+    <!-- Auth Card -->
+    <div class="auth-card">
+
+        <!-- Tabs -->
+        <div class="auth-tabs">
+            <button class="auth-tab active" id="tabLogin" onclick="showTab('login')">Sign In</button>
+            <button class="auth-tab" id="tabRegister" onclick="showTab('register')">Create Account</button>
+        </div>
+
+        <div class="auth-body">
+
+            <!-- ── LOGIN PANEL ── -->
+            <div id="loginPanel">
+                <div class="form-title">Welcome back</div>
+                <div class="form-sub">Sign in to access your SOPs</div>
+
+                <div class="alert alert-error" id="loginError">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="loginErrorMsg"></span>
+                </div>
+
+                <form id="loginForm" onsubmit="handleLogin(event)" novalidate>
+                    <div class="form-group">
+                        <label for="loginEmail">Email address</label>
+                        <div class="input-wrap">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="loginEmail" class="form-input"
+                                placeholder="you@example.com" autocomplete="email" required>
+                        </div>
+                        <div class="error-msg" id="loginEmailErr">Please enter a valid email.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.4rem;">
+                            <label for="loginPassword" style="margin-bottom:0;">Password</label>
+                            <button type="button" class="text-link" onclick="showForgot()">Forgot password?</button>
+                        </div>
+                        <div class="input-wrap">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="loginPassword" class="form-input"
+                                placeholder="Your password" autocomplete="current-password" required>
+                            <button type="button" class="toggle-pw" onclick="togglePw('loginPassword', this)" title="Show/hide password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="error-msg" id="loginPasswordErr">Please enter your password.</div>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="loginBtn">
+                        <div class="spinner" id="loginSpinner"></div>
+                        <span id="loginBtnText">Sign In</span>
+                    </button>
+                </form>
+
+                <div class="form-footer">
+                    Don't have an account?
+                    <button class="text-link" onclick="showTab('register')">Create one free</button>
+                </div>
+            </div>
+
+            <!-- ── REGISTER PANEL ── -->
+            <div id="registerPanel" style="display:none;">
+                <div class="form-title">Create your account</div>
+                <div class="form-sub">Free to use — no credit card required</div>
+
+                <div class="alert alert-error" id="registerError">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="registerErrorMsg"></span>
+                </div>
+
+                <form id="registerForm" onsubmit="handleRegister(event)" novalidate>
+                    <div class="form-group">
+                        <label for="registerName">Full name</label>
+                        <div class="input-wrap">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="registerName" class="form-input"
+                                placeholder="Kendra Nix" autocomplete="name" required>
+                        </div>
+                        <div class="error-msg" id="registerNameErr">Please enter your name.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerEmail">Email address</label>
+                        <div class="input-wrap">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="registerEmail" class="form-input"
+                                placeholder="you@example.com" autocomplete="email" required>
+                        </div>
+                        <div class="error-msg" id="registerEmailErr">Please enter a valid email.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerPassword">Password</label>
+                        <div class="input-wrap">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="registerPassword" class="form-input"
+                                placeholder="Create a strong password"
+                                autocomplete="new-password"
+                                oninput="checkStrength(this.value)"
+                                required>
+                            <button type="button" class="toggle-pw" onclick="togglePw('registerPassword', this)" title="Show/hide password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="pw-strength" id="pwStrength">
+                            <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+                            <div class="strength-label" id="strengthLabel"></div>
+                        </div>
+                        <ul class="pw-reqs" id="pwReqs">
+                            <li id="req-len"><i class="fas fa-circle"></i> At least 8 characters</li>
+                            <li id="req-upper"><i class="fas fa-circle"></i> One uppercase letter</li>
+                            <li id="req-num"><i class="fas fa-circle"></i> One number</li>
+                        </ul>
+                        <div class="error-msg" id="registerPasswordErr">Password must be at least 8 characters.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerConfirm">Confirm password</label>
+                        <div class="input-wrap">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="registerConfirm" class="form-input"
+                                placeholder="Repeat your password"
+                                autocomplete="new-password" required>
+                            <button type="button" class="toggle-pw" onclick="togglePw('registerConfirm', this)" title="Show/hide password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="error-msg" id="registerConfirmErr">Passwords do not match.</div>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="registerBtn">
+                        <div class="spinner" id="registerSpinner"></div>
+                        <span id="registerBtnText">Create Account</span>
+                    </button>
+                </form>
+
+                <div class="form-footer">
+                    Already have an account?
+                    <button class="text-link" onclick="showTab('login')">Sign in</button>
+                </div>
+            </div>
+
+            <!-- ── FORGOT PASSWORD PANEL ── -->
+            <div id="forgotPanel" style="display:none;">
+                <div class="form-title">Reset your password</div>
+                <div class="form-sub">Enter your email and we'll send a reset link</div>
+
+                <div class="alert alert-error" id="forgotError">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="forgotErrorMsg"></span>
+                </div>
+                <div class="alert alert-success" id="forgotSuccess">
+                    <i class="fas fa-check-circle"></i>
+                    <span id="forgotSuccessMsg"></span>
+                </div>
+
+                <form id="forgotForm" onsubmit="handleForgot(event)" novalidate>
+                    <div class="form-group">
+                        <label for="forgotEmail">Email address</label>
+                        <div class="input-wrap">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="forgotEmail" class="form-input"
+                                placeholder="you@example.com" required>
+                        </div>
+                        <div class="error-msg" id="forgotEmailErr">Please enter a valid email.</div>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="forgotBtn">
+                        <div class="spinner" id="forgotSpinner"></div>
+                        <span id="forgotBtnText">Send Reset Link</span>
+                    </button>
+                </form>
+
+                <div class="form-footer">
+                    <button class="text-link" onclick="showTab('login')">
+                        <i class="fas fa-arrow-left"></i> Back to Sign In
+                    </button>
+                </div>
+            </div>
+
+        </div><!-- /auth-body -->
+    </div><!-- /auth-card -->
+
+    <div class="page-footer">
+        &copy; 2025 Kendra Nix &mdash; Automate and Elevate
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword,
+            sendPasswordResetEmail,
+            updateProfile,
+            onAuthStateChanged,
+            setPersistence,
+            browserLocalPersistence
+        } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+        // ─────────────────────────────────────────
+        // FIREBASE CONFIGURATION
+        // Replace these values with your own Firebase project config.
+        // Get it from: Firebase Console → Project Settings → Your apps → SDK setup
+        // ─────────────────────────────────────────
+        const firebaseConfig = {
+            apiKey:            "YOUR_API_KEY",
+            authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId:         "YOUR_PROJECT_ID",
+            storageBucket:     "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId:             "YOUR_APP_ID"
+        };
+
+        const app  = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        await setPersistence(auth, browserLocalPersistence);
+
+        // Redirect if already logged in
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                window.location.href = 'app.html';
+            }
+        });
+
+        // ── Expose handlers to global scope ──
+        window._auth = auth;
+
+        window.handleLogin = async function(e) {
+            e.preventDefault();
+            clearAlerts();
+
+            const email    = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            let valid = true;
+
+            if (!isValidEmail(email)) {
+                showFieldError('loginEmailErr'); valid = false;
+            }
+            if (!password) {
+                showFieldError('loginPasswordErr'); valid = false;
+            }
+            if (!valid) return;
+
+            setLoading('login', true);
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                // onAuthStateChanged will redirect
+            } catch (err) {
+                setLoading('login', false);
+                showAlert('loginError', 'loginErrorMsg', friendlyError(err.code));
+            }
+        };
+
+        window.handleRegister = async function(e) {
+            e.preventDefault();
+            clearAlerts();
+
+            const name     = document.getElementById('registerName').value.trim();
+            const email    = document.getElementById('registerEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const confirm  = document.getElementById('registerConfirm').value;
+            let valid = true;
+
+            if (!name) {
+                showFieldError('registerNameErr'); valid = false;
+            }
+            if (!isValidEmail(email)) {
+                showFieldError('registerEmailErr'); valid = false;
+            }
+            if (password.length < 8) {
+                showFieldError('registerPasswordErr'); valid = false;
+            }
+            if (password !== confirm) {
+                showFieldError('registerConfirmErr'); valid = false;
+            }
+            if (!valid) return;
+
+            setLoading('register', true);
+
+            try {
+                const cred = await createUserWithEmailAndPassword(auth, email, password);
+                await updateProfile(cred.user, { displayName: name });
+                // onAuthStateChanged will redirect
+            } catch (err) {
+                setLoading('register', false);
+                showAlert('registerError', 'registerErrorMsg', friendlyError(err.code));
+            }
+        };
+
+        window.handleForgot = async function(e) {
+            e.preventDefault();
+            clearAlerts();
+
+            const email = document.getElementById('forgotEmail').value.trim();
+            if (!isValidEmail(email)) {
+                showFieldError('forgotEmailErr');
+                return;
+            }
+
+            setLoading('forgot', true);
+
+            try {
+                await sendPasswordResetEmail(auth, email);
+                setLoading('forgot', false);
+                showAlert('forgotSuccess', 'forgotSuccessMsg',
+                    'Reset link sent! Check your inbox (and spam folder).');
+                document.getElementById('forgotForm').reset();
+            } catch (err) {
+                setLoading('forgot', false);
+                showAlert('forgotError', 'forgotErrorMsg', friendlyError(err.code));
+            }
+        };
+    </script>
+
+    <script>
+        // ── UI helpers ──
+
+        function showTab(tab) {
+            document.getElementById('loginPanel').style.display    = tab === 'login'    ? 'block' : 'none';
+            document.getElementById('registerPanel').style.display = tab === 'register' ? 'block' : 'none';
+            document.getElementById('forgotPanel').style.display   = 'none';
+            document.getElementById('tabLogin').classList.toggle('active',    tab === 'login');
+            document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+            clearAlerts();
+        }
+
+        function showForgot() {
+            document.getElementById('loginPanel').style.display    = 'none';
+            document.getElementById('registerPanel').style.display = 'none';
+            document.getElementById('forgotPanel').style.display   = 'block';
+            document.getElementById('tabLogin').classList.remove('active');
+            document.getElementById('tabRegister').classList.remove('active');
+        }
+
+        function togglePw(id, btn) {
+            const input = document.getElementById(id);
+            const icon  = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        function checkStrength(pw) {
+            const wrap   = document.getElementById('pwStrength');
+            const fill   = document.getElementById('strengthFill');
+            const label  = document.getElementById('strengthLabel');
+            const reqs   = document.getElementById('pwReqs');
+
+            wrap.classList.toggle('show', pw.length > 0);
+            reqs.classList.toggle('show', pw.length > 0);
+
+            const hasLen   = pw.length >= 8;
+            const hasUpper = /[A-Z]/.test(pw);
+            const hasNum   = /[0-9]/.test(pw);
+            const hasSpec  = /[^A-Za-z0-9]/.test(pw);
+
+            // Update req icons
+            toggleReq('req-len',   hasLen);
+            toggleReq('req-upper', hasUpper);
+            toggleReq('req-num',   hasNum);
+
+            const score = [hasLen, hasUpper, hasNum, hasSpec].filter(Boolean).length;
+            const levels = [
+                { pct: '25%', color: '#ef4444', text: 'Weak' },
+                { pct: '50%', color: '#f97316', text: 'Fair' },
+                { pct: '75%', color: '#eab308', text: 'Good' },
+                { pct: '100%',color: '#22c55e', text: 'Strong' },
+            ];
+            const lvl = levels[score - 1] || levels[0];
+            fill.style.width      = pw.length ? lvl.pct : '0';
+            fill.style.background = lvl.color;
+            label.textContent     = pw.length ? lvl.text : '';
+        }
+
+        function toggleReq(id, met) {
+            const el   = document.getElementById(id);
+            const icon = el.querySelector('i');
+            el.classList.toggle('met', met);
+            icon.classList.toggle('fa-check-circle', met);
+            icon.classList.toggle('fa-circle', !met);
+        }
+
+        function setLoading(form, loading) {
+            const btn     = document.getElementById(`${form}Btn`);
+            const spinner = document.getElementById(`${form}Spinner`);
+            const text    = document.getElementById(`${form}BtnText`);
+            btn.disabled          = loading;
+            spinner.style.display = loading ? 'block' : 'none';
+            text.style.opacity    = loading ? '0.5' : '1';
+        }
+
+        function showAlert(alertId, msgId, msg) {
+            const el = document.getElementById(alertId);
+            document.getElementById(msgId).textContent = msg;
+            el.classList.add('show');
+        }
+
+        function showFieldError(id) {
+            document.getElementById(id).classList.add('show');
+        }
+
+        function clearAlerts() {
+            document.querySelectorAll('.alert, .error-msg').forEach(el => el.classList.remove('show'));
+        }
+
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function friendlyError(code) {
+            const map = {
+                'auth/invalid-email':            'That email address is invalid.',
+                'auth/user-not-found':           'No account found with that email.',
+                'auth/wrong-password':           'Incorrect password. Try again.',
+                'auth/invalid-credential':       'Invalid email or password.',
+                'auth/email-already-in-use':     'An account with that email already exists.',
+                'auth/weak-password':            'Password must be at least 6 characters.',
+                'auth/too-many-requests':        'Too many attempts. Please wait a moment and try again.',
+                'auth/network-request-failed':   'Network error. Check your connection.',
+                'auth/user-disabled':            'This account has been disabled.',
+            };
+            return map[code] || 'Something went wrong. Please try again.';
+        }
+    </script>
+
+</body>
+</html>
