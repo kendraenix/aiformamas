@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOP Builder – Automate and Elevate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.1/Sortable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --navy:    #3B4A6B;
+            --fuchsia: #D91E6B;
+            --gold:    #D4AF37;
+            --teal:    #4DA6A0;
+            --dark:    #2D2D3A;
+            --gray:    #F8F9FA;
+            --border:  #E2E6ED;
+            --white:   #FFFFFF;
+            --radius:  8px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--gray);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* ── AUTH GATE ── */
+        #authGate {
+            position: fixed;
+            inset: 0;
+            background: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .gate-spinner {
+            width: 44px; height: 44px;
+            border: 3px solid var(--border);
+            border-top-color: var(--fuchsia);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── HEADER ── */
+        .header {
+            background: var(--white);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            padding: 0 2rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--navy);
+            cursor: pointer;
+        }
+
+        .logo i { color: var(--gold); }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn {
+            padding: 7px 16px;
+            border: none;
+            border-radius: var(--radius);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-btn-ghost {
+            background: transparent;
+            color: var(--navy);
+        }
+
+        .nav-btn-ghost:hover {
+            background: var(--gray);
+        }
+
+        .nav-btn-primary {
+            background: var(--fuchsia);
+            color: #fff;
+        }
+
+        .nav-btn-primary:hover {
+            background: #be185d;
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #666;
+            padding: 6px 12px;
+            background: var(--gray);
+            border-radius: 20px;
+        }
+
+        .user-badge i { color: var(--navy); }
+
+        /* ── PROGRESS BAR ── */
+        .progress-bar-wrap {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            padding: 0.9rem 2rem;
+            display: none;
+        }
+
+        .progress-meta {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-segments {
+            display: flex;
+            gap: 4px;
+        }
+
+        .progress-seg {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border);
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .progress-seg:hover { opacity: 0.8; }
+        .progress-seg.done  { background: var(--fuchsia); }
+        .progress-seg.cur   { background: var(--gold); }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.4rem;
+        }
+
+        .prog-label {
+            font-size: 0.7rem;
+            color: #aaa;
+            cursor: pointer;
+            transition: color 0.2s;
+            text-align: center;
+            flex: 1;
+        }
+
+        .prog-label:hover { color: var(--fuchsia); }
+        .prog-label.done  { color: var(--fuchsia); }
+        .prog-label.cur   { color: var(--gold); font-weight: 600; }
+
+        /* ── MAIN LAYOUT ── */
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* ── VIEWS ── */
+        .view { display: none; }
+        .view.active { display: block; }
+
+        /* ── TEMPLATE LIBRARY ── */
+        .lib-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .lib-header h1 {
+            font-size: 2rem;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+        }
+
+        .lib-header p { color: #777; font-size: 1rem; }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .tpl-card {
+            background: var(--white);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 1.75rem;
+            cursor: pointer;
+            transition: all 0.25s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+
+        .tpl-card:hover {
+            border-color: var(--fuchsia);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(217,30,107,0.12);
+        }
+
+        .tpl-icon {
+            font-size: 2.2rem;
+            color: var(--fuchsia);
+            margin-bottom: 0.9rem;
+        }
+
+        .tpl-card h3 {
+            color: var(--navy);
+            font-size: 1.05rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .tpl-card p { color: #888; font-size: 0.85rem; }
+
+        /* ── BUILDER ── */
+        .builder-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            padding-bottom: 6rem;
+        }
+
+        .pane {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.75rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            min-height: 500px;
+        }
+
+        /* Edit pane */
+        .sec-hdr {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.9rem;
+            border-bottom: 3px solid var(--gold);
+        }
+
+        .sec-hdr i { color: var(--fuchsia); font-size: 1.3rem; }
+
+        .sec-hdr h2 {
+            color: var(--navy);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .sec-desc {
+            color: #888;
+            font-size: 0.88rem;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .fg { margin-bottom: 1.1rem; }
+
+        .fg label {
+            display: block;
+            font-size: 0.83rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.35rem;
+        }
+
+        .fi, .ft, .sel {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.93rem;
+            color: var(--dark);
+            background: #fff;
+            transition: border-color 0.2s;
+        }
+
+        .fi:focus, .ft:focus, .sel:focus {
+            outline: none;
+            border-color: var(--fuchsia);
+        }
+
+        .ft { resize: vertical; min-height: 110px; }
+
+        /* Dynamic item lists */
+        .item-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+        .chk-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: var(--gray);
+            padding: 0.7rem 0.9rem;
+            border-radius: var(--radius);
+        }
+
+        .step-card {
+            background: var(--white);
+            border: 2px solid var(--border);
+            border-left: 4px solid var(--teal);
+            border-radius: var(--radius);
+            padding: 1rem;
+            transition: box-shadow 0.2s;
+        }
+
+        .step-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .step-card.sortable-ghost { opacity: 0.4; }
+
+        .step-top {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .drag-h {
+            color: #ccc;
+            cursor: grab;
+            font-size: 1.1rem;
+        }
+
+        .drag-h:active { cursor: grabbing; }
+
+        .step-num {
+            min-width: 28px;
+            height: 28px;
+            background: var(--navy);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .step-del {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: #ccc;
+            cursor: pointer;
+            font-size: 0.95rem;
+            padding: 4px 6px;
+            border-radius: 4px;
+            transition: color 0.2s, background 0.2s;
+        }
+
+        .step-del:hover { color: #ef4444; background: #fff0f0; }
+
+        .step-body { margin-left: 2.5rem; }
+
+        .step-meta {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .step-meta-group {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .step-meta-group label {
+            font-size: 0.75rem;
+            color: #999;
+            white-space: nowrap;
+        }
+
+        .fi-sm {
+            padding: 6px 8px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            width: 90px;
+            transition: border-color 0.2s;
+        }
+
+        .fi-sm:focus { outline: none; border-color: var(--fuchsia); }
+
+        .sel-sm {
+            padding: 6px 8px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            transition: border-color 0.2s;
+        }
+
+        .sel-sm:focus { outline: none; border-color: var(--fuchsia); }
+
+        .dec-card, .mis-card, .res-card {
+            background: var(--gray);
+            border-left: 3px solid var(--teal);
+            border-radius: var(--radius);
+            padding: 1rem;
+        }
+
+        .card-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--navy);
+        }
+
+        .res-grid {
+            display: grid;
+            grid-template-columns: 110px 1fr 1fr;
+            gap: 0.6rem;
+            align-items: center;
+        }
+
+        /* Add button */
+        .btn-add {
+            width: 100%;
+            padding: 9px;
+            margin-top: 0.75rem;
+            background: transparent;
+            border: 2px dashed #ccc;
+            border-radius: var(--radius);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #999;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-add:hover { border-color: var(--fuchsia); color: var(--fuchsia); background: #fff; }
+
+        /* Icon delete buttons */
+        .icon-del {
+            background: none;
+            border: none;
+            color: #ccc;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 3px 5px;
+            border-radius: 4px;
+            transition: color 0.2s, background 0.2s;
+        }
+
+        .icon-del:hover { color: #ef4444; background: #fff0f0; }
+
+        /* Preview pane */
+        .preview-pane-inner {
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .prev-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--navy);
+            border-bottom: 3px solid var(--gold);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .prev-sec { margin-bottom: 1.75rem; }
+
+        .prev-sec h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--navy);
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 0.35rem;
+            margin-bottom: 0.9rem;
+        }
+
+        .prev-checklist { list-style: none; }
+        .prev-checklist li { padding-left: 1.4rem; position: relative; margin-bottom: 0.3rem; }
+        .prev-checklist li::before { content: '✓'; position: absolute; left: 0; color: var(--teal); font-weight: 700; }
+
+        .prev-steps { counter-reset: step; list-style: none; }
+        .prev-steps li {
+            counter-increment: step;
+            padding-left: 2.4rem;
+            position: relative;
+            margin-bottom: 0.7rem;
+        }
+        .prev-steps li::before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 2px;
+            background: var(--navy);
+            color: #fff;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .prev-dec {
+            border-left: 3px solid var(--teal);
+            padding-left: 0.9rem;
+            margin-bottom: 0.9rem;
+        }
+        .prev-dec .cond { font-weight: 600; color: var(--navy); }
+        .prev-dec .act  { color: #555; margin-left: 1rem; }
+
+        .prev-mistake { margin-bottom: 0.9rem; }
+        .prev-mistake .mx { color: #d32f2f; }
+        .prev-mistake .fx { color: #2e7d32; margin-left: 1rem; }
+
+        .prev-res-cat {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--navy);
+            margin: 0.9rem 0 0.4rem;
+        }
+
+        .prev-resources { list-style: none; }
+        .prev-resources li { margin-bottom: 0.3rem; }
+        .prev-resources a { color: #1976d2; text-decoration: none; font-size: 0.9rem; }
+        .prev-resources a:hover { text-decoration: underline; }
+
+        .empty-prev {
+            text-align: center;
+            color: #ccc;
+            padding: 3rem 0;
+        }
+
+        .empty-prev i { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
+
+        /* ── BOTTOM BAR ── */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: var(--white);
+            border-top: 1px solid var(--border);
+            padding: 0.9rem 2rem;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 200;
+            gap: 1rem;
+        }
+
+        .save-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.82rem;
+            color: var(--teal);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .save-pill.show { opacity: 1; }
+
+        .btn-row { display: flex; gap: 0.75rem; }
+
+        .btn {
+            padding: 9px 20px;
+            border: none;
+            border-radius: var(--radius);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary   { background: var(--fuchsia); color: #fff; }
+        .btn-primary:hover { background: #be185d; transform: scale(1.02); }
+        .btn-secondary { background: var(--teal); color: #fff; }
+        .btn-secondary:hover { background: #3d8985; transform: scale(1.02); }
+        .btn-ghost { background: transparent; color: var(--navy); border: 2px solid var(--navy); }
+        .btn-ghost:hover { background: var(--navy); color: #fff; }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+        /* ── DASHBOARD ── */
+        .dash-hdr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.75rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .dash-hdr h1 { font-size: 1.8rem; color: var(--navy); }
+
+        .folder-tabs {
+            display: flex;
+            gap: 0.6rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .ftab {
+            padding: 7px 16px;
+            background: var(--white);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.83rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ftab:hover { border-color: var(--fuchsia); }
+        .ftab.active { background: var(--fuchsia); color: #fff; border-color: var(--fuchsia); }
+
+        .search-wrap { margin-bottom: 1.5rem; position: relative; }
+        .search-wrap i { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #bbb; }
+
+        .search-input {
+            width: 100%;
+            max-width: 420px;
+            padding: 10px 12px 10px 38px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.93rem;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus { outline: none; border-color: var(--fuchsia); }
+
+        .sop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .sop-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.4rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            transition: all 0.25s;
+            border-top: 3px solid var(--border);
+        }
+
+        .sop-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-top-color: var(--fuchsia);
+        }
+
+        .sop-card h3 {
+            color: var(--navy);
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sop-meta {
+            font-size: 0.78rem;
+            color: #aaa;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .sop-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+        .btn-xs {
+            padding: 5px 12px;
+            font-size: 0.78rem;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-xs-primary { background: var(--fuchsia); color: #fff; }
+        .btn-xs-primary:hover { background: #be185d; }
+        .btn-xs-teal { background: var(--teal); color: #fff; }
+        .btn-xs-teal:hover { background: #3d8985; }
+        .btn-xs-ghost { background: var(--gray); color: #666; border: 1px solid var(--border); }
+        .btn-xs-ghost:hover { background: #ef4444; color: #fff; border-color: #ef4444; }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #ccc;
+        }
+
+        .empty-state i { font-size: 3.5rem; display: block; margin-bottom: 1rem; }
+        .empty-state p { font-size: 1rem; }
+
+        /* ── EXPORT MODAL ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-overlay.open { display: flex; }
+
+        .modal-box {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 480px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-hdr h2 { color: var(--navy); font-size: 1.3rem; }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: #aaa;
+            line-height: 1;
+        }
+
+        .close-btn:hover { color: var(--fuchsia); }
+
+        .export-opts { display: flex; flex-direction: column; gap: 0.75rem; }
+
+        .export-opt {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.1rem 1.25rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .export-opt:hover { border-color: var(--fuchsia); background: var(--gray); }
+        .export-opt i { font-size: 1.8rem; color: var(--fuchsia); width: 32px; text-align: center; }
+
+        .export-opt-text h3 { color: var(--navy); font-size: 0.95rem; margin-bottom: 0.15rem; }
+        .export-opt-text p  { color: #888; font-size: 0.8rem; }
+
+        /* Footer */
+        .site-footer {
+            background: var(--navy);
+            color: rgba(255,255,255,0.6);
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.8rem;
+            margin-top: 4rem;
+        }
+
+        .site-footer a {
+            display: inline-block;
+            margin-top: 0.5rem;
+            padding: 8px 20px;
+            background: var(--fuchsia);
+            color: #fff;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: transform 0.2s;
+        }
+
+        .site-footer a:hover { transform: scale(1.04); }
+
+        /* Mobile */
+        @media (max-width: 900px) {
+            .builder-grid { grid-template-columns: 1fr; }
+            .pane.preview-pane { display: none; }
+        }
+
+        @media (max-width: 600px) {
+            .app-container { padding: 1rem; }
+            .header { padding: 0 1rem; }
+            .bottom-bar { padding: 0.75rem 1rem; }
+            .res-grid { grid-template-columns: 1fr; }
+            .user-badge span { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Auth gate spinner (shown until Firebase confirms auth state) -->
+    <div id="authGate"><div class="gate-spinner"></div></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo" onclick="app.showDashboard()">
+            <i class="fas fa-file-alt"></i> SOP Builder
+        </div>
+        <nav class="header-nav">
+            <button class="nav-btn nav-btn-ghost" onclick="app.showDashboard()">
+                <i class="fas fa-th-large"></i> My SOPs
+            </button>
+            <button class="nav-btn nav-btn-ghost" onclick="app.showTemplates()">
+                <i class="fas fa-layer-group"></i> Templates
+            </button>
+            <button class="nav-btn nav-btn-primary" onclick="app.createNew()">
+                <i class="fas fa-plus"></i> New SOP
+            </button>
+            <div class="user-badge" id="userBadge">
+                <i class="fas fa-user-circle"></i>
+                <span id="userEmail"></span>
+            </div>
+            <button class="nav-btn nav-btn-ghost" id="signOutBtn" title="Sign out">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Progress bar (builder only) -->
+    <div class="progress-bar-wrap" id="progressWrap">
+        <div class="progress-meta">
+            <span id="progressLabel">Step 1 of 6</span>
+            <span id="sopTitleMeta" style="color:#aaa;font-weight:400;"></span>
+        </div>
+        <div class="progress-segments" id="progressSegs"></div>
+        <div class="progress-labels">
+            <span class="prog-label" onclick="app.goTo(0)">Overview</span>
+            <span class="prog-label" onclick="app.goTo(1)">Prerequisites</span>
+            <span class="prog-label" onclick="app.goTo(2)">Steps</span>
+            <span class="prog-label" onclick="app.goTo(3)">Decisions</span>
+            <span class="prog-label" onclick="app.goTo(4)">Mistakes</span>
+            <span class="prog-label" onclick="app.goTo(5)">Resources</span>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="app-container">
+
+        <!-- Template Library -->
+        <div class="view active" id="viewTemplates">
+            <div class="lib-header">
+                <h1>Choose a Template</h1>
+                <p>Start with a pre-built template or create your own from scratch</p>
+            </div>
+            <div class="template-grid" id="templateGrid"></div>
+        </div>
+
+        <!-- Builder -->
+        <div class="view" id="viewBuilder">
+            <div class="builder-grid">
+                <div class="pane edit-pane" id="editPane"></div>
+                <div class="pane preview-pane">
+                    <div class="preview-pane-inner" id="previewContent">
+                        <div class="empty-prev">
+                            <i class="fas fa-eye"></i>
+                            <p>Preview will appear here as you fill in your SOP</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="view" id="viewDash">
+            <div class="dash-hdr">
+                <h1>My SOPs</h1>
+                <button class="btn btn-primary" onclick="app.createNew()">
+                    <i class="fas fa-plus"></i> Create New SOP
+                </button>
+            </div>
+            <div class="folder-tabs" id="folderTabs"></div>
+            <div class="search-wrap">
+                <i class="fas fa-search"></i>
+                <input type="text" class="search-input" id="searchInput"
+                    placeholder="Search your SOPs…" oninput="app.filterSOPs()">
+            </div>
+            <div class="sop-grid" id="sopGrid"></div>
+        </div>
+
+    </div><!-- /app-container -->
+
+    <!-- Bottom bar -->
+    <div class="bottom-bar" id="bottomBar">
+        <button class="btn btn-secondary" id="prevBtn" onclick="app.prev()">
+            <i class="fas fa-arrow-left"></i> Previous
+        </button>
+        <div class="save-pill" id="savePill">
+            <i class="fas fa-check-circle"></i> Saved
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-ghost" onclick="app.save()">Save Draft</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="app.next()">
+                Next <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Export modal -->
+    <div class="modal-overlay" id="exportModal">
+        <div class="modal-box">
+            <div class="modal-hdr">
+                <h2><i class="fas fa-download" style="color:var(--fuchsia);margin-right:.5rem;"></i>Export SOP</h2>
+                <button class="close-btn" onclick="app.closeExport()">&times;</button>
+            </div>
+            <div class="export-opts">
+                <div class="export-opt" onclick="app.exportPDF()">
+                    <i class="fas fa-file-pdf"></i>
+                    <div class="export-opt-text">
+                        <h3>PDF</h3>
+                        <p>Professional, print-ready document</p>
+                    </div>
+                </div>
+                <div class="export-opt" onclick="app.exportWord()">
+                    <i class="fas fa-file-word"></i>
+                    <div class="export-opt-text">
+                        <h3>Word / Google Docs</h3>
+                        <p>Editable .doc format</p>
+                    </div>
+                </div>
+                <div class="export-opt" onclick="app.exportNotion()">
+                    <i class="fas fa-clipboard"></i>
+                    <div class="export-opt-text">
+                        <h3>Notion</h3>
+                        <p>Formatted markdown — paste into Notion</p>
+                    </div>
+                </div>
+                <div class="export-opt" onclick="app.exportText()">
+                    <i class="fas fa-file-alt"></i>
+                    <div class="export-opt-text">
+                        <h3>Plain Text</h3>
+                        <p>Copy and paste anywhere</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div>&copy; 2025 Kendra Nix &mdash; Automate and Elevate</div>
+        <a href="https://kendranix.com">Get the Full Course</a>
+    </footer>
+
+    <!-- Firebase Auth + App -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+        import {
+            getAuth, onAuthStateChanged, signOut
+        } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+        // ─────────────────────────────────────────────────────────────────
+        // FIREBASE CONFIGURATION — replace with your own project values
+        // ─────────────────────────────────────────────────────────────────
+        const firebaseConfig = {
+            apiKey:            "AIzaSyAUha63R66T_BPN2WSMibv5ToPyc7gEgfU",
+            authDomain:        "sop-builder-5b4a5.firebaseapp.com",
+            projectId:         "sop-builder-5b4a5",
+            storageBucket:     "sop-builder-5b4a5.firebasestorage.app",
+            messagingSenderId: "1080087893389",
+            appId:             "1:1080087893389:web:cc25195b82d260090259c4",
+            measurementId:     "G-048R50QDWB"
+        };
+
+        const fireApp  = initializeApp(firebaseConfig);
+        const auth     = getAuth(fireApp);
+
+        // Auth guard — redirect to login if not signed in
+        onAuthStateChanged(auth, user => {
+            document.getElementById('authGate').style.display = 'none';
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Store UID for user-scoped storage, expose sign-out
+            window._uid = user.uid;
+            const name = user.displayName || user.email.split('@')[0];
+            document.getElementById('userEmail').textContent = name;
+            document.getElementById('signOutBtn').addEventListener('click', () => {
+                if (confirm('Sign out of SOP Builder?')) signOut(auth);
+            });
+
+            // Boot the app
+            window.app = new SOPApp();
+        });
+    </script>
+
+    <script>
+    class SOPApp {
+        constructor() {
+            this.uid          = window._uid;
+            this.storageKey   = `sops_${this.uid}`;
+            this.current      = null;
+            this.section      = 0;
+            this.currentFolder = 'All';
+            this.autoTimer    = null;
+
+            this.TEMPLATES = [
+                { id:'client-onboarding', name:'Client Onboarding', icon:'fa-user-plus', desc:'Contract to project kickoff workflow', folder:'Client' },
+                { id:'client-delivery',   name:'Client Delivery',   icon:'fa-box',       desc:'Delivering projects & managing expectations', folder:'Client' },
+                { id:'sales-process',     name:'Sales Process',     icon:'fa-handshake', desc:'End-to-end lead to closed deal workflow', folder:'Revenue' },
+                { id:'invoicing',         name:'Invoicing & Payment',icon:'fa-file-invoice-dollar', desc:'Billing, invoicing, and payment collection', folder:'Revenue' },
+                { id:'content-creation',  name:'Content Creation',  icon:'fa-pen-fancy', desc:'Ideation, creation, editing & publishing', folder:'Marketing' },
+                { id:'email-management',  name:'Email Management',  icon:'fa-envelope',  desc:'Processing, responding, and organizing emails', folder:'Operations' },
+                { id:'social-scheduling', name:'Social Scheduling', icon:'fa-calendar-alt', desc:'Social media planning & scheduling', folder:'Marketing' },
+                { id:'bookkeeping',       name:'Bookkeeping Handoff',icon:'fa-calculator', desc:'Monthly bookkeeping prep & accountant handoff', folder:'Admin' },
+                { id:'team-training',     name:'Team Training',     icon:'fa-chalkboard-teacher', desc:'Onboarding & training new team members', folder:'Operations' },
+                { id:'custom',            name:'Start from Blank',  icon:'fa-file',      desc:'Create a custom SOP from scratch', folder:'All' },
+            ];
+
+            this.FOLDERS = ['All','Client','Revenue','Operations','Marketing','Admin'];
+            this.SECTION_NAMES = ['Overview','Prerequisites','Step-by-Step','Decision Trees','Mistakes','Resources'];
+
+            this.renderTemplates();
+        }
+
+        // ────────────────────────────── Storage ──────────────────────────────
+
+        load() {
+            return JSON.parse(localStorage.getItem(this.storageKey) || '[]');
+        }
+
+        store(sops) {
+            localStorage.setItem(this.storageKey, JSON.stringify(sops));
+        }
+
+        upsert(sop) {
+            const sops = this.load();
+            const i = sops.findIndex(s => s.id === sop.id);
+            if (i >= 0) sops[i] = sop; else sops.push(sop);
+            this.store(sops);
+        }
+
+        uid_key() { return `sops_${this.uid}`; }
+
+        genId() { return 'sop_' + Date.now() + '_' + Math.random().toString(36).slice(2,9); }
+
+        // ────────────────────────────── Views ──────────────────────────────
+
+        showView(id) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+
+            const inBuilder = id === 'viewBuilder';
+            document.getElementById('progressWrap').style.display = inBuilder ? 'block' : 'none';
+            document.getElementById('bottomBar').style.display    = inBuilder ? 'flex'  : 'none';
+        }
+
+        showTemplates() { this.showView('viewTemplates'); }
+        showDashboard() { this.showView('viewDash'); this.renderDash(); }
+        createNew()     { this.showTemplates(); }
+
+        // ────────────────────────────── Templates ──────────────────────────────
+
+        renderTemplates() {
+            const grid = document.getElementById('templateGrid');
+            grid.innerHTML = '';
+            this.TEMPLATES.forEach(t => {
+                const card = document.createElement('div');
+                card.className = 'tpl-card';
+                card.innerHTML = `
+                    <div class="tpl-icon"><i class="fas ${t.icon}"></i></div>
+                    <h3>${t.name}</h3>
+                    <p>${t.desc}</p>`;
+                card.onclick = () => this.startSOP(t);
+                grid.appendChild(card);
+            });
+        }
+
+        startSOP(template) {
+            this.current = {
+                id:          this.genId(),
+                title:       template.id === 'custom' ? 'Untitled SOP' : template.name,
+                template:    template.id,
+                folder:      template.folder === 'All' ? 'Operations' : template.folder,
+                createdDate: new Date().toISOString(),
+                lastEdited:  new Date().toISOString(),
+                sections: {
+                    overview:       '',
+                    prerequisites:  [],
+                    steps:          [],
+                    decisionTrees:  [],
+                    mistakes:       [],
+                    resources:      []
+                }
+            };
+            this.section = 0;
+            this.showView('viewBuilder');
+            this.renderSection();
+            this.updateProgress();
+        }
+
+        // ────────────────────────────── Builder sections ──────────────────────────────
+
+        renderSection() {
+            const pane = document.getElementById('editPane');
+            pane.innerHTML = '';
+            const renderers = [
+                this.renderOverview, this.renderPrereqs,
+                this.renderSteps, this.renderDecisions,
+                this.renderMistakes, this.renderResources
+            ];
+            renderers[this.section].call(this, pane);
+            this.renderPreview();
+            this.updateNavBtns();
+        }
+
+        renderOverview(el) {
+            el.innerHTML = `
+                <div class="sec-hdr"><i class="fas fa-info-circle"></i><h2>Part 1: Process Overview</h2></div>
+                <p class="sec-desc">What is this process? When do you do it? What's the end result?</p>
+                <div class="fg">
+                    <label>SOP Title</label>
+                    <input class="fi" id="sopTitle" value="${this.esc(this.current.title)}"
+                        placeholder="e.g., Client Onboarding Workflow"
+                        oninput="app.set('title', this.value)">
+                </div>
+                <div class="fg">
+                    <label>Folder</label>
+                    <select class="sel" onchange="app.set('folder', this.value)">
+                        ${['Client','Revenue','Operations','Marketing','Admin'].map(f =>
+                            `<option value="${f}" ${this.current.folder===f?'selected':''}>${f}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="fg">
+                    <label>Process Overview (2-3 sentences)</label>
+                    <textarea class="ft" oninput="app.setSection('overview', this.value)"
+                        placeholder="Example: This SOP covers client onboarding from signed contract to project kickoff. Use this every time a new client signs. The end result is a fully onboarded client ready to begin work.">${this.esc(this.current.sections.overview)}</textarea>
+                </div>`;
+        }
+
+        renderPrereqs(el) {
+            el.innerHTML = `
+                <div class="sec-hdr"><i class="fas fa-check-square"></i><h2>Part 2: Prerequisites</h2></div>
+                <p class="sec-desc">What needs to exist before you start this process?</p>
+                <div class="item-list" id="prereqList"></div>
+                <button class="btn-add" onclick="app.addPrereq()"><i class="fas fa-plus"></i> Add Prerequisite</button>`;
+            this.renderPrereqList();
+        }
+
+        renderPrereqList() {
+            const list = document.getElementById('prereqList');
+            if (!list) return;
+            list.innerHTML = '';
+            this.current.sections.prerequisites.forEach((p, i) => {
+                const row = document.createElement('div');
+                row.className = 'chk-item';
+                row.innerHTML = `
+                    <input class="fi" style="flex:1" value="${this.esc(p)}"
+                        placeholder="e.g., Signed contract in DocuSign"
+                        oninput="app.updPrereq(${i}, this.value)">
+                    <button class="icon-del" onclick="app.delPrereq(${i})"><i class="fas fa-trash"></i></button>`;
+                list.appendChild(row);
+            });
+        }
+
+        renderSteps(el) {
+            el.innerHTML = `
+                <div class="sec-hdr"><i class="fas fa-list-ol"></i><h2>Part 3: Step-by-Step Instructions</h2></div>
+                <p class="sec-desc">Number every step. Be specific. Use action verbs.</p>
+                <div class="item-list" id="stepList"></div>
+                <button class="btn-add" onclick="app.addStep()"><i class="fas fa-plus"></i> Add Step</button>`;
+            this.renderStepList();
+            this.initDrag();
+        }
+
+        renderStepList() {
+            const list = document.getElementById('stepList');
+            if (!list) return;
+            list.innerHTML = '';
+            this.current.sections.steps.forEach((s, i) => {
+                const card = document.createElement('div');
+                card.className = 'step-card';
+                card.dataset.index = i;
+                card.innerHTML = `
+                    <div class="step-top">
+                        <i class="fas fa-grip-vertical drag-h"></i>
+                        <div class="step-num">${i+1}</div>
+                        <button class="step-del" onclick="app.delStep(${i})"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <div class="step-body">
+                        <input class="fi" value="${this.esc(s.text)}"
+                            placeholder="e.g., Verify payment in Stripe"
+                            oninput="app.updStep(${i},'text',this.value)">
+                        <div class="step-meta">
+                            <div class="step-meta-group">
+                                <label>Time:</label>
+                                <input class="fi-sm" value="${this.esc(s.time||'')}"
+                                    placeholder="2 min"
+                                    oninput="app.updStep(${i},'time',this.value)">
+                            </div>
+                            <div class="step-meta-group">
+                                <label>Assigned:</label>
+                                <select class="sel-sm" onchange="app.updStep(${i},'assignedTo',this.value)">
+                                    <option value="" ${!s.assignedTo?'selected':''}>—</option>
+                                    ${['You','VA','Team','Automation'].map(v =>
+                                        `<option value="${v}" ${s.assignedTo===v?'selected':''}>${v}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                    </div>`;
+                list.appendChild(card);
+            });
+        }
+
+        initDrag() {
+            const list = document.getElementById('stepList');
+            if (!list || !window.Sortable) return;
+            new Sortable(list, {
+                handle: '.drag-h',
+                animation: 150,
+                ghostClass: 'sortable-ghost',
+                onEnd: evt => {
+                    const [moved] = this.current.sections.steps.splice(evt.oldIndex, 1);
+                    this.current.sections.steps.splice(evt.newIndex, 0, moved);
+                    this.renderStepList();
+                    this.initDrag();
+                    this.renderPreview();
+                    this.triggerSave();
+                }
+            });
+        }
+
+        renderDecisions(el) {
+            el.innerHTML = `
+                <div class="sec-hdr"><i class="fas fa-code-branch"></i><h2>Part 4: Decision Trees</h2></div>
+                <p class="sec-desc">What-if scenarios. Use IF / THEN format.</p>
+                <div class="item-list" id="decList"></div>
+                <button class="btn-add" onclick="app.addDec()"><i class="fas fa-plus"></i> Add Decision</button>`;
+            this.renderDecList();
+        }
+
+        renderDecList() {
+            const list = document.getElementById('decList');
+            if (!list) return;
+            list.innerHTML = '';
+            this.current.sections.decisionTrees.forEach((d, i) => {
+                const card = document.createElement('div');
+                card.className = 'dec-card';
+                card.innerHTML = `
+                    <div class="card-hdr">Decision ${i+1}
+                        <button class="icon-del" onclick="app.delDec(${i})"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <div class="fg">
+                        <label>IF (Condition)</label>
+                        <input class="fi" value="${this.esc(d.condition)}"
+                            placeholder="IF payment not received within 48 hours"
+                            oninput="app.updDec(${i},'condition',this.value)">
+                    </div>
+                    <div class="fg">
+                        <label>THEN (Action)</label>
+                        <input class="fi" value="${this.esc(d.action)}"
+                            placeholder="THEN send reminder email and pause onboarding"
+                            oninput="app.updDec(${i},'action',this.value)">
+                    </div>`;
+                list.appendChild(card);
+            });
+        }
+
+        renderMistakes(el) {
+            el.innerHTML = `
+                <div class="sec-hdr"><i class="fas fa-exclamation-triangle"></i><h2>Part 5: Common Mistakes</h2></div>
+                <p class="sec-desc">What errors have you made? How can others avoid them?</p>
+                <div class="item-list" id="misList"></div>
+                <button class="btn-add" onclick="app.addMis()"><i class="fas fa-plus"></i> Add Mistake</button>`;
+            this.renderMisList();
+        }
+
+        renderMisList() {
+            const list = document.getElementById('misList');
+            if (!list) return;
+            list.innerHTML = '';
+            this.current.sections.mistakes.forEach((m, i) => {
+                const card = document.createElement('div');
+                card.className = 'mis-card';
+                card.innerHTML = `
+                    <div class="card-hdr">Mistake ${i+1}
+                        <button class="icon-del" onclick="app.delMis(${i})"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <div class="fg">
+                        <label>❌ Mistake</label>
+                        <input class="fi" value="${this.esc(m.mistake)}"
+                            placeholder="e.g., Sending welcome email before payment confirmed"
+                            oninput="app.updMis(${i},'mistake',this.value)">
+                    </div>
+                    <div class="fg" style="margin-bottom:0">
+                        <label>✅ Fix</label>
+                        <input class="fi" value="${this.esc(m.fix)}"
+                            placeholder="e.g., Always verify payment in Stripe first"
+                            oninput="app.updMis(${i},'fix',this.value)">
+                    </div>`;
+                list.appendChild(card);
+            });
+        }
+
+        renderResources(el) {
+            el.innerHTML = `
+                <div class="sec-hdr"><i class="fas fa-link"></i><h2>Part 6: Resources & Links</h2></div>
+                <p class="sec-desc">List everything needed to complete the process.</p>
+                <div class="item-list" id="resList"></div>
+                <button class="btn-add" onclick="app.addRes()"><i class="fas fa-plus"></i> Add Resource</button>`;
+            this.renderResList();
+        }
+
+        renderResList() {
+            const list = document.getElementById('resList');
+            if (!list) return;
+            list.innerHTML = '';
+            this.current.sections.resources.forEach((r, i) => {
+                const card = document.createElement('div');
+                card.className = 'res-card';
+                card.innerHTML = `
+                    <div class="card-hdr">Resource ${i+1}
+                        <button class="icon-del" onclick="app.delRes(${i})"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <div class="res-grid">
+                        <select class="sel" onchange="app.updRes(${i},'category',this.value)">
+                            ${['Templates','Tools','Contacts'].map(c =>
+                                `<option value="${c}" ${r.category===c?'selected':''}>${c}</option>`).join('')}
+                        </select>
+                        <input class="fi" value="${this.esc(r.name)}"
+                            placeholder="Resource name"
+                            oninput="app.updRes(${i},'name',this.value)">
+                        <input class="fi" value="${this.esc(r.link)}"
+                            placeholder="https://..."
+                            oninput="app.updRes(${i},'link',this.value)">
+                    </div>`;
+                list.appendChild(card);
+            });
+        }
+
+        // ────────────────────────────── Mutators ──────────────────────────────
+
+        set(key, val)        { this.current[key] = val; this.renderPreview(); this.triggerSave(); }
+        setSection(key, val) { this.current.sections[key] = val; this.renderPreview(); this.triggerSave(); }
+
+        addPrereq() { this.current.sections.prerequisites.push(''); this.renderPrereqList(); this.renderPreview(); }
+        updPrereq(i, v) { this.current.sections.prerequisites[i] = v; this.renderPreview(); this.triggerSave(); }
+        delPrereq(i) { this.current.sections.prerequisites.splice(i,1); this.renderPrereqList(); this.renderPreview(); this.triggerSave(); }
+
+        addStep() { this.current.sections.steps.push({id:this.genId(),text:'',time:'',assignedTo:''}); this.renderStepList(); this.initDrag(); this.renderPreview(); }
+        updStep(i,f,v) { this.current.sections.steps[i][f]=v; this.renderPreview(); this.triggerSave(); }
+        delStep(i) { this.current.sections.steps.splice(i,1); this.renderStepList(); this.initDrag(); this.renderPreview(); this.triggerSave(); }
+
+        addDec() { this.current.sections.decisionTrees.push({condition:'',action:''}); this.renderDecList(); this.renderPreview(); }
+        updDec(i,f,v) { this.current.sections.decisionTrees[i][f]=v; this.renderPreview(); this.triggerSave(); }
+        delDec(i) { this.current.sections.decisionTrees.splice(i,1); this.renderDecList(); this.renderPreview(); this.triggerSave(); }
+
+        addMis() { this.current.sections.mistakes.push({mistake:'',fix:''}); this.renderMisList(); this.renderPreview(); }
+        updMis(i,f,v) { this.current.sections.mistakes[i][f]=v; this.renderPreview(); this.triggerSave(); }
+        delMis(i) { this.current.sections.mistakes.splice(i,1); this.renderMisList(); this.renderPreview(); this.triggerSave(); }
+
+        addRes() { this.current.sections.resources.push({category:'Tools',name:'',link:''}); this.renderResList(); this.renderPreview(); }
+        updRes(i,f,v) { this.current.sections.resources[i][f]=v; this.renderPreview(); this.triggerSave(); }
+        delRes(i) { this.current.sections.resources.splice(i,1); this.renderResList(); this.renderPreview(); this.triggerSave(); }
+
+        // ────────────────────────────── Preview ──────────────────────────────
+
+        renderPreview() {
+            const s = this.current.sections;
+            let h = `<div class="prev-title">${this.esc(this.current.title) || 'Untitled SOP'}</div>`;
+
+            if (s.overview) {
+                h += `<div class="prev-sec"><h3>1. Process Overview</h3><p>${this.esc(s.overview)}</p></div>`;
+            }
+
+            const prereqs = s.prerequisites.filter(Boolean);
+            if (prereqs.length) {
+                h += `<div class="prev-sec"><h3>2. Prerequisites</h3>
+                    <ul class="prev-checklist">${prereqs.map(p=>`<li>${this.esc(p)}</li>`).join('')}</ul></div>`;
+            }
+
+            const steps = s.steps.filter(s=>s.text);
+            if (steps.length) {
+                h += `<div class="prev-sec"><h3>3. Step-by-Step Instructions</h3>
+                    <ol class="prev-steps">${steps.map(st => {
+                        const meta = [st.time, st.assignedTo ? `Assigned: ${st.assignedTo}` : ''].filter(Boolean).join(' · ');
+                        return `<li>${this.esc(st.text)}${meta ? ` <span style="color:#999;font-size:.85em;">(${meta})</span>` : ''}</li>`;
+                    }).join('')}</ol></div>`;
+            }
+
+            const decs = s.decisionTrees.filter(d=>d.condition&&d.action);
+            if (decs.length) {
+                h += `<div class="prev-sec"><h3>4. Decision Trees</h3>
+                    ${decs.map(d=>`<div class="prev-dec"><div class="cond">${this.esc(d.condition)}</div>
+                        <div class="act">→ ${this.esc(d.action)}</div></div>`).join('')}</div>`;
+            }
+
+            const mists = s.mistakes.filter(m=>m.mistake&&m.fix);
+            if (mists.length) {
+                h += `<div class="prev-sec"><h3>5. Common Mistakes</h3>
+                    ${mists.map(m=>`<div class="prev-mistake">
+                        <div class="mx">❌ ${this.esc(m.mistake)}</div>
+                        <div class="fx">✅ ${this.esc(m.fix)}</div></div>`).join('')}</div>`;
+            }
+
+            const ress = s.resources.filter(r=>r.name);
+            if (ress.length) {
+                const cats = {};
+                ress.forEach(r => { (cats[r.category] = cats[r.category]||[]).push(r); });
+                h += `<div class="prev-sec"><h3>6. Resources & Links</h3>`;
+                Object.keys(cats).forEach(cat => {
+                    h += `<div class="prev-res-cat">${cat}</div><ul class="prev-resources">
+                        ${cats[cat].map(r=>`<li><a href="${r.link}" target="_blank">${this.esc(r.name)}</a></li>`).join('')}</ul>`;
+                });
+                h += `</div>`;
+            }
+
+            if (h === `<div class="prev-title">${this.esc(this.current.title) || 'Untitled SOP'}</div>`) {
+                h += `<div class="empty-prev"><i class="fas fa-pencil-alt"></i><p>Start filling in your SOP to see the preview</p></div>`;
+            }
+
+            document.getElementById('previewContent').innerHTML = h;
+            document.getElementById('sopTitleMeta').textContent = this.current.title;
+        }
+
+        // ────────────────────────────── Progress ──────────────────────────────
+
+        updateProgress() {
+            const n = this.section;
+            document.getElementById('progressLabel').textContent = `Step ${n+1} of 6 — ${this.SECTION_NAMES[n]}`;
+
+            const segs = document.getElementById('progressSegs');
+            const labs = document.querySelectorAll('.prog-label');
+            segs.innerHTML = '';
+            for (let i=0; i<6; i++) {
+                const seg = document.createElement('div');
+                seg.className = 'progress-seg' + (i<n?' done':i===n?' cur':'');
+                seg.onclick = () => this.goTo(i);
+                segs.appendChild(seg);
+                if (labs[i]) {
+                    labs[i].className = 'prog-label' + (i<n?' done':i===n?' cur':'');
+                }
+            }
+        }
+
+        updateNavBtns() {
+            document.getElementById('prevBtn').disabled = this.section === 0;
+            const next = document.getElementById('nextBtn');
+            if (this.section === 5) {
+                next.innerHTML = '<i class="fas fa-download"></i> Export';
+                next.onclick = () => this.openExport();
+            } else {
+                next.innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
+                next.onclick = () => this.next();
+            }
+        }
+
+        next() {
+            if (this.section < 5) { this.section++; this.renderSection(); this.updateProgress(); }
+        }
+
+        prev() {
+            if (this.section > 0) { this.section--; this.renderSection(); this.updateProgress(); }
+        }
+
+        goTo(i) { this.section = i; this.renderSection(); this.updateProgress(); }
+
+        // ────────────────────────────── Save ──────────────────────────────
+
+        triggerSave() {
+            clearTimeout(this.autoTimer);
+            this.autoTimer = setTimeout(() => this.save(), 2000);
+        }
+
+        save() {
+            if (!this.current) return;
+            this.current.lastEdited = new Date().toISOString();
+            this.upsert(this.current);
+            const pill = document.getElementById('savePill');
+            pill.classList.add('show');
+            setTimeout(() => pill.classList.remove('show'), 2200);
+        }
+
+        // ────────────────────────────── Dashboard ──────────────────────────────
+
+        renderDash() {
+            this.renderFolderTabs();
+            this.renderSOPGrid();
+        }
+
+        renderFolderTabs() {
+            const tabs = document.getElementById('folderTabs');
+            tabs.innerHTML = '';
+            this.FOLDERS.forEach(f => {
+                const btn = document.createElement('button');
+                btn.className = 'ftab' + (f===this.currentFolder?' active':'');
+                btn.textContent = f;
+                btn.onclick = () => { this.currentFolder = f; this.renderFolderTabs(); this.renderSOPGrid(); };
+                tabs.appendChild(btn);
+            });
+        }
+
+        renderSOPGrid() {
+            const grid = document.getElementById('sopGrid');
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            let sops = this.load();
+
+            if (this.currentFolder !== 'All') {
+                sops = sops.filter(s => s.folder === this.currentFolder);
+            }
+
+            if (query) {
+                sops = sops.filter(s =>
+                    s.title.toLowerCase().includes(query) ||
+                    (s.sections.overview||'').toLowerCase().includes(query)
+                );
+            }
+
+            // Sort newest first
+            sops.sort((a,b) => new Date(b.lastEdited) - new Date(a.lastEdited));
+
+            grid.innerHTML = '';
+
+            if (!sops.length) {
+                grid.innerHTML = `<div class="empty-state">
+                    <i class="fas fa-folder-open"></i>
+                    <p>No SOPs found. <button class="btn btn-primary" style="margin-top:1rem" onclick="app.createNew()">Create your first SOP</button></p>
+                </div>`;
+                return;
+            }
+
+            sops.forEach(sop => {
+                const card = document.createElement('div');
+                card.className = 'sop-card';
+                const ago = this.timeAgo(sop.lastEdited);
+                card.innerHTML = `
+                    <h3>${this.esc(sop.title)}</h3>
+                    <div class="sop-meta">
+                        <span><i class="fas fa-folder"></i> ${sop.folder}</span>
+                        <span><i class="fas fa-clock"></i> ${ago}</span>
+                    </div>
+                    <div class="sop-actions">
+                        <button class="btn-xs btn-xs-primary" onclick="app.editSOP('${sop.id}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn-xs btn-xs-teal" onclick="app.dupSOP('${sop.id}')">
+                            <i class="fas fa-copy"></i> Duplicate
+                        </button>
+                        <button class="btn-xs btn-xs-ghost" onclick="app.delSOP('${sop.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>`;
+                grid.appendChild(card);
+            });
+        }
+
+        filterSOPs() { this.renderSOPGrid(); }
+
+        editSOP(id) {
+            const sop = this.load().find(s => s.id === id);
+            if (!sop) return;
+            this.current = sop;
+            this.section = 0;
+            this.showView('viewBuilder');
+            this.renderSection();
+            this.updateProgress();
+        }
+
+        dupSOP(id) {
+            const orig = this.load().find(s => s.id === id);
+            if (!orig) return;
+            const dup = JSON.parse(JSON.stringify(orig));
+            dup.id          = this.genId();
+            dup.title       = orig.title + ' (Copy)';
+            dup.createdDate = new Date().toISOString();
+            dup.lastEdited  = new Date().toISOString();
+            this.upsert(dup);
+            this.renderSOPGrid();
+        }
+
+        delSOP(id) {
+            if (!confirm('Delete this SOP? This cannot be undone.')) return;
+            const sops = this.load().filter(s => s.id !== id);
+            this.store(sops);
+            this.renderSOPGrid();
+        }
+
+        // ────────────────────────────── Export ──────────────────────────────
+
+        openExport()  { this.save(); document.getElementById('exportModal').classList.add('open'); }
+        closeExport() { document.getElementById('exportModal').classList.remove('open'); }
+
+        exportPDF() {
+            const el  = document.getElementById('previewContent');
+            const opt = {
+                margin: [10,10,10,10],
+                filename: `${this.current.title}.pdf`,
+                image: { type:'jpeg', quality:0.98 },
+                html2canvas: { scale:2 },
+                jsPDF: { unit:'mm', format:'a4', orientation:'portrait' }
+            };
+            html2pdf().set(opt).from(el).save();
+            this.closeExport();
+        }
+
+        exportWord() {
+            const html = document.getElementById('previewContent').innerHTML;
+            const blob = new Blob([`<html><head><meta charset="utf-8">
+                <title>${this.current.title}</title>
+                <style>body{font-family:Arial,sans-serif;line-height:1.7;max-width:700px;margin:40px auto;}
+                h1{color:#3B4A6B;border-bottom:3px solid #D4AF37;padding-bottom:8px;}
+                h3{color:#3B4A6B;border-bottom:2px solid #D4AF37;padding-bottom:5px;}</style>
+                </head><body>${html}</body></html>`],
+                { type:'application/msword' });
+            const a = document.createElement('a');
+            a.href     = URL.createObjectURL(blob);
+            a.download = `${this.current.title}.doc`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+            this.closeExport();
+        }
+
+        exportNotion() {
+            const md = this.toMarkdown();
+            navigator.clipboard.writeText(md).then(() => {
+                alert('Notion markdown copied to clipboard!\n\nPaste it into any Notion page.');
+                this.closeExport();
+            });
+        }
+
+        exportText() {
+            const txt = this.toPlainText();
+            navigator.clipboard.writeText(txt).then(() => {
+                alert('Plain text copied to clipboard!');
+                this.closeExport();
+            });
+        }
+
+        toMarkdown() {
+            const s = this.current.sections;
+            let t = `# ${this.current.title}\n\n`;
+            if (s.overview) t += `## 1. Process Overview\n\n${s.overview}\n\n`;
+            if (s.prerequisites.filter(Boolean).length) {
+                t += `## 2. Prerequisites\n\n${s.prerequisites.filter(Boolean).map(p=>`- [ ] ${p}`).join('\n')}\n\n`;
+            }
+            if (s.steps.filter(x=>x.text).length) {
+                t += `## 3. Step-by-Step Instructions\n\n`;
+                s.steps.filter(x=>x.text).forEach((st,i) => {
+                    const meta = [st.time, st.assignedTo?`Assigned: ${st.assignedTo}`:null].filter(Boolean).join(', ');
+                    t += `${i+1}. ${st.text}${meta?' *('+meta+')*':''}\n`;
+                });
+                t += '\n';
+            }
+            if (s.decisionTrees.filter(d=>d.condition&&d.action).length) {
+                t += `## 4. Decision Trees\n\n`;
+                s.decisionTrees.filter(d=>d.condition&&d.action).forEach(d => {
+                    t += `**${d.condition}**\n→ ${d.action}\n\n`;
+                });
+            }
+            if (s.mistakes.filter(m=>m.mistake&&m.fix).length) {
+                t += `## 5. Common Mistakes\n\n`;
+                s.mistakes.filter(m=>m.mistake&&m.fix).forEach(m => {
+                    t += `❌ **Mistake:** ${m.mistake}\n✅ **Fix:** ${m.fix}\n\n`;
+                });
+            }
+            if (s.resources.filter(r=>r.name).length) {
+                const cats = {};
+                s.resources.filter(r=>r.name).forEach(r => { (cats[r.category]=cats[r.category]||[]).push(r); });
+                t += `## 6. Resources & Links\n\n`;
+                Object.keys(cats).forEach(cat => {
+                    t += `### ${cat}\n\n${cats[cat].map(r=>`- [${r.name}](${r.link})`).join('\n')}\n\n`;
+                });
+            }
+            return t;
+        }
+
+        toPlainText() {
+            const s = this.current.sections;
+            const sep = '─'.repeat(40);
+            let t = `${this.current.title}\n${'═'.repeat(this.current.title.length)}\n\n`;
+            if (s.overview) t += `1. PROCESS OVERVIEW\n${sep}\n${s.overview}\n\n`;
+            if (s.prerequisites.filter(Boolean).length) {
+                t += `2. PREREQUISITES\n${sep}\n${s.prerequisites.filter(Boolean).map(p=>`☐ ${p}`).join('\n')}\n\n`;
+            }
+            if (s.steps.filter(x=>x.text).length) {
+                t += `3. STEP-BY-STEP INSTRUCTIONS\n${sep}\n`;
+                s.steps.filter(x=>x.text).forEach((st,i) => {
+                    const meta = [st.time, st.assignedTo?`Assigned: ${st.assignedTo}`:null].filter(Boolean).join(', ');
+                    t += `${i+1}. ${st.text}${meta?' ('+meta+')':''}\n`;
+                });
+                t += '\n';
+            }
+            if (s.decisionTrees.filter(d=>d.condition&&d.action).length) {
+                t += `4. DECISION TREES\n${sep}\n`;
+                s.decisionTrees.filter(d=>d.condition&&d.action).forEach(d => t += `${d.condition}\n→ ${d.action}\n\n`);
+            }
+            if (s.mistakes.filter(m=>m.mistake&&m.fix).length) {
+                t += `5. COMMON MISTAKES\n${sep}\n`;
+                s.mistakes.filter(m=>m.mistake&&m.fix).forEach(m => t += `❌ ${m.mistake}\n✅ ${m.fix}\n\n`);
+            }
+            if (s.resources.filter(r=>r.name).length) {
+                const cats = {};
+                s.resources.filter(r=>r.name).forEach(r => { (cats[r.category]=cats[r.category]||[]).push(r); });
+                t += `6. RESOURCES & LINKS\n${sep}\n`;
+                Object.keys(cats).forEach(cat => {
+                    t += `${cat}:\n${cats[cat].map(r=>`• ${r.name}: ${r.link}`).join('\n')}\n\n`;
+                });
+            }
+            return t;
+        }
+
+        // ────────────────────────────── Utilities ──────────────────────────────
+
+        esc(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+                .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+        }
+
+        timeAgo(iso) {
+            const d = Math.floor((Date.now() - new Date(iso)) / 86400000);
+            if (d === 0) return 'Today';
+            if (d === 1) return '1 day ago';
+            return `${d} days ago`;
+        }
+    }
+    </script>
+
+</body>
+</html>
