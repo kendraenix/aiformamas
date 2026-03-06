@@ -1106,6 +1106,263 @@
         </div>
     </footer>
 
+    <!-- Password Protection Modal -->
+    <div class="modal active" id="authModal" style="display: flex;">
+        <div class="modal-content">
+            <!-- Setup Screen (first time) -->
+            <div id="setupScreen">
+                <div class="modal-header">
+                    <h2>🔒 Set Up Password</h2>
+                </div>
+                <p style="color: #666; margin-bottom: 1.5rem;">Welcome! Set a password to protect your SOP Builder. You'll share this password with your team.</p>
+                <div class="form-group">
+                    <label class="form-label">Create Password</label>
+                    <input type="password" id="setupPassword" class="form-input" placeholder="Enter password" autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" id="setupPasswordConfirm" class="form-input" placeholder="Confirm password" autocomplete="new-password">
+                </div>
+                <div id="setupError" style="color: #d32f2f; margin-bottom: 1rem; display: none;"></div>
+                <button class="btn btn-primary" onclick="authManager.setupPassword()" style="width: 100%;">
+                    Set Password & Continue
+                </button>
+            </div>
+
+            <!-- Login Screen -->
+            <div id="loginScreen" style="display: none;">
+                <div class="modal-header">
+                    <h2>🔒 Enter Password</h2>
+                </div>
+                <p style="color: #666; margin-bottom: 1.5rem;">Enter the password to access your SOP Builder.</p>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="loginPassword" class="form-input" placeholder="Enter password" autocomplete="current-password">
+                </div>
+                <div id="loginError" style="color: #d32f2f; margin-bottom: 1rem; display: none;"></div>
+                <button class="btn btn-primary" onclick="authManager.login()" style="width: 100%; margin-bottom: 1rem;">
+                    Unlock
+                </button>
+                <button class="btn btn-ghost" onclick="authManager.showChangePassword()" style="width: 100%;">
+                    Change Password
+                </button>
+            </div>
+
+            <!-- Change Password Screen -->
+            <div id="changePasswordScreen" style="display: none;">
+                <div class="modal-header">
+                    <h2>🔑 Change Password</h2>
+                </div>
+                <p style="color: #666; margin-bottom: 1.5rem;">Enter the current password, then set a new one.</p>
+                <div class="form-group">
+                    <label class="form-label">Current Password</label>
+                    <input type="password" id="changePasswordCurrent" class="form-input" placeholder="Enter current password">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">New Password</label>
+                    <input type="password" id="changePasswordNew" class="form-input" placeholder="Enter new password">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirm New Password</label>
+                    <input type="password" id="changePasswordConfirm" class="form-input" placeholder="Confirm new password">
+                </div>
+                <div id="changePasswordError" style="color: #d32f2f; margin-bottom: 1rem; display: none;"></div>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn btn-ghost" onclick="authManager.showLogin()" style="flex: 1;">
+                        Cancel
+                    </button>
+                    <button class="btn btn-primary" onclick="authManager.changePassword()" style="flex: 1;">
+                        Change Password
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Authentication Manager Script -->
+    <script>
+        const authManager = {
+            async hashPassword(password) {
+                const encoder = new TextEncoder();
+                const data = encoder.encode(password);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            },
+
+            init() {
+                const hasPassword = localStorage.getItem('sop_password_hash');
+                const isAuthenticated = sessionStorage.getItem('sop_authenticated');
+
+                if (!hasPassword) {
+                    // First time - show setup
+                    this.showSetup();
+                } else if (isAuthenticated === 'true') {
+                    // Already logged in this session
+                    this.hideAuthModal();
+                } else {
+                    // Show login
+                    this.showLogin();
+                }
+
+                // Add lock button to header
+                this.addLockButton();
+
+                // Enter key handlers
+                document.getElementById('setupPassword').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') document.getElementById('setupPasswordConfirm').focus();
+                });
+                document.getElementById('setupPasswordConfirm').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.setupPassword();
+                });
+                document.getElementById('loginPassword').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.login();
+                });
+            },
+
+            showSetup() {
+                document.getElementById('setupScreen').style.display = 'block';
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('changePasswordScreen').style.display = 'none';
+                document.getElementById('authModal').style.display = 'flex';
+                setTimeout(() => document.getElementById('setupPassword').focus(), 100);
+            },
+
+            showLogin() {
+                document.getElementById('setupScreen').style.display = 'none';
+                document.getElementById('loginScreen').style.display = 'block';
+                document.getElementById('changePasswordScreen').style.display = 'none';
+                document.getElementById('authModal').style.display = 'flex';
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('loginError').style.display = 'none';
+                setTimeout(() => document.getElementById('loginPassword').focus(), 100);
+            },
+
+            showChangePassword() {
+                document.getElementById('setupScreen').style.display = 'none';
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('changePasswordScreen').style.display = 'block';
+                document.getElementById('changePasswordCurrent').value = '';
+                document.getElementById('changePasswordNew').value = '';
+                document.getElementById('changePasswordConfirm').value = '';
+                document.getElementById('changePasswordError').style.display = 'none';
+            },
+
+            hideAuthModal() {
+                document.getElementById('authModal').style.display = 'none';
+                document.getElementById('authModal').classList.remove('active');
+            },
+
+            async setupPassword() {
+                const password = document.getElementById('setupPassword').value;
+                const confirm = document.getElementById('setupPasswordConfirm').value;
+                const errorDiv = document.getElementById('setupError');
+
+                if (!password || password.length < 4) {
+                    errorDiv.textContent = 'Password must be at least 4 characters';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+
+                if (password !== confirm) {
+                    errorDiv.textContent = 'Passwords do not match';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+
+                const hash = await this.hashPassword(password);
+                localStorage.setItem('sop_password_hash', hash);
+                sessionStorage.setItem('sop_authenticated', 'true');
+
+                this.hideAuthModal();
+                errorDiv.style.display = 'none';
+            },
+
+            async login() {
+                const password = document.getElementById('loginPassword').value;
+                const errorDiv = document.getElementById('loginError');
+                const storedHash = localStorage.getItem('sop_password_hash');
+
+                if (!password) {
+                    errorDiv.textContent = 'Please enter password';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+
+                const hash = await this.hashPassword(password);
+
+                if (hash === storedHash) {
+                    sessionStorage.setItem('sop_authenticated', 'true');
+                    this.hideAuthModal();
+                    errorDiv.style.display = 'none';
+                } else {
+                    errorDiv.textContent = 'Incorrect password';
+                    errorDiv.style.display = 'block';
+                    document.getElementById('loginPassword').value = '';
+                    document.getElementById('loginPassword').focus();
+                }
+            },
+
+            async changePassword() {
+                const current = document.getElementById('changePasswordCurrent').value;
+                const newPass = document.getElementById('changePasswordNew').value;
+                const confirm = document.getElementById('changePasswordConfirm').value;
+                const errorDiv = document.getElementById('changePasswordError');
+                const storedHash = localStorage.getItem('sop_password_hash');
+
+                if (!current || !newPass || !confirm) {
+                    errorDiv.textContent = 'Please fill in all fields';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+
+                const currentHash = await this.hashPassword(current);
+                if (currentHash !== storedHash) {
+                    errorDiv.textContent = 'Current password is incorrect';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+
+                if (newPass.length < 4) {
+                    errorDiv.textContent = 'New password must be at least 4 characters';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+
+                if (newPass !== confirm) {
+                    errorDiv.textContent = 'New passwords do not match';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+
+                const newHash = await this.hashPassword(newPass);
+                localStorage.setItem('sop_password_hash', newHash);
+
+                errorDiv.style.display = 'none';
+                alert('✅ Password changed successfully!');
+                this.showLogin();
+            },
+
+            lock() {
+                sessionStorage.removeItem('sop_authenticated');
+                this.showLogin();
+            },
+
+            addLockButton() {
+                const nav = document.querySelector('.nav');
+                const lockBtn = document.createElement('button');
+                lockBtn.className = 'nav-btn';
+                lockBtn.innerHTML = '<i class="fas fa-lock"></i>';
+                lockBtn.title = 'Lock App';
+                lockBtn.onclick = () => this.lock();
+                nav.insertBefore(lockBtn, nav.firstChild);
+            }
+        };
+
+        // Initialize auth on page load
+        authManager.init();
+    </script>
+
     <script src="app.js"></script>
 </body>
 </html>
